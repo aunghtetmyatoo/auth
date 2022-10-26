@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Constants\MigrationLength;
+use App\Constants\Status;
 
 return new class extends Migration
 {
@@ -14,12 +16,39 @@ return new class extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->uuid('id')->unique();
+            $table->string('name', MigrationLength::NAME)->index();
+            $table->string('phone_number', MigrationLength::IDENTIFIER)->unique()->index();
             $table->string('password');
+            $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique()->index();
+            $table->double('amount')->default(0.00);
+            $table->bigInteger('coins')->default(0);
+            $table->string('user_agent')->nullable();
+            $table->text('photo')->nullable();
+
+            // use account statuses
+            $table->dateTime('frozen_at')->nullable();
+            $table->dateTime('otp_mistook_at')->nullable();
+            $table->tinyInteger('otp_mistake_count')->default(0);
+            $table->dateTime('password_mistook_at')->nullable();
+            $table->tinyInteger('password_mistake_count')->default(0);
+            $table->dateTime('password_changed_at')->nullable();
+
+            $table->dateTime('registered_at');
+            $table->dateTime('last_logged_in_at')->nullable();
+            $table->string('noti_token', MigrationLength::NOTI_TOKEN)->nullable();
+
+            $table->string('ip_address', MigrationLength::IP_ADDRESS)->nullable();
+            $table->string('language', MigrationLength::LANGUAGE)->default('en');
+
+            $table->tinyInteger('level', MigrationLength::LEVEL);
+            $table->enum("bluemark", [Status::BLUEMARK, Status::VIPBLUEMARK]);
+
+            $table->string("payment_account_number")->nullable();
+            $table->string("payment_account_name", MigrationLength::NAME)->nullable();
+            $table->unsignedBigInteger("payment_types_id")->nullable()->index();
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

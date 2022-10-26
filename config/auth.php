@@ -40,6 +40,16 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'player' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+        ],
+
+        'admin' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+        ],
     ],
 
     /*
@@ -65,10 +75,17 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        //game frontend Guards
+        'player' => [
+            'driver' => 'passport',
+            'model' => App\Models\User::class,
+        ],
+
+        //admin guard
+        'admin' => [
+            'driver' => 'passport',
+            'model' => App\Models\User::class,
+        ],
     ],
 
     /*
