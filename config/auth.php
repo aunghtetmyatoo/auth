@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'player',
+        'passwords' => 'players',
     ],
 
     /*
@@ -36,19 +36,14 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-
         'player' => [
-            'driver' => 'passport',
+            'driver' => 'session',
             'provider' => 'users',
         ],
 
         'admin' => [
             'driver' => 'passport',
-            'provider' => 'users',
+            'provider' => 'admins',
         ],
     ],
 
@@ -70,21 +65,16 @@ return [
     */
 
     'providers' => [
+        //game frontend Guards
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
 
-        //game frontend Guards
-        'player' => [
-            'driver' => 'passport',
-            'model' => App\Models\User::class,
-        ],
-
         //admin guard
-        'admin' => [
-            'driver' => 'passport',
-            'model' => App\Models\User::class,
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
         ],
     ],
 
@@ -104,8 +94,15 @@ return [
     */
 
     'passwords' => [
-        'users' => [
+        'players' => [
             'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        'admins' => [
+            'provider' => 'admins',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
