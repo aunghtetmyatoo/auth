@@ -4,9 +4,11 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use App\Traits\Gambling\GamblingResponse;
 
 class Handler extends ExceptionHandler
 {
+    use GamblingResponse;
     /**
      * A list of exception types with their corresponding custom log levels.
      *
@@ -46,5 +48,19 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $e)
+    {
+        /**
+         *  Development validation exception
+         */
+        if ($e instanceof UnprocessableException) {
+            if (config('app.dev_validator')) {
+                return $this->responseValidationErrors(errors: $e->errors);
+            }
+            return $this->responseUnprocessableEntity(message: 'Missing required parameters.');
+        }
+        return parent::render($request, $e);
     }
 }
