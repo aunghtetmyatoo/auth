@@ -25,7 +25,6 @@ class AccessTokenMiddleware
         }
         $token = AccessToken::whereIdentifier($request->phone_number)
             ->whereAction($action)->first();
-
         if (!$token) {
             return $this->responseUnauthenticated();
         }

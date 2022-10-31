@@ -7,7 +7,7 @@ use App\Traits\Auth\AuthResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class DevlopmentValidator
+class DevelopmentValidator
 {
     public function handle(array $rules)
     {

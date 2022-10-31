@@ -10,6 +10,7 @@ use App\Traits\Gambling\GamblingResponse;
 use App\Http\Requests\Api\Auth\Login\GetOtpRequest;
 use App\Services\Auth\OneTimePassword;
 use App\Enums\OtpAction;
+use App\Http\Requests\Api\Auth\Login\VerifyOtpRequest;
 
 class RegisterController extends Controller
 {
@@ -32,8 +33,23 @@ class RegisterController extends Controller
     }
 
 
-    public function verifyOpt()
+    public function verifyOpt(VerifyOtpRequest $request)
     {
+        (new OneTimePassword(
+            phone_number: $request->phone_number,
+            browser_id: $request->browser_id,
+        ))->verify(
+            user: null,
+            otp: $request->otp
+        );
+
+        $this->accessToken->delete($request->phone_number, 'mb_register_verify_otp');
+        return $this->responseSucceed(
+            data: [
+                'token' => $this->accessToken->generate($request->phone_number, 'mb_register')
+            ],
+            message: 'otp.verified'
+        );
     }
 
     public function register()

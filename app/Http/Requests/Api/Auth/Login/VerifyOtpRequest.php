@@ -4,8 +4,10 @@ namespace App\Http\Requests\Api\Auth\Login;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Actions\DevelopmentValidator;
+use App\Constants\AuthConstant;
+use App\Constants\MigrationLength;
 
-class GetOtpRequest extends FormRequest
+class VerifyOtpRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +26,14 @@ class GetOtpRequest extends FormRequest
      */
     public function rules()
     {
-        (new DevelopmentValidator)->handle([
+        (new DevelopmentValidator())->handle([
             'browser_id' => ['required', 'string'],
-        ]);
-        return [
             'phone_number' => [
                 'required',
             ],
+        ]);
+        return [
+            'otp' => ['required', 'numeric', 'digits:6'],
         ];
     }
 }

@@ -13,5 +13,5 @@ return [
     'verified' => 'OTP is verified.',
     'failed' => 'Failed to send OTP',
     'blocked' => 'Your device has been blocked to request OTP, please contact to call center (' . Gambling::CALL_CENTER . ').',
-    'message' => " is your Nine Pay OTP. Please don't share it to anyone.",
+    'message' => " is your Game OTP. Please don't share it to anyone.",
 ];
