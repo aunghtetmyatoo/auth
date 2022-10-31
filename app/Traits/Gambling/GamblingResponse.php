@@ -12,13 +12,13 @@ trait GamblingResponse
 
     public function responseValidationErrors(array $errors = [], string $message = null)
     {
-        return $this->response(
-            data: [
+        return response()->json([
+            'data'    => [
                 ...$errors,
                 'message' => $message ? $message : 'Validation error.',
             ],
-            code: Response::HTTP_UNPROCESSABLE_ENTITY
-        );
+            'code'    => Response::HTTP_UNPROCESSABLE_ENTITY,
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function responseUnprocessableEntity(string $message = '', bool $translate = true): JsonResponse
@@ -26,12 +26,11 @@ trait GamblingResponse
         if ($message && $translate) {
             $message = trans($message);
         }
-
-        return $this->response(
-            data: [
+        return response()->json([
+            'data'    => [
                 ...$this->translate(message: $message, code: Response::HTTP_UNPROCESSABLE_ENTITY),
             ],
-            code: Response::HTTP_UNPROCESSABLE_ENTITY
-        );
+            'code'    => Response::HTTP_UNPROCESSABLE_ENTITY,
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
