@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('otp_requests', function (Blueprint $table) {
             $table->unsignedBigInteger('blocked_by')->nullable();
             $table->foreign('blocked_by')->references('id')->on('admins');
-            $table->string('browser_id');
+            $table->string('device_id');
             $table->string('phone_number');
             $table->string('action');
             $table->boolean('is_blocked')->default(0);

@@ -4,11 +4,12 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-use App\Traits\Gambling\GamblingResponse;
+use App\Traits\Auth\ApiResponse;
+use App\Exceptions\UnprocessableException;
 
 class Handler extends ExceptionHandler
 {
-    use GamblingResponse;
+    use ApiResponse;
     /**
      * A list of exception types with their corresponding custom log levels.
      *
@@ -50,17 +51,24 @@ class Handler extends ExceptionHandler
         });
     }
 
-    public function render($request, Throwable $e)
+    public function render($request, Throwable $exception)
     {
+
         /**
          *  Development validation exception
          */
-        if ($e instanceof UnprocessableException) {
+        if ($exception instanceof UnprocessableException) {
             if (config('app.dev_validator')) {
-                return $this->responseValidationErrors(errors: $e->errors);
+                return $this->responseValidationErrors(errors: $exception->errors);
             }
             return $this->responseUnprocessableEntity(message: 'Missing required parameters.');
         }
-        return parent::render($request, $e);
+
+        if ($exception instanceof OtpInvalidException) {
+            return $this->responseUnauthenticated(
+                message: $exception->getMessage() ? $exception->getMessage() : 'otp.invalid'
+            );
+        }
+        return parent::render($request, $exception);
     }
 }

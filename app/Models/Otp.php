@@ -9,5 +9,5 @@ class Otp extends Model
 {
     use HasFactory;
     protected $table = "otps";
-    protected $fillable = ["identifier", "token", "expired_at"];
+    protected $fillable = ["identifier", "token", "expired_at", "device_id"];
 }

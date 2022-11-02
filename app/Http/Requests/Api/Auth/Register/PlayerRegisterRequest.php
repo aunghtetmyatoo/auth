@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Api\Auth\Login;
+namespace App\Http\Requests\Api\Auth\Register;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Actions\DevelopmentValidator;
-use App\Constants\AuthConstant;
 use App\Constants\MigrationLength;
+use Illuminate\Foundation\Http\FormRequest;
 
-class VerifyOtpRequest extends FormRequest
+class PlayerRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,14 +25,19 @@ class VerifyOtpRequest extends FormRequest
      */
     public function rules()
     {
-        (new DevelopmentValidator())->handle([
+        (new DevelopmentValidator)->handle([
             'device_id' => ['required', 'string'],
+            'noti_token' => ['required', 'string', 'max:' . MigrationLength::NOTI_TOKEN],
             'phone_number' => [
                 'required',
+                'unique:users',
+                'unique:admins',
             ],
+            'name' => ['required', 'string', 'min:2', 'max:100'],
         ]);
+
         return [
-            'otp' => ['required', 'numeric', 'digits:6'],
+            'password' => ['required', 'digits:' . MigrationLength::PASSCODE],
         ];
     }
 }

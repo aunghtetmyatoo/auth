@@ -20,7 +20,7 @@ class OtpRequested
      *
      * @return void
      */
-    public function __construct(public string $phone_number, public string $browser_id, public OtpAction $action, public bool $is_backend, public int $life_time)
+    public function __construct(public string $phone_number, public string $device_id, public OtpAction $action, public bool $is_backend, public int $life_time)
     {
         //
     }

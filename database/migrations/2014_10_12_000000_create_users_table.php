@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('phone_number', MigrationLength::IDENTIFIER)->unique()->index();
             $table->string('password');
             $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique()->index();
+            $table->string('device_id')->index();
             $table->double('amount')->default(0.00);
             $table->bigInteger('coins')->default(0);
             $table->string('user_agent')->nullable();
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->dateTime('password_changed_at')->nullable();
 
             $table->dateTime('registered_at');
+            $table->enum('payment_method_status', [Status::NEED_PMETHOD, Status::ADDED_PMETHOD, Status::REGISTERED])->default(Status::REGISTERED);
             $table->dateTime('last_logged_in_at')->nullable();
             $table->string('noti_token', MigrationLength::NOTI_TOKEN)->nullable();
 
@@ -43,7 +45,6 @@ return new class extends Migration
 
             $table->tinyInteger('level', MigrationLength::LEVEL);
             $table->enum("bluemark", [Status::BLUEMARK, Status::VIPBLUEMARK]);
-
             $table->string("payment_account_number")->nullable();
             $table->string("payment_account_name", MigrationLength::NAME)->nullable();
             $table->unsignedBigInteger("payment_types_id")->nullable()->index();

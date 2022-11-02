@@ -16,10 +16,12 @@ use App\Models\OtpRequest;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Hash;
+use App\Traits\Auth\ApiResponse;
 
 class OneTimePassword
 {
-    public function __construct(private string $phone_number, private string $browser_id, private bool $is_backend = false)
+    use ApiResponse;
+    public function __construct(private string $phone_number, private string $device_id, private bool $is_backend = false)
     {
     }
     /**
@@ -30,7 +32,7 @@ class OneTimePassword
     {
         OtpRequest::create([
             'phone_number' => $this->phone_number,
-            'browser_id' => $this->browser_id,
+            'device_id' => $this->device_id,
             'action' => $action->value,
         ]);
 
@@ -43,6 +45,7 @@ class OneTimePassword
         //create otp for a given expired time
         Otp::create([
             'identifier' => $this->phone_number,
+            'device_id' => $this->device_id,
             'token' => Hash::make($token),
             'expired_at' => now()->addMinutes($life_time)
         ]);
@@ -62,14 +65,14 @@ class OneTimePassword
 
         event(new OtpRequested(
             phone_number: $this->phone_number,
-            browser_id: $this->browser_id,
+            device_id: $this->device_id,
             action: $action,
             is_backend: $this->is_backend,
             life_time: $life_time
         ));
     }
 
-    public function verify(Admin|User $user = null, string $otp): void
+    public function verify(User $user = null, string $otp): void
     {
         if (!config('app.otp')) {
             return;
@@ -117,7 +120,7 @@ class OneTimePassword
     private function checkBlocked()
     {
         // if an admin block this device id
-        $otp_blocked = OtpRequest::where('browser_id', $this->browser_id)->whereIsBlocked(true)->first();
+        $otp_blocked = OtpRequest::where('device_id', $this->device_id)->whereIsBlocked(true)->first();
 
         if ($otp_blocked) {
             throw new OtpBlockedException();
@@ -127,7 +130,7 @@ class OneTimePassword
     // check user requested an otp
     private function checkRequested()
     {
-        $requested = Otp::where('identifier', $this->phone_number)->first();
+        $requested = Otp::where('identifier', $this->phone_number)->where('device_id', $this->device_id)->first();
         if (!$requested) {
             throw new AuthenticationException();
         }

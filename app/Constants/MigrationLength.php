@@ -9,7 +9,7 @@ class MigrationLength
     const MIN_IDENTIFIER = 9;
     const IDENTIFIER = 20;
     const PASSWORD = 8;
-    const BROWSER_ID = 64;
+    const DEVICE_ID = 64;
     const REFERENCE_ID = 50;
     const IP_ADDRESS = 12;
     const LANGUAGE = 4;
@@ -18,4 +18,5 @@ class MigrationLength
     const AMOUNT_STATUS = 2;
     const REMARK = 200;
     const LEVEL = 3;
+    const PASSCODE = 8;
 }

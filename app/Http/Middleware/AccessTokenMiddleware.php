@@ -4,13 +4,13 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Traits\Auth\AuthResponse;
 use Illuminate\Support\Facades\Hash;
 use App\Models\AccessToken;
+use App\Traits\Auth\ApiResponse;
 
 class AccessTokenMiddleware
 {
-    use AuthResponse;
+    use ApiResponse;
     /**
      * Handle an incoming request.
      *

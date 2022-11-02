@@ -28,7 +28,7 @@ class CreateOtp
     {
         $otp = (new OneTimePassword(
             phone_number: $event->phone_number,
-            browser_id: $event->browser_id,
+            device_id: $event->device_id,
             is_backend: $event->is_backend
         ))->generate($event->life_time, $event->action);
         if (!config('app.sms')) {

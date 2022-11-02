@@ -25,7 +25,7 @@ class GetOtpRequest extends FormRequest
     public function rules()
     {
         (new DevelopmentValidator)->handle([
-            'browser_id' => ['required', 'string'],
+            'device_id' => ['required', 'string'],
         ]);
         return [
             'phone_number' => [

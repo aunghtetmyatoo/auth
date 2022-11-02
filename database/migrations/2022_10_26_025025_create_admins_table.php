@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique();
 
             // security things
-            $table->string('browser_id', MigrationLength::BROWSER_ID)->nullable();
+            $table->string('device_id', MigrationLength::DEVICE_ID)->nullable();
             $table->string('user_agent')->nullable();
             $table->mediumText('mfa_secret');
 

@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Constants\MigrationLength;
 
 return new class extends Migration
 {
@@ -14,12 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('otps', function (Blueprint $table) {
-            $table->id();
-            $table->string('identifier', MigrationLength::IDENTIFIER);
-            $table->string('token');
-            $table->string('device_id');
-            $table->dateTime('expired_at');
+        Schema::create('oauth_personal_access_clients', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->uuid('client_id');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('otps');
+        Schema::dropIfExists('oauth_personal_access_clients');
     }
 };

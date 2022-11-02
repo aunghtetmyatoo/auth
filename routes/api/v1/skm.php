@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
 
-
-Route::get('hello', function () {
-    dd("here");
-});
+Route::get('/logout', [LoginController::class, 'logout']);
