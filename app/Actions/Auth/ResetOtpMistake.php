@@ -2,11 +2,9 @@
 
 namespace App\Actions\Auth;
 
-use App\Interfaces\AdminUser;
-use App\Interfaces\MobileUser;
-use App\Models\Admin;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Models\Admin;
 
 class ResetOtpMistake
 {

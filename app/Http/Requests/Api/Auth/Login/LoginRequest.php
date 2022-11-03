@@ -4,10 +4,8 @@ namespace App\Http\Requests\Api\Auth\Login;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Actions\DevelopmentValidator;
-use App\Constants\AuthConstant;
-use App\Constants\MigrationLength;
 
-class VerifyOtpRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,12 +26,12 @@ class VerifyOtpRequest extends FormRequest
     {
         (new DevelopmentValidator())->handle([
             'device_id' => ['required', 'string'],
-            'phone_number' => [
-                'required',
-            ],
+            'noti_token' => ['required', 'string'],
+            'language' => ['required', 'string'],
         ]);
         return [
-            'otp' => ['required', 'numeric', 'digits:6'],
+            'phone_number' => ['required'],
+            'password' => ['required', 'string'],
         ];
     }
 }

@@ -69,6 +69,11 @@ class Handler extends ExceptionHandler
                 message: $exception->getMessage() ? $exception->getMessage() : 'otp.invalid'
             );
         }
+        if ($exception instanceof PasswordInvalidException) {
+            return $this->responseUnauthenticated(
+                message: $exception->getMessage() ? $exception->getMessage() : 'passwords.invalid'
+            );
+        }
         return parent::render($request, $exception);
     }
 }

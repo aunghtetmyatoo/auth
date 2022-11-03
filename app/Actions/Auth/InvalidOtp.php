@@ -3,10 +3,8 @@
 namespace App\Actions\Auth;
 
 use App\Exceptions\OtpInvalidException;
-use App\Interfaces\AdminUser;
-use App\Interfaces\MobileUser;
-use App\Models\Admin;
 use App\Models\User;
+use App\Models\Admin;
 
 class InvalidOtp
 {

@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Actions\Passport\PasswordGrant;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Auth\RefreshToken\RefreshTokenRequest;
 use App\Http\Resources\Api\Auth\PlayerResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Traits\Auth\ApiResponse;
 
 class RefreshTokenController extends Controller
@@ -18,7 +18,7 @@ class RefreshTokenController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request)
+    public function __invoke(RefreshTokenRequest $request)
     {
         $user = User::where('phone_number', $request->phone_number)->first();
 
@@ -28,6 +28,9 @@ class RefreshTokenController extends Controller
 
         if (!isset($request->refresh_token)) {
             $refresh_token = $request->cookie('refresh_token');
+            if ($refresh_token == null || $refresh_token == "") {
+                return $this->responseSomethingWentWrong(message: "Something went wrong!");
+            }
         }
         $refresh_token = $request->refresh_token;
 
@@ -39,7 +42,7 @@ class RefreshTokenController extends Controller
         $tokens = $response->json();
 
         if (isset($request->header()['user-agent'])) {
-            $cookie = $this->getUserCookie($tokens);
+            $cookie = getUserCookie($tokens);
             if (config('app.env') === "production") {
                 unset($tokens['refresh_token']);
             };
