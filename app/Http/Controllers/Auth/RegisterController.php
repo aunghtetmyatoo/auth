@@ -90,9 +90,21 @@ class RegisterController extends Controller
             }
             $this->accessToken->delete($request->phone_number, 'mb_register');
             DB::commit();
+            $tokens = $response->json();
+            if (isset($request->header()['user-agent'])) {
+
+                $cookie = getUserCookie($tokens);
+                if (config('app.env') === "production") {
+                    unset($tokens['refresh_token']);
+                };
+                return $this->responseSucceed(data: [
+                    'user' => new PlayerResource($user),
+                    'token' => $response->json()
+                ], cookie: config('app.env') === "production" ? $cookie : null, message: 'Successfully Logged In');
+            }
             return $this->responseSucceed(data: [
                 'user' => new PlayerResource($user),
-                'token' => $response->json()
+                'token' => $tokens
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
