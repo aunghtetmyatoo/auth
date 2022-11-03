@@ -6,7 +6,6 @@ use App\Actions\Passport\PasswordGrant;
 use App\Actions\UserReference;
 use App\Enums\Language;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Services\Auth\AccessToken;
 use App\Http\Requests\Api\Auth\Login\GetOtpRequest;
 use App\Services\Auth\OneTimePassword;
@@ -17,9 +16,7 @@ use App\Http\Requests\Api\Auth\Register\PlayerRegisterRequest;
 use App\Http\Resources\Api\Auth\PlayerResource;
 use App\Models\User;
 use App\Traits\Auth\ApiResponse;
-use Exception;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\TryCatch;
 
 class RegisterController extends Controller
 {

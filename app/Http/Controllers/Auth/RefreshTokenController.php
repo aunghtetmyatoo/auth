@@ -39,8 +39,7 @@ class RefreshTokenController extends Controller
         $tokens = $response->json();
 
         if (isset($request->header()['user-agent'])) {
-
-            $cookie = getUserCookie($tokens);
+            $cookie = $this->getUserCookie($tokens);
             if (config('app.env') === "production") {
                 unset($tokens['refresh_token']);
             };
