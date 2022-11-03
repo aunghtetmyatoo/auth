@@ -5,7 +5,6 @@ namespace App\Actions\Passport;
 use App\Models\User;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Laravel\Passport\Client as PassportClient;
 
@@ -32,6 +31,27 @@ class PasswordGrant
         ]);
         return $response;
     }
+
+
+    public function refreshToken(string $refresh_token): Response
+    {
+        $this->revoke();
+        $client = $this->getClientByUser();
+
+        if (!$client) {
+            abort(500);
+        }
+        // $password = $this->getPassword($request);
+        $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $refresh_token,
+            'client_id' => $client->id,
+            'client_secret' => $client->secret,
+        ]);
+
+        return $response;
+    }
+
 
     private function revoke()
     {

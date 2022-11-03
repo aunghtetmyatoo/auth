@@ -7,27 +7,35 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Auth\PlayerResource;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use App\Traits\Auth\ApiResponse;
 
-class LoginController extends Controller
+class RefreshTokenController extends Controller
 {
     use ApiResponse;
-
-    public function playerLogin(Request $request)
+    /**
+     * Handle the incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function __invoke(Request $request)
     {
-        $user = User::where("phone_number", $request->phone_number)->first();
+        $user = User::where('phone_number', $request->phone_number)->first();
+
         if (!$user) {
             return $this->responseSomethingWentWrong();
         }
-        if (!Hash::check($request->password, $user->password)) {
-            return $this->responseSomethingWentWrong(message: "Incorrect Password");
+
+        if (!isset($request->refresh_token)) {
+            $refresh_token = $request->cookie('refresh_token');
         }
-        $response = (new PasswordGrant(user: $user))->execute(request: $request);
+        $refresh_token = $request->refresh_token;
+
+        $response = (new PasswordGrant(user: $user))->refreshToken($refresh_token);
+
         if ($response->failed()) {
             return $this->responseSomethingWentWrong(message: $response->json()['message']);
         }
-
         $tokens = $response->json();
 
         if (isset($request->header()['user-agent'])) {
@@ -46,12 +54,5 @@ class LoginController extends Controller
             'user' => new PlayerResource($user),
             'token' => $tokens
         ]);
-    }
-
-    public function logout()
-    {
-        if (auth()->user()->token()->revoke()) {
-            return $this->responseSucceed(message: "Logout Successfully");
-        }
     }
 }

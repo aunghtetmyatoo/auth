@@ -72,3 +72,21 @@ if (!function_exists('get_random_str')) {
         return $randomstr;
     }
 }
+
+if (!function_exists('getUserCookie')) {
+    function getUserCookie(array $refresh_token = [])
+    {
+        $cookie = cookie(
+            name: 'refresh_token',
+            value: $refresh_token['refresh_token'],
+            minutes: config('session.lifetime'),
+            path: '/',
+            domain: '.localhost',
+            secure: env('app.env') === 'production',
+            httpOnly: true,
+            raw: false,
+            sameSite: 'None'
+        );
+        return $cookie;
+    }
+}
