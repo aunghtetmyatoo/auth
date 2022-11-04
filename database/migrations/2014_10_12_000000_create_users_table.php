@@ -44,7 +44,7 @@ return new class extends Migration
             $table->string('language', MigrationLength::LANGUAGE)->default('en');
 
             $table->tinyInteger('level', MigrationLength::LEVEL);
-            $table->enum("bluemark", [Status::BLUEMARK, Status::VIPBLUEMARK]);
+            $table->enum("bluemark", [Status::BLUEMARK, Status::VIPBLUEMARK, Status::NORMAL])->default(Status::NORMAL);
             $table->string("payment_account_number")->nullable();
             $table->string("payment_account_name", MigrationLength::NAME)->nullable();
             $table->unsignedBigInteger("payment_types_id")->nullable()->index();

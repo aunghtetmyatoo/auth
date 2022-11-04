@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Api\Auth\RefreshToken;
+namespace App\Http\Requests\Api\Auth\Payment;
 
 use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RefreshTokenRequest extends FormRequest
+class BankAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +25,12 @@ class RefreshTokenRequest extends FormRequest
     public function rules()
     {
         (new DevelopmentValidator())->handle([
-            'refresh_token' => ['nullable', 'string'],
-            'phone_number' => ['required'],
             'device_id' => ['required', 'string'],
         ]);
-        return [];
+        return [
+            'bank_account_number' => ['required'],
+            'bank_account_name' => ['required', 'string'],
+            'payment_type' => ['required'],
+        ];
     }
 }

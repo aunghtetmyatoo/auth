@@ -13,7 +13,7 @@ class SucceedLogin
             $user->device_id  = $request->device_id;
             $user->noti_token = $request->noti_token;
             $user->language   = $request->language;
-            $user->passcode_mistake_count = 0;
+            $user->password_mistake_count = 0;
             $user->save();
             return;
         }

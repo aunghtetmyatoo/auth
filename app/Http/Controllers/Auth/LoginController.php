@@ -19,14 +19,12 @@ class LoginController extends Controller
     public function playerLogin(LoginRequest $request)
     {
         $user = User::where("phone_number", $request->phone_number)->first();
-        if (!$user) {
+        $result = checkUserStatus(user: $user);
+        if ($result["status"] == false) {
+            if ($result["message"] != null) {
+                return $this->responseSomethingWentWrong(message: $result["message"]);
+            }
             return $this->responseSomethingWentWrong();
-        }
-        if ($user->frozen_at) {
-            return $this->responseSomethingWentWrong();
-        }
-        if ($user->password_mistook_at) {
-            return $this->responseSomethingWentWrong(message: "passwords.freezed");
         }
         if (!Hash::check($request->password, $user->password)) {
             (new InvalidPassword())->handle(user: $user, is_backend_user: false);

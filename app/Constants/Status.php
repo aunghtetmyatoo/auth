@@ -5,6 +5,7 @@ namespace App\Constants;
 class Status
 {
     const BLUEMARK = "BLUE MARK";
+    const NORMAL = "NORMAL";
     const VIPBLUEMARK = "VIP BLUE MARK";
     const PUBLIC = "PUBLIC";
     const PRIVATE = "PRIVATE";

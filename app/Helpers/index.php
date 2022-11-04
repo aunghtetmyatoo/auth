@@ -3,6 +3,12 @@
 /**
  * merge array with required
  */
+
+use Illuminate\Http\Request;
+use PhpParser\Node\NullableType;
+
+use function PHPSTORM_META\type;
+
 if (!function_exists('get_enum_values')) {
     function get_enum_values(array $enums): array
     {
@@ -88,5 +94,50 @@ if (!function_exists('getUserCookie')) {
             sameSite: 'None'
         );
         return $cookie;
+    }
+}
+
+if (!function_exists('checkUserStatus')) {
+    function checkUserStatus(object|NULL $user, string $device_id = "", string $status = "NO_DEVICE_CHECK")
+    {
+        $type = gettype($user);
+        if ($type === "NULL") {
+            return [
+                "status" => false,
+                "message" => "Something Went Wrong"
+            ];
+        } elseif ($type === "object") {
+            if ($status === "CHECK_DEVICE") {
+                if ($device_id == null || $device_id == "") {
+                    return [
+                        "status" => false,
+                        "message" => "Something Went Wrong"
+                    ];
+                } else {
+                    if ($user->device_id != $device_id) {
+                        return [
+                            "status" => false,
+                            "message" => "Something Went Wrong"
+                        ];
+                    }
+                }
+            }
+            if ($user->frozen_at) {
+                return [
+                    "status" => false,
+                    "message" => "Something Went Wrong"
+                ];
+            }
+            if ($user->password_mistook_at) {
+                return [
+                    "status" => false,
+                    "message" =>  "passwords.freezed"
+                ];
+            }
+        }
+        return [
+            "status" => true,
+            "message" => null
+        ];
     }
 }
