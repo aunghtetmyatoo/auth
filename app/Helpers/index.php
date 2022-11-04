@@ -98,7 +98,7 @@ if (!function_exists('getUserCookie')) {
 }
 
 if (!function_exists('checkUserStatus')) {
-    function checkUserStatus(object|NULL $user, string $device_id = "", string $status = "NO_DEVICE_CHECK")
+    function checkUserStatus(object|NULL $user, string $device_id = "", string $status = "")
     {
         $type = gettype($user);
         if ($type === "NULL") {
