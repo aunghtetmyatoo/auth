@@ -80,6 +80,8 @@ class RegisterController extends Controller
                 'last_logged_in_at' => now(),
             ]);
             $user = User::where('phone_number', $request->phone_number)->first();
+            DB::commit();
+
             $response = (new PasswordGrant(user: $user))->execute(request: $request);
             if ($response->failed()) {
                 DB::rollBack();

@@ -14,13 +14,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, Uuid;
 
-    public function findForPassport($username)
+    public function findForPassport($phone_number)
     {
-        return $this->where('phone_number', $username)->first();
-    }
-    public function validateForPassportPasswordGrant($password)
-    {
-        return Hash::check($password, $this->password);
+        return $this->where('phone_number', $phone_number)->first();
     }
     protected $guarded = [
         'id',

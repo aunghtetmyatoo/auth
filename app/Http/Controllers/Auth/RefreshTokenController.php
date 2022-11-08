@@ -21,20 +21,12 @@ class RefreshTokenController extends Controller
     public function __invoke(RefreshTokenRequest $request)
     {
         $user = User::where('phone_number', $request->phone_number)->first();
-        $result = checkUserStatus(user: $user, device_id: $request->device_id, status: "CHECK_DEVICE");
-        if ($result["status"] == false) {
-            if ($result["message"] != null) {
-                return $this->responseSomethingWentWrong(message: $result["message"]);
-            }
-            return $this->responseSomethingWentWrong();
-        }
         if (!isset($request->refresh_token)) {
             $refresh_token = $request->cookie('refresh_token');
             if ($refresh_token == null || $refresh_token == "") {
                 return $this->responseSomethingWentWrong(message: "Something went wrong!");
             }
         }
-
         $refresh_token = $request->refresh_token;
 
         $response = (new PasswordGrant(user: $user))->refreshToken($refresh_token);

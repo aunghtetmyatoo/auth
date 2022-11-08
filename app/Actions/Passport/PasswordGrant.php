@@ -41,7 +41,6 @@ class PasswordGrant
         if (!$client) {
             abort(500);
         }
-        // $password = $this->getPassword($request);
         $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
             'grant_type' => 'refresh_token',
             'refresh_token' => $refresh_token,
@@ -65,7 +64,7 @@ class PasswordGrant
     private function getClientByUser()
     {
         if ($this->user instanceof User) {
-            return PassportClient::whereName('Laravel Password Grant Client')->first();
+            return PassportClient::whereName('Player Password Grant Client')->first();
         }
     }
 }

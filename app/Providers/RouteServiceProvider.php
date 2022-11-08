@@ -42,7 +42,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api/v1/index.php'));
 
             // skm api routes
-            Route::middleware(['api', 'auth:player'])
+            Route::middleware(['api', 'auth:player', 'spam'])
                 ->prefix('api/v1/skm')
                 ->group(base_path('routes/api/v1/skm.php'));
         });

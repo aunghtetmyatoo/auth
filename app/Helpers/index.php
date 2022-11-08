@@ -98,42 +98,34 @@ if (!function_exists('getUserCookie')) {
 }
 
 if (!function_exists('checkUserStatus')) {
-    function checkUserStatus(object|NULL $user, string $device_id = "", string $status = "")
+    function checkUserStatus(object $user, string $device_id = "", string $status = "")
     {
-        $type = gettype($user);
-        if ($type === "NULL") {
-            return [
-                "status" => false,
-                "message" => "Something Went Wrong"
-            ];
-        } elseif ($type === "object") {
-            if ($status === "CHECK_DEVICE") {
-                if ($device_id == null || $device_id == "") {
-                    return [
-                        "status" => false,
-                        "message" => "Something Went Wrong"
-                    ];
-                } else {
-                    if ($user->device_id != $device_id) {
-                        return [
-                            "status" => false,
-                            "message" => "Something Went Wrong"
-                        ];
-                    }
-                }
-            }
-            if ($user->frozen_at) {
+        if ($status === "CHECK_DEVICE") {
+            if ($device_id == null || $device_id == "") {
                 return [
                     "status" => false,
                     "message" => "Something Went Wrong"
                 ];
+            } else {
+                if ($user->device_id != $device_id) {
+                    return [
+                        "status" => false,
+                        "message" => "Something Went Wrong"
+                    ];
+                }
             }
-            if ($user->password_mistook_at) {
-                return [
-                    "status" => false,
-                    "message" =>  "passwords.freezed"
-                ];
-            }
+        }
+        if ($user->frozen_at) {
+            return [
+                "status" => false,
+                "message" => "Something Went Wrong"
+            ];
+        }
+        if ($user->password_mistook_at) {
+            return [
+                "status" => false,
+                "message" =>  "passwords.freezed"
+            ];
         }
         return [
             "status" => true,

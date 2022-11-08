@@ -37,7 +37,7 @@ class PlayerRegisterRequest extends FormRequest
         ]);
 
         return [
-            'password' => ['required', 'digits:' . MigrationLength::PASSCODE],
+            'password' => ['required', 'min:6'],
         ];
     }
 }

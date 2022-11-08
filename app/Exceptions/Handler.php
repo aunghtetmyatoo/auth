@@ -6,6 +6,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use App\Traits\Auth\ApiResponse;
 use App\Exceptions\UnprocessableException;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -74,6 +75,13 @@ class Handler extends ExceptionHandler
                 message: $exception->getMessage() ? $exception->getMessage() : 'passwords.invalid'
             );
         }
+        /**
+         *  Laravel form request validation exception
+         */
+        if ($exception instanceof ValidationException) {
+            return $this->responseValidationErrors(errors: json_decode($exception->validator->errors(), true), message: $exception->getMessage());
+        }
+
         return parent::render($request, $exception);
     }
 }

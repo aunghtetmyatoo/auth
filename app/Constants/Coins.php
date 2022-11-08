@@ -1,6 +1,6 @@
 <?php
 
-namespace APP\Constants;
+namespace App\Constants;
 
 class Coin
 {
