@@ -21,6 +21,6 @@ class TransferToPlayController extends Controller
             'game_type_id' => $game_type_id,
             'amount' => $amount,
         ]);
-        return $response->body();
+        return json_decode($response->body());
     }
 }

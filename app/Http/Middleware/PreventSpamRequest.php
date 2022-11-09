@@ -30,6 +30,9 @@ class PreventSpamRequest
         if ($user->frozen_at || $user->password_mistook_at) {
             return $this->responseSomethingWentWrong(message: "passwords.freezed");
         }
+        if($user->payment_account_number == null || $user->payment_account_number == "" || $user->payment_account_name == null || $user->payment_account_name == "" || $user->payment_types_id == null || $user->payment_types_id == ""){
+            return $this->responseUnprocessableEntity();
+        }
         return $next($request);
     }
 }
