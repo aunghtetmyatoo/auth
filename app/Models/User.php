@@ -67,4 +67,9 @@ class User extends Authenticatable
         'password_changed_at' => 'datetime',
         'registered_at' => 'datetime',
     ];
+
+    public function game_types()
+    {
+        return $this->belongsToMany(GameType::class)->withTimestamps();
+    }
 }

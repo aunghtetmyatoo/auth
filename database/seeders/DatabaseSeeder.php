@@ -21,5 +21,9 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $this->call(PassportClientSeeder::class);
+
+        $this->call(GameTypeSeeder::class);
+
+        $this->call(UserSeeder::class);
     }
 }
