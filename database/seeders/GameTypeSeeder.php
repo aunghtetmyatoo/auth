@@ -17,14 +17,14 @@ class GameTypeSeeder extends Seeder
     public function run()
     {
         $games_types = [
-            'ShanKoeMee', 'BuuGyi', 'Poker',
+            'ShanKoeMee', 'BuuGyi', 'Poker', 'TweentyOne',
         ];
 
         foreach ($games_types as $type) {
             $existed = GameType::where('name', $type)->first();
 
             if (!$existed) {
-                GameType::create(['name' => $type, 'reference_id' => time() . rand(10*45, 100*98)]);
+                GameType::create(['name' => $type, 'reference_id' => time() . rand(10 * 45, 100 * 98)]);
             }
         }
 
