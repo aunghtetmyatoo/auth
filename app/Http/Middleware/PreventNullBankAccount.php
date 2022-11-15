@@ -20,7 +20,7 @@ class PreventNullBankAccount
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
-        if ($user->payment_account_number == null || $user->payment_account_number == "" || $user->payment_account_name == null || $user->payment_account_name == "" || $user->payment_types_id == null || $user->payment_types_id == "") {
+        if ($user->payment_account_number == null || $user->payment_account_number == "" || $user->payment_account_name == null || $user->payment_account_name == "" || $user->payment_type_id == null || $user->payment_type_id == "") {
             return $this->responseWithCustomErrorCode(message: "Please Enter your bank account information", status_code: 512);
         }
         return $next($request);

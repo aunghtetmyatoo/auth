@@ -15,17 +15,12 @@ class TransactionController extends Controller
 
     public function deposit(DepositRequest $request)
     {
-        // dd(Carbon::now()->toDateTimeString());
         $user = User::find(auth()->user()->id);
-        $payment_type_id = $request->payment_type_id;
-        $amount = $request->amount;
-        $transaction_datetime = $request->transaction_datetime;
-        $transaction_ss = $request->transaction_ss;
-
         $user->coin_fill_requests()->create([
-            "transaction_screenshot" => $transaction_ss,
-            "payment_type_id" => $payment_type_id,
-            "amount" => $amount,
+            "transaction_screenshot" => $request->transaction_ss,
+            "payment_type_id" => $request->payment_type_id,
+            "amount" => $request->amount,
+            "transaction_time" => $request->transaction_datetime,
         ]);
         return $this->responseSucceed(message: 'Success');
     }

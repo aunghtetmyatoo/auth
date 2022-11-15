@@ -18,6 +18,20 @@ class User extends Authenticatable
     {
         return $this->where('phone_number', $phone_number)->first();
     }
+
+    protected $fillable = [
+        'name',
+        'phone_number',
+        'password',
+        'reference_id',
+        'device_id',
+        'amount',
+        'coins',
+        'registered_at',
+        'payment_account_number',
+        'payment_account_name',
+        'payment_type_id'
+    ];
     protected $guarded = [
         'id',
         'sequence',

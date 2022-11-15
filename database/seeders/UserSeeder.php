@@ -54,6 +54,9 @@ class UserSeeder extends Seeder
                 'amount' => 10000,
                 'coins' => 100,
                 'registered_at' => now(),
+                'payment_account_number' => $user['phone_number'],
+                'payment_account_name' => $user['name'],
+                'payment_type_id' => 1,
             ]);
 
             $game_type = GameType::where('name', 'ShanKoeMee')->first();
