@@ -48,6 +48,7 @@ return new class extends Migration
             $table->string("payment_account_number")->nullable();
             $table->string("payment_account_name", MigrationLength::NAME)->nullable();
             $table->unsignedBigInteger("payment_types_id")->nullable()->index();
+            $table->enum("play", [Status::PLAYING, Status::FREE])->default(Status::FREE);
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

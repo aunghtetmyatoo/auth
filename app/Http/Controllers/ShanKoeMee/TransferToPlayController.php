@@ -4,7 +4,6 @@ namespace App\Http\Controllers\ShanKoeMee;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ShanKoeMee\Transaction\TransferToGame;
-use App\Models\User;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\Http;
 
@@ -21,6 +20,6 @@ class TransferToPlayController extends Controller
             'game_type_id' => $game_type_id,
             'amount' => $amount,
         ]);
-        return json_decode($response->body());
+        return json_decode($response->body(), true);
     }
 }

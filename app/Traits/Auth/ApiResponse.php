@@ -80,4 +80,15 @@ trait ApiResponse
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
         return $response;
     }
+
+    public function responseWithCustomErrorCode(string $message = '', $status_code = Response::HTTP_ACCEPTED): JsonResponse
+    {
+        $response = response()->json([
+            'data'    => [
+                ...$this->translate(message: $message, code: $status_code),
+            ],
+            'code'    => $status_code,
+        ], $status_code);
+        return $response;
+    }
 }

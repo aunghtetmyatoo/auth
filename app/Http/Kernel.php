@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'spam' => \App\Http\Middleware\PreventSpamRequest::class,
         'login' => \App\Http\Middleware\PreventSpamLoginRequest::class,
         'refresh_token' => \App\Http\Middleware\PreventSpamRefreshTokenRequest::class,
+        'multi-game' => \App\Http\Middleware\PreventFromPlayingMultipleGame::class,
     ];
 }

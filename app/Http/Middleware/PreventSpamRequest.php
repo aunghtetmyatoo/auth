@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class PreventSpamRequest
 {
@@ -30,8 +31,8 @@ class PreventSpamRequest
         if ($user->frozen_at || $user->password_mistook_at) {
             return $this->responseSomethingWentWrong(message: "passwords.freezed");
         }
-        if($user->payment_account_number == null || $user->payment_account_number == "" || $user->payment_account_name == null || $user->payment_account_name == "" || $user->payment_types_id == null || $user->payment_types_id == ""){
-            return $this->responseUnprocessableEntity();
+        if ($user->payment_account_number == null || $user->payment_account_number == "" || $user->payment_account_name == null || $user->payment_account_name == "" || $user->payment_types_id == null || $user->payment_types_id == "") {
+            return $this->responseWithCustomErrorCode(message: "Please Enter your bank account information", status_code: 512);
         }
         return $next($request);
     }

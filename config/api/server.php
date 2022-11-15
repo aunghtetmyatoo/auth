@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'game'=>[
+    'game' => [
         'end_point'    => "http://localhost:8002/api/v1/",
     ],
     'card' => [
@@ -11,5 +11,5 @@ return [
     'skm' => [
         "prefix"  => "skm/",
     ],
-    
+
 ];

@@ -23,4 +23,6 @@ class Status
     const NEED_PMETHOD = "NEED PAYMENT METHOD";
     const ADDED_PMETHOD = "PAYMENT METHOD ADDED";
     const REGISTERED = "REGISTERED";
+    const PLAYING = "PLAYING";
+    const FREE = "FREE";
 }

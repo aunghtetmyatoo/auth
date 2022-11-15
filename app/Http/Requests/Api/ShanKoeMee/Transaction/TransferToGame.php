@@ -29,7 +29,7 @@ class TransferToGame extends FormRequest
             'game_type_id' => ['required'],
         ]);
         return [
-            'amount' => ['required','numeric'],
+            'amount' => ['required', 'numeric'],
         ];
     }
 }

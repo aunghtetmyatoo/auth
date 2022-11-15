@@ -28,7 +28,7 @@ class RegisterController extends Controller
 
     public function getOtp(GetOtpRequest $request)
     {
-        (new OneTimePassword(
+        (new OtpAction(
             phone_number: $request->phone_number,
             device_id: $request->device_id,
         ))->send(user: null, action: OtpAction::Register, life_time: config('auth.otp.expires.mb_register'));
