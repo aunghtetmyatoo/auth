@@ -72,4 +72,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(GameType::class)->withTimestamps();
     }
+
+    public function coin_fill_requests()
+    {
+        return $this->hasMany(CoinFillRequest::class);
+    }
 }
