@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\PlayerSetting;
+namespace App\Http\Requests\Api\Friend;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PlayerSettingUpdateRequest extends FormRequest
+class FriendIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,7 @@ class PlayerSettingUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => ['required', 'uuid'],
-            'game_type_id' => ['required', 'integer'],
-            'sound_status' => ['nullable'],
-            'vibration_status' => ['nullable'],
-            'challenge_status' => ['nullable'],
-            'friend_status' => ['nullable'],
+            'user_id'=> ['required', 'uuid'],
         ];
     }
 }

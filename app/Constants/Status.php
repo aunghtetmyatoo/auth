@@ -25,4 +25,8 @@ class Status
     const REGISTERED = "REGISTERED";
     const PLAYING = "PLAYING";
     const FREE = "FREE";
+    const ADDED_FRIEND = "ADDED FRIEND";
+    const RECEIVED_FRIEND = "RECEIVED FRIEND";
+    const CONFIRMED_FRIEND = "CONFIRMED FRIEND";
+
 }

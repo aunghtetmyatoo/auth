@@ -25,31 +25,34 @@ class PlayerSettingController extends Controller
 
     public function update(PlayerSettingUpdateRequest $request)
     {
-        $user_id = $request->user_id;
 
-        $setting =  PlayerSetting::where("user_id",$user_id)->first();
+        $setting =  PlayerSetting::where("user_id",$request->user_id)->where("game_type_id",$request->game_type_id)->first();
 
         if($request->sound_status)
         {
-            PlayerSetting::where('user_id',$user_id )->update(array('sound_status' => $setting->sound_status == Status::OPEN ? Status::CLOSE : Status::OPEN));
+            $setting->sound_status = $setting->sound_status == Status::OPEN ? Status::CLOSE : Status::OPEN;
+            $setting->save();
             return $this->responseSucceed(message: "Update Setting Successfully");
         }
 
         if($request->vibration_status)
         {
-            PlayerSetting::where('user_id',$user_id )->update(array('vibration_status' => $setting->vibration_status == Status::OPEN ? Status::CLOSE : Status::OPEN));
+            $setting->vibration_status = $setting->vibration_status == Status::OPEN ? Status::CLOSE : Status::OPEN;
+            $setting->save();
             return $this->responseSucceed(message: "Update Setting Successfully");
         }
 
         if($request->challenge_status)
         {
-            PlayerSetting::where('user_id',$user_id )->update(array('challenge_status' => $setting->challenge_status == Status::OPEN ? Status::CLOSE : Status::OPEN));
+            $setting->challenge_status = $setting->challenge_status == Status::OPEN ? Status::CLOSE : Status::OPEN;
+            $setting->save();
             return $this->responseSucceed(message: "Update Setting Successfully");
         }
 
         if($request->friend_status)
         {
-            PlayerSetting::where('user_id',$user_id )->update(array('friend_status' => $setting->friend_status == Status::OPEN ? Status::CLOSE : Status::OPEN));
+            $setting->friend_status = $setting->friend_status == Status::OPEN ? Status::CLOSE : Status::OPEN;
+            $setting->save();
             return $this->responseSucceed(message: "Update Setting Successfully");
         }
     }
