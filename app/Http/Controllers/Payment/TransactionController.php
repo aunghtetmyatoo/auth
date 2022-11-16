@@ -8,14 +8,15 @@ use App\Traits\Auth\ApiResponse;
 use Illuminate\Http\UploadedFile;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\Api\Auth\Payment\DepositRequest;
-use App\Http\Requests\Api\Auth\Payment\WithdrawRequest;
+use App\Http\Requests\Api\Auth\Payment\PaymentDepositRequest;
+use App\Http\Requests\Api\Auth\Payment\PaymentWithdrawRequest;
+use App\Models\WithdrawRequest;
 
 class TransactionController extends Controller
 {
     use ApiResponse;
 
-    public function deposit(DepositRequest $request)
+    public function deposit(PaymentDepositRequest $request)
     {
         $user = User::find(auth()->user()->id);
 
@@ -31,11 +32,11 @@ class TransactionController extends Controller
         return $this->responseSucceed(message: 'Success');
     }
 
-    public function withdraw(WithdrawRequest $request)
+    public function withdraw(PaymentWithdrawRequest $request)
     {
         $user = User::find(auth()->user()->id);
 
-        CoinFillRequest::create([
+        WithdrawRequest::create([
             "user_id" => $user->id,
             "payment_type_id" => $request->payment_type_id,
             "amount" => $request->amount,

@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api\Auth\Payment;
 use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DepositRequest extends FormRequest
+class PaymentDepositRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
