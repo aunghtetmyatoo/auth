@@ -11,22 +11,29 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Traits\Auth\ApiResponse;
 use App\Actions\Auth\InvalidPassword;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
     use ApiResponse;
 
+
     public function playerLogin(LoginRequest $request)
     {
         $user = User::where("phone_number", $request->phone_number)->first();
+
         if (!Hash::check($request->password, $user->password)) {
             (new InvalidPassword())->handle(user: $user, is_backend_user: false);
             return $this->responseSomethingWentWrong(message: "Incorrect Password");
         }
+
         $response = (new PasswordGrant(user: $user))->execute(request: $request);
+        return $response;
+
         if ($response->failed()) {
             return $this->responseSomethingWentWrong(message: $response->json()['message']);
         }
+
         $tokens = $response->json();
         (new SucceedLogin())->handle($user, $request);
         if (isset($request->header()['user-agent'])) {
