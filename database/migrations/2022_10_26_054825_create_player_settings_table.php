@@ -18,6 +18,8 @@ return new class extends Migration
             $table->id();
             $table->uuid("user_id")->nullable()->index();
             $table->foreign("user_id")->references("id")->on("users");
+            $table->unsignedBigInteger("game_type_id")->nullable()->index();
+            $table->foreign("game_type_id")->references("id")->on("game_types");
             $table->enum("sound_status", [Status::OPEN, Status::CLOSE])->default(Status::OPEN);
             $table->enum("vibration_status", [Status::OPEN, Status::CLOSE])->default(Status::OPEN);
             $table->enum("challenge_status", [Status::OPEN, Status::CLOSE])->default(Status::OPEN);

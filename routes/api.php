@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FriendController;
 use App\Http\Controllers\Profile\PlayerSettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('/profile')->controller(PlayerSettingController::class)->group(function () {
     Route::post('/setting','index');
     Route::post('/update_setting','update');
+});
 
+Route::prefix('/friend')->controller(FriendController::class)->group(function () {
+    Route::post('/','index');
+    Route::post('/add','addFriend');
+    Route::post('/confirm','confirmFriend');
+    Route::post('/added_friends','addFriendList');
 });
 
