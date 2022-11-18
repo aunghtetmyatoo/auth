@@ -31,6 +31,6 @@ Route::prefix('/friend')->controller(FriendController::class)->group(function ()
     Route::post('/confirm','confirmFriend');
     Route::post('/added_friends','addFriendList');
     Route::post('/cancel','cancelFriend');
-
 });
+
 

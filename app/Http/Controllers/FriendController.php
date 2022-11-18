@@ -71,9 +71,4 @@ class FriendController extends Controller
 
         return $this->responseSucceed(message: "Confirmed Friend Successfully");
     }
-
-    // public function cancelFriend(FriendCancelRequest $request)
-    // {
-    //     return "canceel";
-    // }
 }
