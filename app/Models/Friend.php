@@ -9,11 +9,11 @@ class Friend extends Model
 {
     use HasFactory;
 
-    // protected $fillable = [
-    //     'user_id',
-    //     'friend_id',
-    //     'confirm_status'
-    // ];
+    protected $fillable = [
+        'user_id',
+        'friend_id',
+        'confirm_status'
+    ];
 
     public function user()
     {
