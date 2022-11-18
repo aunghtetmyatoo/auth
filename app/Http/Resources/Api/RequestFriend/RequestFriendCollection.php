@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Api\Friend;
+namespace App\Http\Resources\Api\RequestFriend;
 
 use App\Helpers\Pagination;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class FriendCollection extends ResourceCollection
+class RequestFriendCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.

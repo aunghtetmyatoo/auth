@@ -21,16 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('/profile')->controller(PlayerSettingController::class)->group(function () {
-    Route::post('/setting','index');
-    Route::post('/update_setting','update');
+    Route::post('/setting', 'index');
+    Route::post('/update_setting', 'update');
 });
-
-Route::prefix('/friend')->controller(FriendController::class)->group(function () {
-    Route::post('/','index');
-    Route::post('/add','addFriend');
-    Route::post('/confirm','confirmFriend');
-    Route::post('/added_friends','addFriendList');
-    Route::post('/cancel','cancelFriend');
-
-});
-

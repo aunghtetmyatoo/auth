@@ -91,4 +91,9 @@ trait ApiResponse
         ], $status_code);
         return $response;
     }
+
+    public function responseCollection(mixed $data)
+    {
+        return response()->json($data, 200);
+    }
 }

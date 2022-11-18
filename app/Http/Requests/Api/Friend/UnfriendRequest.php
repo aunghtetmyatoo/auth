@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\Friend;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FriendAddedListRequest extends FormRequest
+class UnfriendRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class FriendAddedListRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'=> ['required', 'uuid'],
+            'friend_id' => ['required', 'uuid'],
         ];
     }
 }

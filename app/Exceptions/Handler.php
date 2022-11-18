@@ -2,11 +2,11 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use App\Traits\Auth\ApiResponse;
 use App\Exceptions\UnprocessableException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -54,6 +54,9 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof GeneralError) {
+            return $this->responseUnprocessableEntity(message: 'Cannot Perform Task.');
+        }
 
         /**
          *  Development validation exception
