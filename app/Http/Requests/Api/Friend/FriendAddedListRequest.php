@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Api\Friend;
 
+use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class FriendCancelRequest extends FormRequest
+class FriendAddedListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +24,10 @@ class FriendCancelRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'friend_id' => ['required','uuid'],
-        ];
+        (new DevelopmentValidator())->handle([
+            'user_id' => ['required', 'uuid'],
+        ]);
+
+        return [];
     }
 }

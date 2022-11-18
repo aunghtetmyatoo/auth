@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\Friend;
 
+use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UnfriendRequest extends FormRequest
@@ -23,8 +24,9 @@ class UnfriendRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'friend_id' => ['required', 'uuid'],
-        ];
+        (new DevelopmentValidator())->handle([
+            'user_id' => ['required', 'uuid'],
+        ]);
+        return [];
     }
 }
