@@ -8,6 +8,7 @@ use App\Constants\Status;
 use App\Exceptions\GeneralError;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use App\Http\Requests\Api\Friend\UnfriendRequest;
 use App\Http\Requests\Api\Friend\FriendAddRequest;
 use App\Http\Resources\Api\Friend\FriendCollection;
@@ -64,7 +65,13 @@ class FriendController extends Controller
             ],
         ]);
 
-        return $this->responseSucceed(message: "Added Friend Successfully");
+        //real-time socket
+        $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.add'), [
+            'request_friend_id' => auth()->user()->id,
+            'user_id' => $request->friend_id,
+        ]);
+
+        return json_decode($response);
     }
 
     public function confirmFriend(FriendConfirmRequest $request)
