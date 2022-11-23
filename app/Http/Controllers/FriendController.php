@@ -89,7 +89,15 @@ class FriendController extends Controller
                 ]);
             });
 
-            return $this->responseSucceed(message: "Confirmed Friend Successfully");
+        //real-time socket
+        $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.confirm'), [
+            'request_friend_id' => $request->friend_id,
+            'user_id' => auth()->user()->id,
+        ]);
+
+        return json_decode($response);
+
+            // return $this->responseSucceed(message: "Confirmed Friend Successfully");
         } catch (\Exception $e) {
             throw new GeneralError();
         }
