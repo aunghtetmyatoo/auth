@@ -76,6 +76,7 @@ class FriendController extends Controller
 
     public function confirmFriend(FriendConfirmRequest $request)
     {
+
         try {
             [$received_friend, $added_friend] = $this->getFriendRelationship(friend_id: $request->friend_id, condition: 'not_yet_friend');
 
@@ -89,15 +90,15 @@ class FriendController extends Controller
                 ]);
             });
 
-        //real-time socket
-        $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.confirm'), [
-            'request_friend_id' => $request->friend_id,
-            'user_id' => auth()->user()->id,
-        ]);
+            //real-time socket
+            $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.confirm'), [
+                'request_friend_id' => $request->friend_id,
+                'user_id' => auth()->user()->id,
+            ]);
 
-        return json_decode($response);
-
+            return json_decode($response);
             // return $this->responseSucceed(message: "Confirmed Friend Successfully");
+
         } catch (\Exception $e) {
             throw new GeneralError();
         }
@@ -105,6 +106,7 @@ class FriendController extends Controller
 
     public function cancelFriend(FriendCancelRequest $request)
     {
+
         try {
             [$received_friend, $added_friend] = $this->getFriendRelationship(friend_id: $request->friend_id, condition: 'not_yet_friend');
 
@@ -115,6 +117,7 @@ class FriendController extends Controller
             });
 
             return $this->responseSucceed(message: "Canceled Friend Successfully");
+
         } catch (\Exception $e) {
             throw new GeneralError();
         }
