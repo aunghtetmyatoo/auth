@@ -22,23 +22,13 @@ class FriendController extends Controller
 
     public function index()
     {
-        $friend_list = Friend::where(function ($query) {
-            $query->where('user_id', auth()->user()->id);
-
-            $query->where('confirm_status', Status::CONFIRMED_FRIEND);
-        });
-
+        $friend_list = Friend::where('user_id', auth()->user()->id)->where('confirm_status', Status::CONFIRMED_FRIEND);
         return $this->responseCollection(new FriendCollection($friend_list->paginate(5)));
     }
 
     public function requestList()
     {
-        $request_list = Friend::where(function ($query) {
-            $query->where('user_id', auth()->user()->id);
-
-            $query->where('confirm_status', Status::RECEIVED_FRIEND);
-        });
-
+        $request_list = Friend::where('user_id', auth()->user()->id)->where('confirm_status', Status::RECEIVED_FRIEND);
         return $this->responseCollection(new RequestFriendCollection($request_list->paginate(5)));
     }
 
