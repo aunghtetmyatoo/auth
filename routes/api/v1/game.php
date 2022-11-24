@@ -3,7 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\Payment\TransactionController;
+use App\Http\Controllers\Play\PlayController;
 use App\Http\Controllers\ShanKoeMee\TransferPlayController;
+use App\Http\Controllers\Table\TableController;
+use App\Http\Controllers\TicketMoney\TicketMoneyController;
 
 Route::prefix('/transactions')->controller(TransactionController::class)->group(function () {
     Route::post('/deposit', 'deposit');
@@ -25,17 +28,19 @@ Route::prefix('/transfers')->controller(TransferPlayController::class)->group(fu
     Route::post('from-game', 'transferFromGame');
 });
 
-Route::prefix('/tables')->controller(TableController::class)->group(function () {
-    Route::post('/list', 'listPublicTable')->middleware('InvalidInviteInNoFriend');
-    Route::post('/create', 'createTable')->middleware(['check_coin_create_and_join_room', 'check_playing_user']);
-    Route::post('/join', 'joinTable')->middleware(['check_coin_create_and_join_room', 'check_playing_user']);
-    Route::post('/leave', 'leaveTable');
-    Route::post('/invite', 'inviteFriend')->middleware('InvalidInviteInNoFriend');
+Route::prefix('/ticket-money')->controller(TicketMoneyController::class)->group(function () {
+    Route::post('/', 'index');
 });
 
-Route::prefix('/ticket-money')->controller(TicketMoneyController::class)->group(function () {
-    Route::post('/', 'index')->middleware('CheckCoinForTicketMoney');
+
+Route::prefix('/tables')->controller(TableController::class)->group(function () {
+    Route::post('/list', 'listPublicTable');
+    Route::post('/create', 'createTable');
+    Route::post('/join', 'joinTable');
+    Route::post('/leave', 'leaveTable');
+    Route::post('/invite', 'inviteFriend');
 });
+
 
 Route::prefix('/plays')->controller(PlayController::class)->group(function () {
     Route::post('/', 'playDirect');

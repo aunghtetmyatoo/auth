@@ -26,7 +26,7 @@ return [
     ],
 
     'card_games' => [
-        'end_point' => 'http://localhost:8002/api/v1',
+        'end_point' => 'http://localhost:8002/api/v1/card-game',
         'tables' => [
             'prefix' => '/tables',
             'list' => '/list',
@@ -41,7 +41,7 @@ return [
             'from_game' => '/from-game',
         ],
         'ticket_moneys' => [
-            'prefix' => '/ticket-moneys',
+            'prefix' => '/ticket-money',
         ],
         'plays' => [
             'prefix' => '/plays',
