@@ -95,7 +95,6 @@ class FriendController extends Controller
                 'request_friend_id' => $request->friend_id,
                 'user_id' => auth()->user()->id,
             ]);
-
             return json_decode($response);
             // return $this->responseSucceed(message: "Confirmed Friend Successfully");
 
@@ -112,11 +111,22 @@ class FriendController extends Controller
 
             DB::transaction(function () use ($received_friend, $added_friend) {
                 $received_friend->delete();
-
                 $added_friend->delete();
             });
 
-            return $this->responseSucceed(message: "Canceled Friend Successfully");
+            //real-time socket
+            $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.cancel'), [
+                'request_friend_id' => $request->friend_id,
+                'user_id' => auth()->user()->id,
+            ]);
+
+            //real-time socket
+            $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.cancel'), [
+                'request_friend_id' => $request->friend_id,
+                'user_id' => auth()->user()->id,
+            ]);
+            return json_decode($response);
+            // return $this->responseSucceed(message: "Canceled Friend Successfully");
 
         } catch (\Exception $e) {
             throw new GeneralError();
