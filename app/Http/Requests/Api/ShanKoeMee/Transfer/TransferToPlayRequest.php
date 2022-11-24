@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Api\ShanKoeMee\Transaction;
+namespace App\Http\Requests\Api\ShanKoeMee\Transfer;
 
 use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class TransferToGame extends FormRequest
+class TransferToPlayRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,9 @@ class TransferToGame extends FormRequest
      */
     public function rules()
     {
-        (new DevelopmentValidator())->handle([
-            'device_id' => ['required', 'string'],
-            'game_type_id' => ['required'],
-        ]);
         return [
-            'amount' => ['required', 'numeric'],
+            'game_type_id' => ['required'],
+            'amount' => ['required', 'numeric', 'min:100'],
         ];
     }
 }
