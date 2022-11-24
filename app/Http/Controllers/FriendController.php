@@ -22,23 +22,13 @@ class FriendController extends Controller
 
     public function index()
     {
-        $friend_list = Friend::where(function ($query) {
-            $query->where('user_id', auth()->user()->id);
-
-            $query->where('confirm_status', Status::CONFIRMED_FRIEND);
-        });
-
+        $friend_list = Friend::where('user_id', auth()->user()->id)->where('confirm_status', Status::CONFIRMED_FRIEND);
         return $this->responseCollection(new FriendCollection($friend_list->paginate(5)));
     }
 
     public function requestList()
     {
-        $request_list = Friend::where(function ($query) {
-            $query->where('user_id', auth()->user()->id);
-
-            $query->where('confirm_status', Status::RECEIVED_FRIEND);
-        });
-
+        $request_list = Friend::where('user_id', auth()->user()->id)->where('confirm_status', Status::RECEIVED_FRIEND);
         return $this->responseCollection(new RequestFriendCollection($request_list->paginate(5)));
     }
 
@@ -105,7 +95,6 @@ class FriendController extends Controller
 
     public function cancelFriend(FriendCancelRequest $request)
     {
-
         try {
             [$received_friend, $added_friend] = $this->getFriendRelationship(friend_id: $request->friend_id, condition: 'not_yet_friend');
 
@@ -113,12 +102,6 @@ class FriendController extends Controller
                 $received_friend->delete();
                 $added_friend->delete();
             });
-
-            //real-time socket
-            $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.cancel'), [
-                'request_friend_id' => $request->friend_id,
-                'user_id' => auth()->user()->id,
-            ]);
 
             //real-time socket
             $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.cancel'), [
@@ -144,7 +127,13 @@ class FriendController extends Controller
                 $added_friend->delete();
             });
 
-            return $this->responseSucceed(message: "Unfriend Successfully");
+            //real-time socket
+            $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.unfriend'), [
+                'request_friend_id' => auth()->user()->id,
+                'user_id' => $request->friend_id,
+            ]);
+
+            return json_decode($response);
         } catch (\Exception $e) {
             throw new GeneralError();
         }
