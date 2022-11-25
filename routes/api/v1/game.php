@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\Match\MatchController;
 use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Controllers\Play\PlayController;
 use App\Http\Controllers\ShanKoeMee\TransferPlayController;
@@ -44,4 +45,9 @@ Route::prefix('/tables')->controller(TableController::class)->group(function () 
 
 Route::prefix('/plays')->controller(PlayController::class)->group(function () {
     Route::post('/', 'playDirect');
+});
+
+
+Route::prefix('/match')->controller(MatchController::class)->group(function () {
+    Route::post('/bet-Amount', 'betAmount');
 });
