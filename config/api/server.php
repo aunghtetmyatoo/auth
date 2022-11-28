@@ -48,7 +48,7 @@ return [
         ],
         'matches' => [
             'prefix' => '/matches',
-            'bet_amount' => '/bet-amount',
+            'bet_amount' => '/bet',
         ],
     ]
 ];
