@@ -48,6 +48,9 @@ Route::prefix('/plays')->controller(PlayController::class)->group(function () {
 });
 
 
-Route::prefix('/match')->controller(MatchController::class)->group(function () {
-    Route::post('/bet-Amount', 'betAmount');
+Route::prefix('/matches')->controller(MatchController::class)->group(function () {
+    Route::post('/start', 'matchStart');
+    Route::post('/bet', 'betAmount');
+    Route::post('/share-card', 'shareCard');
+    Route::post('/one-more-card', 'oneMoreCard');
 });

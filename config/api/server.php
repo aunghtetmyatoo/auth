@@ -1,17 +1,6 @@
 <?php
 
 return [
-    // 'game' => [
-    //     'end_point'    => "http://localhost:8002/api/v1/",
-    // ],
-    // 'card' => [
-    //     "prefix"  => "card-game/",
-    //     "transfer" => "transfer/"
-    // ],
-    // 'skm' => [
-    //     "prefix"  => "skm/",
-    // ],
-
     'real_time' => [
         'end_point' => "http://localhost:3000/api/v1",
         'friends' => [
@@ -48,7 +37,10 @@ return [
         ],
         'matches' => [
             'prefix' => '/matches',
-            'bet_amount' => '/bet',
+            'start' => '/start',
+            'bet' => '/bet',
+            'share_card' => '/share-card',
+            'one_more_card' => '/one-more-card',
         ],
     ]
 ];
