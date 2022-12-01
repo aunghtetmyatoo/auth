@@ -49,4 +49,13 @@ class MatchController extends Controller
 
         return json_decode($response, true);
     }
+
+    public function winOrLose(Request $request)
+    {
+        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.matches.prefix') . config('api.server.card_games.matches.win_or_lose'), [
+            'game_match_id' => $request->game_match_id,
+        ]);
+
+        return json_decode($response, true);
+    }
 }

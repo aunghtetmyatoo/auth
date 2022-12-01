@@ -53,4 +53,5 @@ Route::prefix('/matches')->controller(MatchController::class)->group(function ()
     Route::post('/bet', 'betAmount');
     Route::post('/share-card', 'shareCard');
     Route::post('/one-more-card', 'oneMoreCard');
+    Route::post('/win-or-lose', 'winOrLose');
 });
