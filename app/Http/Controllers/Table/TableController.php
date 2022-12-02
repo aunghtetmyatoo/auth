@@ -13,6 +13,7 @@ class TableController extends Controller
         $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.tables.prefix') . config('api.server.card_games.tables.list'), [
             'per_paginate' => $request->per_paginate,
         ]);
+
         return json_decode($response, true);
     }
 
@@ -26,6 +27,7 @@ class TableController extends Controller
             'banker_amount' => $request->banker_amount,
             'privacy'  => $request->privacy,
         ]);
+
         return json_decode($response, true);
     }
 
@@ -38,6 +40,7 @@ class TableController extends Controller
             'game_type_id' => $request->game_type_id,
             'reference_id' => $request->reference_id,
         ]);
+
         return json_decode($response, true);
     }
 
@@ -47,15 +50,17 @@ class TableController extends Controller
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
         ]);
+
         return json_decode($response, true);
     }
 
     public function inviteFriend(Request $request)
     {
         $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.tables.prefix') . config('api.server.card_games.tables.invite'), [
-            'user_id' => auth()->user()->id,
-            'friend_id' => $request->friend_id,
+            'from_invite_id' => auth()->user()->id,
+            'to_invite_id' => $request->to_invite_id,
         ]);
+
         return json_decode($response, true);
     }
 }
