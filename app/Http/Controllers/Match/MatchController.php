@@ -13,6 +13,7 @@ class MatchController extends Controller
         $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.matches.prefix') . config('api.server.card_games.matches.start'), [
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
+            'creator' => auth()->user(),
         ]);
 
         return json_decode($response, true);
@@ -33,7 +34,6 @@ class MatchController extends Controller
     public function shareCard(Request $request)
     {
         $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.matches.prefix') . config('api.server.card_games.matches.share_card'), [
-            'user_id' => auth()->user()->id,
             'game_match_id' => $request->game_match_id,
         ]);
 
