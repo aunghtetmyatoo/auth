@@ -39,9 +39,7 @@ return [
             'prefix' => '/matches',
             'start' => '/start',
             'bet' => '/bet',
-            'share_card' => '/share-card',
             'one_more_card' => '/one-more-card',
-            'win_or_lose' => '/win-or-lose',
         ],
     ]
 ];

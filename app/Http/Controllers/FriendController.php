@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\Uuid;
 use App\Models\Friend;
 use App\Constants\Status;
+use App\Actions\HandleEndpoint;
 use App\Exceptions\GeneralError;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use App\Http\Requests\Api\Friend\UnfriendRequest;
 use App\Http\Requests\Api\Friend\FriendAddRequest;
 use App\Http\Resources\Api\Friend\FriendCollection;
@@ -19,6 +18,10 @@ use App\Http\Resources\Api\RequestFriend\RequestFriendCollection;
 class FriendController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(private HandleEndpoint $handleEndpoint)
+    {
+    }
 
     public function index()
     {
@@ -55,13 +58,11 @@ class FriendController extends Controller
             ],
         ]);
 
-        //real-time socket
-        $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.add'), [
+        // add friend socket
+        return $this->handleEndpoint->handle(server_name: "real_time", prefix: "friends", route_name: "add", request: [
             'request_friend_id' => auth()->user()->id,
             'user_id' => $request->friend_id,
         ]);
-
-        return json_decode($response);
     }
 
     public function confirmFriend(FriendConfirmRequest $request)
@@ -80,14 +81,11 @@ class FriendController extends Controller
                 ]);
             });
 
-            //real-time socket
-            $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.confirm'), [
+            // confirm friend socket
+            return $this->handleEndpoint->handle(server_name: "real_time", prefix: "friends", route_name: "confirm", request: [
                 'request_friend_id' => $request->friend_id,
                 'user_id' => auth()->user()->id,
             ]);
-            return json_decode($response);
-            // return $this->responseSucceed(message: "Confirmed Friend Successfully");
-
         } catch (\Exception $e) {
             throw new GeneralError();
         }
@@ -103,14 +101,11 @@ class FriendController extends Controller
                 $added_friend->delete();
             });
 
-            //real-time socket
-            $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.cancel'), [
+            // cancel friend socket
+            return $this->handleEndpoint->handle(server_name: "real_time", prefix: "friends", route_name: "cancel", request: [
                 'request_friend_id' => $request->friend_id,
                 'user_id' => auth()->user()->id,
             ]);
-            return json_decode($response);
-            // return $this->responseSucceed(message: "Canceled Friend Successfully");
-
         } catch (\Exception $e) {
             throw new GeneralError();
         }
@@ -128,12 +123,10 @@ class FriendController extends Controller
             });
 
             //real-time socket
-            $response = Http::post(config('api.server.real_time.end_point') . config('api.server.real_time.friends.prefix') . config('api.server.real_time.friends.unfriend'), [
+            return $this->handleEndpoint->handle(server_name: "real_time", prefix: "friends", route_name: "unfriend", request: [
                 'request_friend_id' => auth()->user()->id,
                 'user_id' => $request->friend_id,
             ]);
-
-            return json_decode($response);
         } catch (\Exception $e) {
             throw new GeneralError();
         }

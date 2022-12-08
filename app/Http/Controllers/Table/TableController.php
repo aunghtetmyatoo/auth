@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers\Table;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use App\Actions\HandleEndpoint;
+use App\Http\Controllers\Controller;
 
 class TableController extends Controller
 {
+    public function __construct(private HandleEndpoint $handleEndpoint)
+    {
+    }
+
     public function listPublicTable(Request $request)
     {
-        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.tables.prefix') . config('api.server.card_games.tables.list'), [
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "list", request: [
             'per_paginate' => $request->per_paginate,
         ]);
-
-        return json_decode($response, true);
     }
 
     public function createTable(Request $request)
     {
-        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.tables.prefix') . config('api.server.card_games.tables.create'), [
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "create", request: [
             'user_id' => auth()->user()->id,
             'name' => $request->name,
             'room_type_id' => $request->room_type_id,
@@ -27,40 +29,32 @@ class TableController extends Controller
             'banker_amount' => $request->banker_amount,
             'privacy'  => $request->privacy,
         ]);
-
-        return json_decode($response, true);
     }
 
     public function joinTable(Request $request)
     {
-        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.tables.prefix') . config('api.server.card_games.tables.join'), [
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "join", request: [
             'user_id' => auth()->user()->id,
             'coin' => $request->coin,
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
             'reference_id' => $request->reference_id,
         ]);
-
-        return json_decode($response, true);
     }
 
     public function leaveTable(Request $request)
     {
-        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.tables.prefix') . config('api.server.card_games.tables.leave'), [
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "leave", request: [
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
         ]);
-
-        return json_decode($response, true);
     }
 
     public function inviteFriend(Request $request)
     {
-        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.tables.prefix') . config('api.server.card_games.tables.invite'), [
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "invite", request: [
             'from_invite_id' => auth()->user()->id,
             'to_invite_id' => $request->to_invite_id,
         ]);
-
-        return json_decode($response, true);
     }
 }

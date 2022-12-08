@@ -2,61 +2,41 @@
 
 namespace App\Http\Controllers\Match;
 
+use App\Actions\HandleEndpoint;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class MatchController extends Controller
 {
+    public function __construct(private HandleEndpoint $handleEndpoint)
+    {
+    }
+
     public function matchStart(Request $request)
     {
-        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.matches.prefix') . config('api.server.card_games.matches.start'), [
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "start", request: [
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
             'creator' => auth()->user(),
         ]);
-
-        return json_decode($response, true);
     }
 
     public function betAmount(Request $request)
     {
-        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.matches.prefix') . config('api.server.card_games.matches.bet'), [
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "bet", request: [
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
             'game_match_id' => $request->game_match_id,
             'bet_amount' => $request->bet_amount,
         ]);
-
-        return json_decode($response, true);
-    }
-
-    public function shareCard(Request $request)
-    {
-        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.matches.prefix') . config('api.server.card_games.matches.share_card'), [
-            'game_match_id' => $request->game_match_id,
-        ]);
-
-        return json_decode($response, true);
     }
 
     public function oneMoreCard(Request $request)
     {
-        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.matches.prefix') . config('api.server.card_games.matches.one_more_card'), [
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "one_more_card", request: [
             'user_id' => auth()->user()->id,
             'one_more_card' => $request->one_more_card,
             'game_match_id' => $request->game_match_id,
         ]);
-
-        return json_decode($response, true);
-    }
-
-    public function winOrLose(Request $request)
-    {
-        $response = Http::post(config('api.server.card_games.end_point') . config('api.server.card_games.matches.prefix') . config('api.server.card_games.matches.win_or_lose'), [
-            'game_match_id' => $request->game_match_id,
-        ]);
-
-        return json_decode($response, true);
     }
 }
