@@ -17,7 +17,6 @@ class LoginController extends Controller
 {
     use ApiResponse;
 
-
     public function playerLogin(LoginRequest $request)
     {
         $user = User::where("phone_number", $request->phone_number)->first();
@@ -28,7 +27,6 @@ class LoginController extends Controller
         }
 
         $response = (new PasswordGrant(user: $user))->execute(request: $request);
-        return $response;
 
         if ($response->failed()) {
             return $this->responseSomethingWentWrong(message: $response->json()['message']);

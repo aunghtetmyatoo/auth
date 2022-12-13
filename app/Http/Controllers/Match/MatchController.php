@@ -39,4 +39,12 @@ class MatchController extends Controller
             'game_match_id' => $request->game_match_id,
         ]);
     }
+
+    public function catchThreeCard(Request $request)
+    {
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "catch_three_catch", request: [
+            'catch_three_catch' => $request->catch_three_catch,
+            'game_match_id' => $request->game_match_id,
+        ]);
+    }
 }
