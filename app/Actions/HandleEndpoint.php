@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 
 class HandleEndpoint
 {
-    public function handle(string $server_name, string $prefix, string $route_name, array $request): array
+    public function handle(string $server_name, string $prefix, string $route_name, array $request)
     {
         $response = Http::post(config("api.server.$server_name.end_point") . config("api.server.$server_name.$prefix.prefix") . config("api.server.$server_name.$prefix.$route_name"), $request);
 
