@@ -48,4 +48,13 @@ class MatchController extends Controller
             'user_id' => auth()->user()->id,
         ]);
     }
+
+    public function quitMatch(Request $request)
+    {
+
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "quit_match", request: [
+            'room_id' => $request->room_id,
+            'user_id' => auth()->user()->id,
+        ]);
+    }
 }
