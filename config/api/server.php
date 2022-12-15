@@ -41,6 +41,7 @@ return [
             'bet' => '/bet',
             'one_more_card' => '/one-more-card',
             'catch_three_card' => '/catch-three-card',
+            'quit_match'=>'/quit-match'
         ],
     ]
 ];
