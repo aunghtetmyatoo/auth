@@ -43,7 +43,7 @@ class MatchController extends Controller
     public function catchThreeCard(Request $request)
     {
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "catch_three_card", request: [
-            'catch_three_catch' => $request->catch_three_catch,
+            'catch_three_card' => $request->catch_three_card,
             'game_match_id' => $request->game_match_id,
             'user_id' => auth()->user()->id,
         ]);
