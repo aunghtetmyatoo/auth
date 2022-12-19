@@ -53,5 +53,8 @@ Route::prefix('/matches')->controller(MatchController::class)->group(function ()
     Route::post('/bet', 'betAmount');
     Route::post('/one-more-card', 'oneMoreCard');
     Route::post('/catch-three-card', 'catchThreeCard');
+    Route::post('/next-time-banker', 'nextTimeBanker');
+    Route::post('/amount-change-request', 'amountChangeRequest');
     Route::post('/quit-match','quitMatch');
+    Route::post('/cancel-quit-match','cancelQuitMatch');
 });

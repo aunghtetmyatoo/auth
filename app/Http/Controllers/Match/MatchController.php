@@ -49,10 +49,35 @@ class MatchController extends Controller
         ]);
     }
 
+    public function nextTimeBanker(Request $request)
+    {
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "next_time_banker", request: [
+            'next_time_banker' => $request->next_time_banker,
+            'game_match_id' => $request->game_match_id,
+            'user_id' => auth()->user()->id,
+        ]);
+    }
+
+    public function amountChangeRequest(Request $request)
+    {
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "amount_change_request", request: [
+            'amount_change_request' => $request->amount_change_request,
+            'game_match_id' => $request->game_match_id,
+            'user_id' => auth()->user()->id,
+        ]);
+    }
+
     public function quitMatch(Request $request)
     {
-
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "quit_match", request: [
+            'room_id' => $request->room_id,
+            'user_id' => auth()->user()->id,
+        ]);
+    }
+
+    public function cancelQuitMatch(Request $request)
+    {
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "cancel_quit_match", request: [
             'room_id' => $request->room_id,
             'user_id' => auth()->user()->id,
         ]);

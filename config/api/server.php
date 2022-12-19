@@ -15,7 +15,7 @@ return [
     ],
 
     'card_games' => [
-        'end_point' => 'http://localhost:8002/api/v1/card-game',
+        'end_point' => 'http://cardgames.test/api/v1/card-game',
         'tables' => [
             'prefix' => '/tables',
             'list' => '/list',
@@ -41,7 +41,10 @@ return [
             'bet' => '/bet',
             'one_more_card' => '/one-more-card',
             'catch_three_card' => '/catch-three-card',
-            'quit_match'=>'/quit-match'
+            'next_time_banker' => '/next-time-banker',
+            'amount_change_request' => '/amount-change-request',
+            'quit_match'=>'/quit-match',
+            'cancel_quit_match'=>'/cancel-quit-match'
         ],
     ]
 ];
