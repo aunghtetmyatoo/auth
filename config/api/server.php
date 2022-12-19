@@ -23,6 +23,7 @@ return [
             'join' => '/join',
             'leave' => '/leave',
             'invite' => '/invite',
+            'kick_out' => '/kick-out',
         ],
         'transfers' => [
             'prefix' => '/transfers',

@@ -40,6 +40,7 @@ Route::prefix('/tables')->controller(TableController::class)->group(function () 
     Route::post('/join', 'joinTable');
     Route::post('/leave', 'leaveTable');
     Route::post('/invite', 'inviteFriend');
+    Route::post('/kick-out', 'kickOut');
 });
 
 

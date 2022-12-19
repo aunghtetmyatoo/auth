@@ -57,4 +57,13 @@ class TableController extends Controller
             'to_invite_id' => $request->to_invite_id,
         ]);
     }
+
+    public function kickOut(Request $request)
+    {
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "kick_out", request: [
+            'user_id' => auth()->user()->id,
+            'room_id' => $request->room_id,
+            'kick_user_id' => $request->kick_user_id,
+        ]);
+    }
 }
