@@ -70,7 +70,7 @@ class MatchController extends Controller
     public function quitMatch(Request $request)
     {
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "quit_match", request: [
-            'room_id' => $request->room_id,
+            'game_match_id' => $request->game_match_id,
             'user_id' => auth()->user()->id,
         ]);
     }
@@ -78,7 +78,7 @@ class MatchController extends Controller
     public function cancelQuitMatch(Request $request)
     {
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "cancel_quit_match", request: [
-            'room_id' => $request->room_id,
+            'game_match_id' => $request->game_match_id,
             'user_id' => auth()->user()->id,
         ]);
     }
