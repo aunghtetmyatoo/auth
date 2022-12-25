@@ -36,9 +36,9 @@ Route::prefix('/ticket-money')->controller(TicketMoneyController::class)->group(
 
 Route::prefix('/tables')->controller(TableController::class)->group(function () {
     Route::post('/list', 'listPublicTable');
-    Route::post('/create', 'createTable');
-    Route::post('/join', 'joinTable');
-    Route::post('/leave', 'leaveTable');
+    Route::post('/create', 'create');
+    Route::post('/join', 'join');
+    Route::post('/leave', 'leave');
     Route::post('/invite', 'inviteFriend');
     Route::post('/kick-out', 'kickOut');
 });

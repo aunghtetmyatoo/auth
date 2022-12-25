@@ -15,34 +15,33 @@ class TableController extends Controller
     public function listPublicTable(Request $request)
     {
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "list", request: [
+            'user_id' => auth()->user()->id,
             'per_paginate' => $request->per_paginate,
         ]);
     }
 
-    public function createTable(Request $request)
+    public function create(Request $request)
     {
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "create", request: [
             'user_id' => auth()->user()->id,
             'name' => $request->name,
-            'room_type_id' => $request->room_type_id,
             'game_type_id' => $request->game_type_id,
             'banker_amount' => $request->banker_amount,
             'privacy'  => $request->privacy,
         ]);
     }
 
-    public function joinTable(Request $request)
+    public function join(Request $request)
     {
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "join", request: [
             'user_id' => auth()->user()->id,
-            'coin' => $request->coin,
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
             'reference_id' => $request->reference_id,
         ]);
     }
 
-    public function leaveTable(Request $request)
+    public function leave(Request $request)
     {
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "leave", request: [
             'user_id' => auth()->user()->id,

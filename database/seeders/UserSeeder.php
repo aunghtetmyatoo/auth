@@ -21,23 +21,23 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'Sa Nay Nay Oo',
+                'name' => 'User-A',
                 'phone_number' => '09791113937',
             ],
             [
-                'name' => 'Naung Ye Htet',
+                'name' => 'User-B',
                 'phone_number' => '09684416973',
             ],
             [
-                'name' => 'Aung Aung',
+                'name' => 'User-C',
                 'phone_number' => '09787656373',
             ],
             [
-                'name' => 'Htet Htet',
+                'name' => 'User-D',
                 'phone_number' => '09442678675',
             ],
             [
-                'name' => 'Myat Myat',
+                'name' => 'User-E',
                 'phone_number' => '09967856425',
             ],
         ];
@@ -51,17 +51,20 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('password'),
                 'reference_id' => $reference_id,
                 'device_id' => Str::uuid(),
-                'amount' => 10000,
-                'coins' => 100,
+                'amount' => 900000,
+                'coins' => 900000,
                 'registered_at' => now(),
                 'payment_account_number' => $user['phone_number'],
                 'payment_account_name' => $user['name'],
                 'payment_type_id' => 1,
             ]);
 
-            $game_type = GameType::where('name', 'ShanKoeMee')->first();
+            $game_type_id = GameType::where('name', 'ShanKoeMee')->pluck('id')->first();
 
-            $user->game_types()->attach($game_type);
+            $user->game_types()->attach($game_type_id, [
+                'amount' => 900000,
+                'coin' => 900000,
+            ]);
         }
     }
 }

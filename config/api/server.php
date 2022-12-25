@@ -2,7 +2,7 @@
 
 return [
     'real_time' => [
-        'end_point' => "http://localhost:3000/api/v1",
+        'end_point' => "https://game-socket.com/api/v1",
         'friends' => [
             'prefix' => '/friends',
             'list' => '/',
@@ -15,7 +15,7 @@ return [
     ],
 
     'card_games' => [
-        'end_point' => 'http://cardgames.test/api/v1/card-game',
+        'end_point' => 'http://card-games.test/api/v1/card-game',
         'tables' => [
             'prefix' => '/tables',
             'list' => '/list',
