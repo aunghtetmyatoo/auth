@@ -25,7 +25,6 @@ class MatchController extends Controller
     {
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "bet", request: [
             'user_id' => auth()->user()->id,
-            'room_id' => $request->room_id,
             'game_match_id' => $request->game_match_id,
             'bet_amount' => $request->bet_amount,
         ]);

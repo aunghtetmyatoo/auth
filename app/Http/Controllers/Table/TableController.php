@@ -54,6 +54,7 @@ class TableController extends Controller
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "tables", route_name: "invite", request: [
             'from_invite_id' => auth()->user()->id,
             'to_invite_id' => $request->to_invite_id,
+            'room_id' => $request->room_id,
         ]);
     }
 
