@@ -14,9 +14,9 @@ class PlayController extends Controller
 
     public function playDirect(Request $request)
     {
-        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "plays", route_name: "", request: [
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "plays", route_name: "direct", request: [
             'user_id' => auth()->user()->id,
-            'game_type_id' => $request->to_user_id,
+            'game_type_id' => $request->game_type_id,
         ]);
     }
 }

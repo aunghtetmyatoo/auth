@@ -35,6 +35,7 @@ return [
         ],
         'plays' => [
             'prefix' => '/plays',
+            'direct' => '/direct',
         ],
         'matches' => [
             'prefix' => '/matches',
