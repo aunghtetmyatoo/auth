@@ -12,6 +12,15 @@ class MatchController extends Controller
     {
     }
 
+    public function readyForPlay(Request $request)
+    {
+        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "ready", request: [
+            'room_id' => $request->room_id,
+            'game_type_id' => $request->game_type_id,
+            'user_id' => auth()->user()->id,
+        ]);
+    }
+
     public function matchStart(Request $request)
     {
         return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "start", request: [

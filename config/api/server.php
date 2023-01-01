@@ -39,6 +39,7 @@ return [
         ],
         'matches' => [
             'prefix' => '/matches',
+            'ready' => '/ready',
             'start' => '/start',
             'bet' => '/bet',
             'one_more_card' => '/one-more-card',
