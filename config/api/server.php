@@ -5,12 +5,8 @@ return [
         'end_point' => "https://game-socket.com/api/v1",
         'friends' => [
             'prefix' => '/friends',
-            'list' => '/',
-            'request_list' => '/request-list',
             'add' => '/add',
             'confirm' => '/confirm',
-            'cancel' => '/cancel',
-            'unfriend' => '/unfriend',
         ]
     ],
 

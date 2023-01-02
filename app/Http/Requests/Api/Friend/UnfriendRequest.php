@@ -25,7 +25,7 @@ class UnfriendRequest extends FormRequest
     public function rules()
     {
         (new DevelopmentValidator())->handle([
-            'user_id' => ['required', 'uuid'],
+            'friend_id' => ['required', 'uuid'],
         ]);
         return [];
     }

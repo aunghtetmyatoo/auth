@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'refresh_token' => \App\Http\Middleware\PreventSpamRefreshTokenRequest::class,
         'multi-game' => \App\Http\Middleware\PreventFromPlayingMultipleGame::class,
         'bank-account' => \App\Http\Middleware\PreventNullBankAccount::class,
+        'check_relationship' => \App\Http\Middleware\CheckRelationship::class,
     ];
 }

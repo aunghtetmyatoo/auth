@@ -17,7 +17,7 @@ Route::prefix('/transactions')->controller(TransactionController::class)->group(
 Route::prefix('/friends')->controller(FriendController::class)->group(function () {
     Route::post('/', 'index');
     Route::post('/request-list', 'requestList');
-    Route::post('/add', 'addFriend');
+    Route::post('/add', 'addFriend')->middleware('check_relationship');
     Route::post('/confirm', 'confirmFriend');
     Route::post('/cancel', 'cancelFriend');
     Route::post('/unfriend', 'unfriend');
