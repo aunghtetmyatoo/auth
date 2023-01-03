@@ -52,7 +52,6 @@ class UserSeeder extends Seeder
                 'reference_id' => $reference_id,
                 'device_id' => Str::uuid(),
                 'amount' => 900000,
-                'coins' => 900000,
                 'registered_at' => now(),
                 'payment_account_number' => $user['phone_number'],
                 'payment_account_name' => $user['name'],
@@ -62,7 +61,6 @@ class UserSeeder extends Seeder
             $game_type_id = GameType::where('name', 'ShanKoeMee')->pluck('id')->first();
 
             $user->game_types()->attach($game_type_id, [
-                'amount' => 900000,
                 'coin' => 900000,
             ]);
         }

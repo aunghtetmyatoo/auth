@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique()->index();
             $table->string('device_id')->index();
             $table->double('amount')->default(0.00);
-            $table->bigInteger('coins')->default(0);
+            // $table->bigInteger('coins')->default(0);
             $table->string('user_agent')->nullable();
             $table->text('photo')->nullable();
 
