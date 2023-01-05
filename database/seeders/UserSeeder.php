@@ -40,6 +40,26 @@ class UserSeeder extends Seeder
                 'name' => 'User-E',
                 'phone_number' => '09967856425',
             ],
+            [
+                'name' => 'User-F',
+                'phone_number' => '09777777771',
+            ],
+            [
+                'name' => 'User-G',
+                'phone_number' => '09777777772',
+            ],
+            [
+                'name' => 'User-H',
+                'phone_number' => '09777777773',
+            ],
+            [
+                'name' => 'User-I',
+                'phone_number' => '09777777774',
+            ],
+            [
+                'name' => 'User-J',
+                'phone_number' => '09777777775',
+            ],
         ];
 
         foreach ($users as $user) {

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\Match\MatchController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Controllers\Play\PlayController;
 use App\Http\Controllers\ShanKoeMee\TransferPlayController;
@@ -59,4 +60,9 @@ Route::prefix('/matches')->controller(MatchController::class)->group(function ()
     Route::post('/amount-change-request', 'amountChangeRequest');
     Route::post('/quit-match','quitMatch');
     Route::post('/cancel-quit-match','cancelQuitMatch');
+});
+
+Route::prefix('/messages')->controller(MessageController::class)->group(function () {
+    Route::post('/public', 'publicMessage');
+    Route::post('/private', 'privateMessage');
 });

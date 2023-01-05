@@ -45,5 +45,10 @@ return [
             'quit_match'=>'/quit-match',
             'cancel_quit_match'=>'/cancel-quit-match'
         ],
+        'messages' => [
+            'prefix' => '/messages',
+            'public' => '/public',
+            'private' => '/private',
+        ],
     ]
 ];
