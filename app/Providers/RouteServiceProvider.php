@@ -42,7 +42,8 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api/v1/index.php'));
 
             // game api routes
-            Route::middleware(['api', 'auth:player', 'spam', 'multi-game'])
+            // Route::middleware(['api', 'auth:player', 'spam', 'multi-game'])
+            Route::middleware(['api', 'auth:player'])
                 ->prefix('api/v1/game')
                 ->group(base_path('routes/api/v1/game.php'));
         });
