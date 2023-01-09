@@ -21,7 +21,7 @@ class PasswordGrant
         if (!$client) {
             abort(500);
         }
-        $response = Http::asForm()->post(url('https://auth.game-socket.com') . '/oauth/token', [
+        $response = Http::asForm()->post(url('/') . '/oauth/token', [
             'grant_type' => 'password',
             'client_id' => $client->id,
             'client_secret' => $client->secret,
@@ -41,7 +41,7 @@ class PasswordGrant
         if (!$client) {
             abort(500);
         }
-        $response = Http::asForm()->post(url('https://auth.game-socket.com') . '/oauth/token', [
+        $response = Http::asForm()->post(url('/') . '/oauth/token', [
             'grant_type' => 'refresh_token',
             'refresh_token' => $refresh_token,
             'client_id' => $client->id,
