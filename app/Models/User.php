@@ -14,6 +14,8 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, Uuid;
 
+    protected $table = 'gamblingauth.users';
+
     public function findForPassport($phone_number)
     {
         return $this->where('phone_number', $phone_number)->first();
