@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\GiftController;
 use App\Http\Controllers\Match\MatchController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Payment\TransactionController;
@@ -66,3 +67,9 @@ Route::prefix('/messages')->controller(MessageController::class)->group(function
     Route::post('/public', 'publicMessage');
     Route::post('/private', 'privateMessage');
 });
+
+Route::prefix('/gift')->controller(GiftController::class)->group(function (){
+    Route::post('/buy-gift','buyGift');
+});
+
+
