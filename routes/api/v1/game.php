@@ -1,14 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GiftController;
-use App\Http\Controllers\Match\MatchController;
+use App\Http\Controllers\FriendController;
+use App\Http\Controllers\RemoteController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Controllers\Play\PlayController;
-use App\Http\Controllers\ShanKoeMee\TransferPlayController;
+use App\Http\Controllers\Match\MatchController;
 use App\Http\Controllers\Table\TableController;
+use App\Http\Controllers\Payment\TransactionController;
+use App\Http\Controllers\ShanKoeMee\TransferPlayController;
 use App\Http\Controllers\TicketMoney\TicketMoneyController;
 
 Route::prefix('/transactions')->controller(TransactionController::class)->group(function () {
@@ -59,8 +60,8 @@ Route::prefix('/matches')->controller(MatchController::class)->group(function ()
     Route::post('/catch-three-card', 'catchThreeCard');
     Route::post('/next-time-banker', 'nextTimeBanker');
     Route::post('/amount-change-request', 'amountChangeRequest');
-    Route::post('/quit-match','quitMatch');
-    Route::post('/cancel-quit-match','cancelQuitMatch');
+    Route::post('/quit-match', 'quitMatch');
+    Route::post('/cancel-quit-match', 'cancelQuitMatch');
 });
 
 Route::prefix('/messages')->controller(MessageController::class)->group(function () {
@@ -68,8 +69,13 @@ Route::prefix('/messages')->controller(MessageController::class)->group(function
     Route::post('/private', 'privateMessage');
 });
 
-Route::prefix('/gift')->controller(GiftController::class)->group(function (){
-    Route::post('/buy-gift','buyGift');
+Route::prefix('/gift')->controller(GiftController::class)->group(function () {
+    Route::post('/buy-gift', 'buyGift');
 });
 
-
+Route::prefix('/remotes')->controller(RemoteController::class)->group(function () {
+    Route::post('/update-play-status', 'updatePlayStatus');
+    Route::post('/update-game-coin', 'updateGameCoin');
+    Route::post('/update-user-amount', 'updateUserAmount');
+    Route::post('/create-game-type-user', 'createGameTypeUser');
+});
