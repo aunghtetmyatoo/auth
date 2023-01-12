@@ -50,5 +50,9 @@ return [
             'public' => '/public',
             'private' => '/private',
         ],
+        'gift' => [
+            'prefix' => '/gift',
+            'buy_gift' => '/buy-gift'
+        ]
     ]
 ];

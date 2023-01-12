@@ -24,3 +24,4 @@ Route::prefix('/profile')->controller(PlayerSettingController::class)->group(fun
     Route::post('/setting', 'index');
     Route::post('/update_setting', 'update');
 });
+
