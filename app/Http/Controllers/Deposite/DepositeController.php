@@ -50,16 +50,18 @@ class DepositeController extends Controller
                 $user->update(['amount' => $user->amount + $request->amount]);
             }
             else{
-                (new DeleteFile())->execute(path : $agent_photo_path);
-                (new DeleteFile())->execute(path : $transaction_photo_path);
+                $deleteFile  = new DeleteFile();
+                $deleteFile->execute(path : $agent_photo_path);
+                $deleteFile->execute(path : $transaction_photo_path);
                 throw new GeneralError();
             }
 
         DB::commit();
         } catch (Exception $e) {
             DB::rollback();
-            (new DeleteFile())->execute(path : $agent_photo_path);
-            (new DeleteFile())->execute(path : $transaction_photo_path);
+                $deleteFile  = new DeleteFile();
+                $deleteFile->execute(path : $agent_photo_path);
+                $deleteFile->execute(path : $transaction_photo_path);
             throw new GeneralError();
         }
 
