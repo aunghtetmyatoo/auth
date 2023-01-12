@@ -35,3 +35,10 @@ Route::post('/refresh-token', [RefreshTokenController::class, '__invoke'])->midd
 Route::prefix('/deposite')->controller(DepositeController::class)->group(function () {
     Route::post('/', 'index');
 });
+
+Route::prefix('/remotes')->controller(RemoteController::class)->group(function () {
+    Route::post('/update-play-status', 'updatePlayStatus');
+    Route::post('/update-game-coin', 'updateGameCoin');
+    Route::post('/update-user-amount', 'updateUserAmount');
+    Route::post('/create-game-type-user', 'createGameTypeUser');
+});

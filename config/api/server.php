@@ -2,7 +2,7 @@
 
 return [
     'real_time' => [
-        'end_point' => "https://game-socket.com/api/v1",
+        'end_point' => config('api.url.game_socket.server') . '/api/v1',
         'friends' => [
             'prefix' => '/friends',
             'add' => '/add',
@@ -11,7 +11,7 @@ return [
     ],
 
     'card_games' => [
-        'end_point' => 'https://card.game-socket.com/api/v1/card-game',
+        'end_point' => config('api.url.card_game_socket.server') . '/api/v1/card-game',
         'tables' => [
             'prefix' => '/tables',
             'list' => '/list',
@@ -42,8 +42,8 @@ return [
             'catch_three_card' => '/catch-three-card',
             'next_time_banker' => '/next-time-banker',
             'amount_change_request' => '/amount-change-request',
-            'quit_match'=>'/quit-match',
-            'cancel_quit_match'=>'/cancel-quit-match'
+            'quit_match' => '/quit-match',
+            'cancel_quit_match' => '/cancel-quit-match'
         ],
         'messages' => [
             'prefix' => '/messages',
