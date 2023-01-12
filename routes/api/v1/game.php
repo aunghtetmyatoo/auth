@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CashOutRequest\CashOutRequestController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\FriendController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Play\PlayController;
 use App\Http\Controllers\Match\MatchController;
 use App\Http\Controllers\Table\TableController;
 use App\Http\Controllers\Payment\TransactionController;
+use App\Http\Controllers\RechargeRequest\RechargeRequestController;
 use App\Http\Controllers\ShanKoeMee\TransferPlayController;
 use App\Http\Controllers\TicketMoney\TicketMoneyController;
 
@@ -79,3 +81,12 @@ Route::prefix('/remotes')->controller(RemoteController::class)->group(function (
     Route::post('/update-user-amount', 'updateUserAmount');
     Route::post('/create-game-type-user', 'createGameTypeUser');
 });
+
+Route::prefix('/recharge-request')->controller(RechargeRequestController::class)->group(function () {
+    Route::post('/', 'index');
+});
+
+Route::prefix('/cash-out-request')->controller(CashOutRequestController::class)->group(function () {
+    Route::post('/', 'index');
+});
+
