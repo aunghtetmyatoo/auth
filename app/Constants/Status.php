@@ -30,4 +30,6 @@ class Status
     const CONFIRMED_FRIEND = "CONFIRMED FRIEND";
     const DEPOSITE = "DEPOSITE";
     const AGENT = "AGENT";
+    const COMPLETED = "COMPLETED";
+    const RECHARGE = "RECHARGE";
 }

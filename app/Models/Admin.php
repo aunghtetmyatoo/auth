@@ -59,4 +59,9 @@ class Admin extends Authenticatable
         'password_changed_at' => 'datetime',
         'registered_at' => 'datetime',
     ];
+
+    public function histories()
+    {
+        return $this->morphMany('App\History', 'historiable');
+    }
 }

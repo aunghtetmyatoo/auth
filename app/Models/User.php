@@ -91,4 +91,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CoinFillRequest::class);
     }
+
+    public function histories()
+    {
+        return $this->morphMany('App\History', 'historiable');
+    }
 }
