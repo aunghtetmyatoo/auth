@@ -2,7 +2,9 @@
 
 return [
     'real_time' => [
-        'end_point' => config('api.url.game_socket.server') . '/api/v1',
+        // 'end_point' => config('api.url.game_socket.server') . '/api/v1',
+        // 'end_point' => 'http://locahost:3000/api/v1',
+        'end_point' => 'https://game-socket.com/api/v1',
         'friends' => [
             'prefix' => '/friends',
             'add' => '/add',
@@ -11,7 +13,9 @@ return [
     ],
 
     'card_games' => [
-        'end_point' => config('api.url.card_game_socket.server') . '/api/v1/card-game',
+        // 'end_point' => config("api.url.card_game_socket.local") . '/api/v1/card-game',
+        // 'end_point' => 'http://card-games.test/api/v1/card-game',
+        'end_point' => 'https://card.game-socket.com/api/v1/card-game',
         'tables' => [
             'prefix' => '/tables',
             'list' => '/list',
