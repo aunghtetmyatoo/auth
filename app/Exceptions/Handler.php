@@ -26,7 +26,7 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<\Throwable>>
      */
     protected $dontReport = [
-
+        //
     ];
 
     /**
@@ -48,12 +48,7 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $exception) {
-            // Kill reporting if this is an "access denied" (code 9) OAuthServerException.
-            if ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException && $exception->getCode() == 9) {
-                return;
-            }
-
-            parent::report($exception);
+            //
         });
     }
 
