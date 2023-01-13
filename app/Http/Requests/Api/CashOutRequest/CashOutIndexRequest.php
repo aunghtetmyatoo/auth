@@ -28,9 +28,9 @@ class CashOutIndexRequest extends FormRequest
             'account_name' =>  ['required', 'string'],
             'account_number' =>  ['required', 'string'],
             'amount' =>  ['required', 'string'],
-            'user_id' => ['required', 'uuid'],
-            'status' => ['in:REQUESTED,COMPLETED,REJECTED'],
-            'status_updated_by' => ['required'],
+            // 'user_id' => ['required', 'uuid'],
+            // 'status' => ['in:REQUESTED,COMPLETED,REJECTED'],
+            // 'status_updated_by' => ['required'],
         ];
     }
 }

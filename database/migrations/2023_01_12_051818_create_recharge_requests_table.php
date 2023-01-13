@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign("user_id")->references("id")->on("users");
             $table->string('transaction_screenshot');
             $table->enum("status", [Status::REQUESTED, Status::COMPLETED, Status::REJECTED])->default(Status::REQUESTED);
-            $table->unsignedBigInteger("admin_id");
+            $table->unsignedBigInteger("admin_id")->nullable();
             $table->foreign("admin_id")->references("id")->on("admins");
             $table->unsignedBigInteger("payment_type_id")->index();
             $table->foreign("payment_type_id")->references("id")->on("payment_types");

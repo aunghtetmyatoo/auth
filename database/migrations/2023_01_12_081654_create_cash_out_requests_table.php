@@ -24,8 +24,8 @@ return new class extends Migration
             $table->uuid("user_id")->index();
             $table->foreign("user_id")->references("id")->on("users");
             $table->enum("status", [Status::REQUESTED, Status::COMPLETED, Status::REJECTED])->default(Status::REQUESTED);
-            $table->unsignedBigInteger("status_updated_by");
-            $table->foreign("status_updated_by")->references("id")->on("admins");
+            $table->unsignedBigInteger("admin_id")->nullable();
+            $table->foreign("admin_id")->references("id")->on("admins");
             $table->timestamps();
         });
     }

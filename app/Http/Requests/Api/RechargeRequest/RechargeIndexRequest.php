@@ -25,12 +25,13 @@ class RechargeIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => ['required', 'uuid'],
             'transaction_screenshot' => ['required','image', 'mimes:png,jpg,jpeg'],
-            // 'status' => ['in:'.Status::REQUESTED,Status::COMPLETED, Status::REJECTED],
-            'status' => ['in:REQUESTED,COMPLETED,REJECTED'],
-            'admin_id' =>  ['required', 'string'],
             'payment_type_id' =>  ['required', 'string'],
+            //  'user_id' => ['required', 'uuid'],
+            // 'status' => ['in:'.Status::REQUESTED,Status::COMPLETED, Status::REJECTED],
+            // 'status' => ['in:REQUESTED,COMPLETED,REJECTED'],
+            // 'admin_id' =>  ['required', 'string'],
+
         ];
     }
 }

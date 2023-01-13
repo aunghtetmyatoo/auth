@@ -16,16 +16,15 @@ return new class extends Migration
     {
         Schema::create('histories', function (Blueprint $table) {
             $table->id();
-            $table->uuid("user_id")->nullable()->index();
-            $table->foreign("user_id")->references("id")->on("users");
-            $table->unsignedBigInteger("transaction_type_id")->nullable()->index();
+            $table->unsignedBigInteger("transaction_type_id")->index();
             $table->foreign("transaction_type_id")->references("id")->on("transaction_types");
-            $table->string("reference_id", MigrationLength::REFERENCE_ID)->unique()->index();
-            $table->double("amount")->default(0.00);
-            $table->unsignedBigInteger("coin")->default(0);
-            $table->unsignedBigInteger("admin_id")->nullable()->index();
-            $table->foreign("admin_id")->references("id")->on("admins");
-            $table->timestamps();
+            $table->morphs('historiable');
+            $table->morphs('transactionable');
+            $table->string('reference_id');
+            $table->string('amount_before_transaction');
+            $table->string('amount_after_transaction');
+            $table->boolean("is_from");
+            $table->timestamps(6);
         });
     }
 

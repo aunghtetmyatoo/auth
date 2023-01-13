@@ -16,8 +16,11 @@ return new class extends Migration
     {
         Schema::create('payment_types', function (Blueprint $table) {
             $table->id();
-            $table->string("name", MigrationLength::NAME)->nullable();
-            $table->string("reference_id", MigrationLength::REFERENCE_ID)->unique()->nullable()->index();
+            $table->string("name", MigrationLength::NAME);
+            $table->string("account_name", MigrationLength::NAME);
+            $table->string("account_number",MigrationLength::ACCOUNT_NUMBER);
+            $table->string('qr_code');
+            $table->string('account_photo');
             $table->timestamps();
         });
     }
