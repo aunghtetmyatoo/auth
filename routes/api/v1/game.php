@@ -73,6 +73,7 @@ Route::prefix('/messages')->controller(MessageController::class)->group(function
 
 Route::prefix('/gift')->controller(GiftController::class)->group(function () {
     Route::post('/buy-gift', 'buyGift');
+    Route::post('/give-gift', 'GiveGift');
 });
 
 Route::prefix('/remotes')->controller(RemoteController::class)->group(function () {
@@ -84,6 +85,7 @@ Route::prefix('/remotes')->controller(RemoteController::class)->group(function (
 
 Route::prefix('/recharge-request')->controller(RechargeRequestController::class)->group(function () {
     Route::post('/', 'index');
+    Route::post('/create-recharge','createRecharge');
 });
 
 Route::prefix('/cash-out-request')->controller(CashOutRequestController::class)->group(function () {

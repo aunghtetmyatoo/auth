@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Actions\TransactionTypeReference;
+use App\Constants\TransactionTypeConstant;
 use App\Models\TransactionType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,7 +18,8 @@ class TransactionTypeSeeder extends Seeder
     public function run()
     {
         $transaction_types = [
-            'GiftTransaction', 'CashTransaction'
+            TransactionTypeConstant::Gift_Transaction,
+            TransactionTypeConstant::Cash_Transaction
         ];
 
         foreach ($transaction_types as $transaction_type) {

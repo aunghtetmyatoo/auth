@@ -14,8 +14,8 @@ return [
 
     'card_games' => [
         // 'end_point' => config("api.url.card_game_socket.local") . '/api/v1/card-game',
-        // 'end_point' => 'http://card-games.test/api/v1/card-game',
-        'end_point' => 'https://card.game-socket.com/api/v1/card-game',
+        'end_point' => 'http://card-games.test/api/v1/card-game',
+        // 'end_point' => 'https://card.game-socket.com/api/v1/card-game',
         'tables' => [
             'prefix' => '/tables',
             'list' => '/list',
