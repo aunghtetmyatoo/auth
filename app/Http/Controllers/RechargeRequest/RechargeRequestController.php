@@ -6,6 +6,7 @@ use App\Actions\StoreFile;
 use App\Constants\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\RechargeRequest\RechargeCreateRequest;
+use App\Http\Resources\Recharge\RechargeCollection;
 use App\Models\RechargeRequest;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Http\Request;
@@ -16,11 +17,19 @@ class RechargeRequestController extends Controller
 
     public function index(Request $request)
     {
-        return "list";
+        $rechargeRequest = RechargeRequest::where(function ($query) use ($request) {
+
+            $request->has('name')
+            && $query->where('name', 'like', '%' . $request->name . '%');
+
+        });
+
+        return $this->responseCollection(new RechargeCollection ($rechargeRequest->paginate($request->per_page)));
     }
 
     public  function createRecharge(RechargeCreateRequest $request)
     {
+
         $store_file = new StoreFile('Image/Recharge/'.$request->user_id);
         $transaction_screenshot_path = $store_file->execute(file :$request->file('transaction_screenshot'),file_prefix: Status::RECHARGE );
 

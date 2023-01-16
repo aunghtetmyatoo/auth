@@ -90,5 +90,6 @@ Route::prefix('/recharge-request')->controller(RechargeRequestController::class)
 
 Route::prefix('/cash-out-request')->controller(CashOutRequestController::class)->group(function () {
     Route::post('/', 'index');
+    Route::post('/create-cash-out','createCashOut');
 });
 
