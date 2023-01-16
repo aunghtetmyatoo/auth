@@ -3,10 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\GameType;
+use App\Constants\Status;
 use App\Enums\UserPrefix;
 use Illuminate\Support\Str;
 use App\Actions\UserReference;
-use App\Models\GameType;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -41,29 +42,29 @@ class UserSeeder extends Seeder
                 'phone_number' => '09967856425',
             ],
             [
-                'name' => 'User-F',
+                'name' => 'Bot-A',
                 'phone_number' => '09777777771',
             ],
             [
-                'name' => 'User-G',
+                'name' => 'Bot-B',
                 'phone_number' => '09777777772',
             ],
             [
-                'name' => 'User-H',
+                'name' => 'Bot-C',
                 'phone_number' => '09777777773',
             ],
             [
-                'name' => 'User-I',
+                'name' => 'Bot-D',
                 'phone_number' => '09777777774',
             ],
             [
-                'name' => 'User-J',
+                'name' => 'Bot-E',
                 'phone_number' => '09777777775',
             ],
         ];
 
         foreach ($users as $user) {
-            $reference_id = (new UserReference())->execute(UserPrefix::Player->value, $user['phone_number']);
+            $reference_id = (new UserReference())->execute(UserPrefix::Bot->value, $user['phone_number']);
 
             $user = User::create([
                 'name' => $user['name'],
@@ -76,6 +77,7 @@ class UserSeeder extends Seeder
                 'payment_account_number' => $user['phone_number'],
                 'payment_account_name' => $user['name'],
                 'payment_type_id' => 1,
+                'role' => str_contains($user['name'], 'User') ? Status::USER : Status::BOT,
             ]);
 
             $game_type_id = GameType::where('name', 'ShanKoeMee')->pluck('id')->first();

@@ -32,4 +32,6 @@ class Status
     const AGENT = "AGENT";
     const COMPLETED = "COMPLETED";
     const RECHARGE = "RECHARGE";
+    const USER = "USER";
+    const BOT = "BOT";
 }
