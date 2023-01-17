@@ -32,6 +32,7 @@ class User extends Authenticatable
         'payment_account_name',
         'payment_type_id',
         'play',
+        'role',
     ];
     protected $guarded = [
         'id',

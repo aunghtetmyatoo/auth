@@ -51,6 +51,7 @@ Route::prefix('/tables')->controller(TableController::class)->group(function () 
 
 Route::prefix('/plays')->controller(PlayController::class)->group(function () {
     Route::post('/direct', 'playDirect');
+    Route::post('/play-with-bots', 'playWithBots');
 });
 
 

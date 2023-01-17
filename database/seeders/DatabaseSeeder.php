@@ -26,5 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminSeeder::class);
 
         $this->call(TransactionTypeSeeder::class);
+
+        $this->call(GeneralLedgerSeeder::class);
     }
 }
