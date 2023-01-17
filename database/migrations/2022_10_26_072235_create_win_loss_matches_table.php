@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('win_loss_matches', function (Blueprint $table) {
+        Schema::create('win_loss_logs', function (Blueprint $table) {
             $table->id();
             $table->uuid("user_id")->nullable()->index();
             $table->foreign("user_id")->references("id")->on("users");
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->unsignedBigInteger("bet_coin")->nullable();
             $table->unsignedBigInteger("win_coin")->nullable();
             $table->unsignedBigInteger("loss_coin")->nullable();
-            $table->enum("privacy", [Status::PUBLIC, Status::PRIVATE]);
+            $table->enum("privacy", [Status::PLAY_WITH_USER, Status::PLAY_WITH_BOT])->nullable();
             $table->timestamps();
         });
     }
