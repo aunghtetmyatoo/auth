@@ -76,13 +76,6 @@ Route::prefix('/gift')->controller(GiftController::class)->group(function () {
     Route::post('/give-gift', 'GiveGift');
 });
 
-Route::prefix('/remotes')->controller(RemoteController::class)->group(function () {
-    Route::post('/update-play-status', 'updatePlayStatus');
-    Route::post('/update-game-coin', 'updateGameCoin');
-    Route::post('/update-user-amount', 'updateUserAmount');
-    Route::post('/create-game-type-user', 'createGameTypeUser');
-});
-
 Route::prefix('/recharge-request')->controller(RechargeRequestController::class)->group(function () {
     Route::post('/', 'index');
     Route::post('/create-recharge','createRecharge');

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->unsignedBigInteger("bet_coin")->nullable();
             $table->unsignedBigInteger("win_coin")->nullable();
             $table->unsignedBigInteger("loss_coin")->nullable();
-            $table->enum("privacy", [Status::PUBLIC, Status::PRIVATE])->nullable();
+            $table->enum("privacy", [Status::PUBLIC, Status::PRIVATE]);
             $table->timestamps();
         });
     }

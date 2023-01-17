@@ -43,6 +43,7 @@ Route::prefix('/remotes')->controller(RemoteController::class)->group(function (
     Route::post('/update-user-amount', 'updateUserAmount');
     Route::post('/create-game-type-user', 'createGameTypeUser');
     Route::post('/add-history','addHistory');
+    Route::post('/update-user-match-history','updateUserMatchHistory');
 });
 
 
