@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api\RechargeRequest;
 use App\Constants\Status;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RechargeIndexRequest extends FormRequest
+class RechargeCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

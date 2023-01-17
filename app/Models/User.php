@@ -95,6 +95,6 @@ class User extends Authenticatable
 
     public function histories()
     {
-        return $this->morphMany('App\History', 'historiable');
+        return $this->morphMany(History::class, 'historiable');
     }
 }

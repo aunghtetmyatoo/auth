@@ -10,6 +10,8 @@ class History extends Model
 {
     use HasFactory,Uuid;
 
+    protected $table = "histories";
+
     public function historiable()
     {
         return $this->morphTo();
