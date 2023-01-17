@@ -5,16 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GameType extends Model
+class GameCategory extends Model
 {
     use HasFactory;
 
-    protected $table = "game_types";
+    protected $table = 'game_categories';
 
     protected $fillable = ["name"];
 
-    public function users()
-    {
-        return $this->belongsToMany(User::class)->withTimestamps();
-    }
 }

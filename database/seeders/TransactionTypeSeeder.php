@@ -19,7 +19,8 @@ class TransactionTypeSeeder extends Seeder
     {
         $transaction_types = [
             TransactionTypeConstant::Gift_Transaction,
-            TransactionTypeConstant::Cash_Transaction
+            TransactionTypeConstant::Cash_Transaction,
+            TransactionTypeConstant::Bot_Transaction,
         ];
 
         foreach ($transaction_types as $transaction_type) {
@@ -30,5 +31,8 @@ class TransactionTypeSeeder extends Seeder
                 TransactionType::create(['name' => $transaction_type, 'reference_id' => $transaction_type_reference_id->execute($transaction_type)]);
             }
         }
+
+        TransactionType::whereNotIn('name', $transaction_types)->forceDelete();
+
     }
 }

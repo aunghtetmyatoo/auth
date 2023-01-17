@@ -14,11 +14,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('game_types', function (Blueprint $table) {
+        Schema::create('game_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name', MigrationLength::NAME)->index();
-            $table->unsignedBigInteger('game_category_id')->index();
-            $table->foreign("game_category_id")->references("id")->on("game_categories");
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('game_types');
+        Schema::dropIfExists('game_categories');
     }
 };

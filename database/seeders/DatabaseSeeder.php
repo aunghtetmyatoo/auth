@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(PassportClientSeeder::class);
 
+        $this->call(GameTypeCategorySeeder::class);
+
         $this->call(GameTypeSeeder::class);
 
         $this->call(UserSeeder::class);
@@ -28,5 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TransactionTypeSeeder::class);
 
         $this->call(GeneralLedgerSeeder::class);
+
     }
 }
