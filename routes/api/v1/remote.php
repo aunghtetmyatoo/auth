@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Remote\RemoteGameTypeUserController;
-use App\Http\Controllers\Remote\RemoteHistoryController;
 use App\Http\Controllers\Remote\RemoteUserController;
-use App\Http\Controllers\Remote\RemoteWinLoseLogController;
+use App\Http\Controllers\Remote\RemoteHistoryController;
+use App\Http\Controllers\Remote\RemoteGameTypeUserController;
+use App\Http\Controllers\Remote\RemoteWinLoseMatchController;
 
 Route::prefix('/users')->controller(RemoteUserController::class)->group(function () {
     Route::post('/update-play-status', 'updatePlayStatus');
@@ -20,8 +20,11 @@ Route::prefix('/histories')->controller(RemoteHistoryController::class)->group(f
     Route::post('/add-history','addHistory');
 });
 
-Route::prefix('/win-lose-logs')->controller(RemoteWinLoseLogController::class)->group(function () {
-    Route::post('/update-user-match-history','updateUserMatchHistory');
+Route::prefix('/win-lose-matches')->controller(RemoteWinLoseMatchController::class)->group(function () {
+    Route::post('/bettor','updateBettor');
+    Route::post('/banker-bet-coin','updateBankerBetCoin');
+    Route::post('/banker-win-lose-coin','updateBankerWinLoseCoin');
+    Route::post('/banker-win-lose-match','updateBankerWinLoseMatch');
 });
 
 
