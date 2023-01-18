@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Match;
 
 use App\Actions\HandleEndpoint;
+use App\Constants\ServerPath;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class MatchController extends Controller
 
     public function readyForPlay(Request $request)
     {
-        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "ready", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::READY, request: [
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
             'user_id' => auth()->user()->id,
@@ -23,7 +24,7 @@ class MatchController extends Controller
 
     public function matchStart(Request $request)
     {
-        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "start", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::START_MATCH, request: [
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
             'creator_id' => auth()->user()->id,
@@ -32,7 +33,7 @@ class MatchController extends Controller
 
     public function betAmount(Request $request)
     {
-        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "bet", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::BET, request: [
             'user_id' => auth()->user()->id,
             'game_match_id' => $request->game_match_id,
             'bet_amount' => $request->bet_amount,
@@ -41,7 +42,7 @@ class MatchController extends Controller
 
     public function oneMoreCard(Request $request)
     {
-        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "one_more_card", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::ONE_MORE_CARD, request: [
             'user_id' => auth()->user()->id,
             'one_more_card' => $request->one_more_card,
             'game_match_id' => $request->game_match_id,
@@ -50,7 +51,7 @@ class MatchController extends Controller
 
     public function catchThreeCard(Request $request)
     {
-        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "catch_three_card", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::CATCH_THREE_CARD, request: [
             'catch_three_card' => $request->catch_three_card,
             'game_match_id' => $request->game_match_id,
             'user_id' => auth()->user()->id,
@@ -59,7 +60,7 @@ class MatchController extends Controller
 
     public function nextTimeBanker(Request $request)
     {
-        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "next_time_banker", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::NEXT_TIME_BANKER, request: [
             'next_time_banker' => $request->next_time_banker,
             'game_match_id' => $request->game_match_id,
             'user_id' => auth()->user()->id,
@@ -68,7 +69,7 @@ class MatchController extends Controller
 
     public function amountChangeRequest(Request $request)
     {
-        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "amount_change_request", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::AMOUNT_CHANGE_REQUEST, request: [
             'amount_change_request' => $request->amount_change_request,
             'game_match_id' => $request->game_match_id,
             'user_id' => auth()->user()->id,
@@ -77,7 +78,7 @@ class MatchController extends Controller
 
     public function quitMatch(Request $request)
     {
-        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "quit_match", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::QUIT_MATCH, request: [
             'game_match_id' => $request->game_match_id,
             'user_id' => auth()->user()->id,
         ]);
@@ -85,7 +86,7 @@ class MatchController extends Controller
 
     public function cancelQuitMatch(Request $request)
     {
-        return $this->handleEndpoint->handle(server_name: "card_games", prefix: "matches", route_name: "cancel_quit_match", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::CANCEL_QUIT_MATCH, request: [
             'game_match_id' => $request->game_match_id,
             'user_id' => auth()->user()->id,
         ]);
