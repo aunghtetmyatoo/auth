@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Friend;
 use App\Constants\Status;
 use App\Actions\HandleEndpoint;
+use App\Constants\ServerPath;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Api\Friend\UnfriendRequest;
@@ -51,7 +52,7 @@ class FriendController extends Controller
             ],
         ]);
 
-        return $this->handleEndpoint->handle(server_name: "real_time", prefix: "friends", route_name: "add", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::ADD_FRIEND, request: [
             'friend_id' => auth()->user()->id,
             'friend_name' => auth()->user()->name,
             'user_id' => $request->friend_id,
@@ -72,7 +73,7 @@ class FriendController extends Controller
             ]);
         });
 
-        return $this->handleEndpoint->handle(server_name: "real_time", prefix: "friends", route_name: "confirm", request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::CONFIRM_FRIEND, request: [
             'friend_id' => auth()->user()->id,
             'friend_name' => auth()->user()->name,
             'user_id' => $request->friend_id,
