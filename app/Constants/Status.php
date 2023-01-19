@@ -34,4 +34,6 @@ class Status
     const RECHARGE = "RECHARGE";
     const USER = "USER";
     const BOT = "BOT";
+    const PLAY_WITH_USER = "PLAY_WITH_USER";
+    const PLAY_WITH_BOT = "PLAY_WITH_BOT";
 }

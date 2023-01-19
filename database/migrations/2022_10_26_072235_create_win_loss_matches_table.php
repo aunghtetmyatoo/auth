@@ -14,20 +14,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('win_loss_matches', function (Blueprint $table) {
+        Schema::create('win_lose_matches', function (Blueprint $table) {
             $table->id();
             $table->uuid("user_id")->nullable()->index();
             $table->foreign("user_id")->references("id")->on("users");
             $table->unsignedBigInteger("game_type_id")->nullable()->index();
             $table->foreign("game_type_id")->references("id")->on("game_types");
-            $table->unsignedBigInteger("win_match")->nullable();
-            $table->unsignedBigInteger("loss_match")->nullable();
-            $table->unsignedBigInteger("total_match")->nullable();
-            $table->double("bet_amount")->default(0);
-            $table->unsignedBigInteger("bet_coin")->nullable();
-            $table->unsignedBigInteger("win_coin")->nullable();
-            $table->unsignedBigInteger("loss_coin")->nullable();
-            $table->enum("privacy", [Status::PUBLIC, Status::PRIVATE]);
+            $table->unsignedBigInteger("total_match")->default(0);
+            $table->unsignedBigInteger("win_match")->default(0);
+            $table->unsignedBigInteger("loss_match")->default(0);
+            $table->unsignedBigInteger("bet_coin")->default(0);
+            $table->unsignedBigInteger("win_coin")->default(0);
+            $table->unsignedBigInteger("loss_coin")->default(0);
+            $table->enum("privacy", [Status::PLAY_WITH_USER, Status::PLAY_WITH_BOT])->nullable();
             $table->timestamps();
         });
     }

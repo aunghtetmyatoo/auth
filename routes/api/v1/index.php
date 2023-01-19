@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RemoteController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\RefreshTokenController;
@@ -25,25 +24,12 @@ Route::prefix('account')->middleware(["auth:player", "spam", "bank-account"])->g
     Route::post('/payment/deposit', [TransactionController::class, 'deposit']);
 });
 
-
 Route::prefix('account')->middleware(["auth:player", "spam"])->group(function () {
     Route::post('/payment/add-info', [BankAccountController::class, 'addPaymentMethod']);
 });
-
 
 Route::post('/refresh-token', [RefreshTokenController::class, '__invoke'])->middleware("refresh_token");
 
 Route::prefix('/deposite')->controller(DepositeController::class)->group(function () {
     Route::post('/', 'index');
 });
-
-Route::prefix('/remotes')->controller(RemoteController::class)->group(function () {
-    Route::post('/update-play-status', 'updatePlayStatus');
-    Route::post('/update-game-coin', 'updateGameCoin');
-    Route::post('/update-user-amount', 'updateUserAmount');
-    Route::post('/create-game-type-user', 'createGameTypeUser');
-    Route::post('/add-history','addHistory');
-    Route::post('/update-user-match-history','updateUserMatchHistory');
-});
-
-

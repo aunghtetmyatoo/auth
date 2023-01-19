@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WinLossMatch extends Model
+class WinLoseMatch extends Model
 {
     use HasFactory;
 
-    protected $table = "win_loss_matches";
+    protected $table = "win_lose_matches";
 
     protected $fillable = [
         'user_id',
@@ -17,10 +17,10 @@ class WinLossMatch extends Model
         'win_match',
         'loss_match',
         'total_match',
-        'bet_amount',
         'bet_coin',
         'win_coin',
         'loss_coin',
+        'privacy',
     ];
 
 }
