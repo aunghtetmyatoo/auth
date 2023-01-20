@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Remote;
 
+use App\Actions\GenerateReferenceId;
 use App\Models\History;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -20,7 +21,8 @@ class RemoteHistoryController extends Controller
         $history->historiable_type =  $request->historiable_type;
         $history->transactionable_id = $request->user_id;
         $history->transactionable_type = $request->user_model;
-        $history->reference_id =  strtoupper(Str::random(15));
+        $history->reference_id = (new GenerateReferenceId())->execute();
+        $history->transaction_amount = $request->transaction_amount;
         $history->amount_before_transaction = $request->user_amount_before_transaction;
         $history->amount_after_transaction = $request->user_amount_after_transaction;
         $history->is_from = $request->is_from;

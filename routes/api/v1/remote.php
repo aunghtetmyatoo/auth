@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Remote\RemoteUserController;
 use App\Http\Controllers\Remote\RemoteHistoryController;
 use App\Http\Controllers\Remote\RemoteGameTypeUserController;
+use App\Http\Controllers\Remote\RemotePlayerTransactionController;
 use App\Http\Controllers\Remote\RemoteWinLoseMatchController;
 
 Route::prefix('/users')->controller(RemoteUserController::class)->group(function () {
@@ -26,5 +27,12 @@ Route::prefix('/win-lose-matches')->controller(RemoteWinLoseMatchController::cla
     Route::post('/banker-win-lose-coin','updateBankerWinLoseCoin');
     Route::post('/banker-win-lose-match','updateBankerWinLoseMatch');
 });
+
+Route::prefix('/remote-player-transaction')->controller(RemotePlayerTransactionController::class)->group(function () {
+    Route::post('/','index');
+});
+
+
+
 
 

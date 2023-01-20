@@ -98,4 +98,12 @@ class User extends Authenticatable
     {
         return $this->morphMany(History::class, 'historiable');
     }
+
+    public function transactionable()
+    {
+        return $this->morphMany(History::class, 'transactionable');
+    }
+
+
+
 }

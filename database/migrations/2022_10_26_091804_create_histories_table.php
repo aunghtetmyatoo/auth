@@ -18,7 +18,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->unsignedBigInteger("transaction_type_id")->index();
             $table->foreign("transaction_type_id")->references("id")->on("transaction_types");
-            $table->morphs('historiable');
+            $table->uuidMorphs('historiable');
             $table->uuidMorphs('transactionable');
             $table->string('reference_id');
             $table->string('transaction_amount');

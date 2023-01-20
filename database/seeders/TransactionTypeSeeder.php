@@ -21,6 +21,7 @@ class TransactionTypeSeeder extends Seeder
             TransactionTypeConstant::Gift_Transaction,
             TransactionTypeConstant::Cash_Transaction,
             TransactionTypeConstant::Bot_Transaction,
+            TransactionTypeConstant::Play_Transaction,
         ];
 
         foreach ($transaction_types as $transaction_type) {
