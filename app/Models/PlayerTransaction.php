@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class PlayerTransaction extends Model
 {
-    use HasFactory,Uuid;
+    use HasFactory, Uuid;
 
     protected $table = 'player_transactions';
 
-    protected $fillable = ["reference_id","player_id","banker_id","coin","game_type_id","match_id"];
+    protected $fillable = ['reference_id', 'player_id', 'banker_id', 'coin', 'game_type_id', 'game_match_id'];
 
     public function histories()
     {

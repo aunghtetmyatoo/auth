@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Actions\TransactionTypeReference;
-use App\Constants\TransactionTypeConstant;
-use App\Models\TransactionType;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Actions\GenerateReferenceId;
+use App\Enums\TransactionType;
 use Illuminate\Database\Seeder;
+use App\Models\TransactionType as TransactionTypeModel;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class TransactionTypeSeeder extends Seeder
 {
@@ -18,22 +18,23 @@ class TransactionTypeSeeder extends Seeder
     public function run()
     {
         $transaction_types = [
-            TransactionTypeConstant::Gift_Transaction,
-            TransactionTypeConstant::Cash_Transaction,
-            TransactionTypeConstant::Bot_Transaction,
-            TransactionTypeConstant::Play_Transaction,
+            TransactionType::Gift,
+            TransactionType::Cash,
+            TransactionType::Bot,
+            TransactionType::Player,
         ];
 
         foreach ($transaction_types as $transaction_type) {
-            $existed = TransactionType::where('name', $transaction_type)->first();
+            $existed = TransactionTypeModel::where('name', $transaction_type)->first();
 
             if (!$existed) {
-                $transaction_type_reference_id = new TransactionTypeReference();
-                TransactionType::create(['name' => $transaction_type, 'reference_id' => $transaction_type_reference_id->execute($transaction_type)]);
+                TransactionTypeModel::create([
+                    'name' => $transaction_type,
+                    'reference_id' => (new GenerateReferenceId())->execute(),
+                ]);
             }
         }
 
-        TransactionType::whereNotIn('name', $transaction_types)->forceDelete();
-
+        TransactionTypeModel::whereNotIn('name', $transaction_types)->forceDelete();
     }
 }

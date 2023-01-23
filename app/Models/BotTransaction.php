@@ -8,8 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class BotTransaction extends Model
 {
-    use HasFactory,Uuid;
+    use HasFactory, Uuid;
 
     protected $table = 'bot_transactions';
 
+    protected $fillable = ['reference_id', 'player_id', 'banker_id', 'coin', 'game_type_id', 'game_match_id'];
+
+    public function histories()
+    {
+        return $this->morphMany(History::class, 'historiable');
+    }
+
+    public function transactionable()
+    {
+        return $this->morphMany(History::class, 'transactionable');
+    }
 }

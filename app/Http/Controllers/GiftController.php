@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\HandleEndpoint;
 use App\Constants\ServerPath;
 use App\Constants\Status;
-use App\Constants\TransactionTypeConstant;
+use App\Constants\TransactionType;
 use App\Exceptions\GeneralError;
 use App\Http\Requests\Api\GiftRequest\BuyGiftRequest;
 use App\Http\Requests\Api\GiftRequest\GiveGiftRequest;
@@ -28,7 +28,7 @@ class GiftController extends Controller
     public function buyGift(BuyGiftRequest $request)
     {
 
-        $transaction_type_id = TransactionType::where('name', TransactionTypeConstant::Gift_Transaction)->pluck('id')->first();
+        $transaction_type_id = TransactionType::where('name', TransactionType::Gift)->pluck('id')->first();
 
         DB::beginTransaction();
         try {
@@ -68,7 +68,7 @@ class GiftController extends Controller
     public function GiveGift(GiveGiftRequest $request)
     {
 
-        $transaction_type_id = TransactionType::where('name', TransactionTypeConstant::Gift_Transaction)->pluck('id')->first();
+        $transaction_type_id = TransactionType::where('name', TransactionType::Gift)->pluck('id')->first();
 
         $friend = User::find($request->friend_id);
 
