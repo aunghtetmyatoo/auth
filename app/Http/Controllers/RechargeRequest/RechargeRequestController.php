@@ -18,13 +18,11 @@ class RechargeRequestController extends Controller
     public function index(Request $request)
     {
         $rechargeRequest = RechargeRequest::where(function ($query) use ($request) {
-
-            $request->has('name')
-            && $query->where('name', 'like', '%' . $request->name . '%');
-
+            $request->has('user_id') && $request->user_id != null
+            && $query->where('user_id',$request->user_id);
         });
 
-        return $this->responseCollection(new RechargeCollection ($rechargeRequest->paginate($request->per_page)));
+        return new RechargeCollection ($rechargeRequest->paginate($request->perPage ? $request->perPage : 5));
     }
 
     public  function createRecharge(RechargeCreateRequest $request)

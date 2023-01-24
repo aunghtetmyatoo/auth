@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\RefreshTokenController;
 use App\Http\Controllers\Deposite\DepositeController;
 use App\Http\Controllers\Payment\BankAccountController;
 use App\Http\Controllers\Payment\TransactionController;
+use App\Http\Controllers\RechargeRequest\RechargeRequestController;
+use App\Http\Controllers\TelegramController;
 
 Route::prefix('register')->controller(RegisterController::class)->group(function () {
     Route::post('get/otp', 'getOtp');
@@ -45,5 +47,18 @@ Route::prefix('/remotes')->controller(RemoteController::class)->group(function (
     Route::post('/add-history','addHistory');
     Route::post('/update-user-match-history','updateUserMatchHistory');
 });
+
+Route::prefix('/telegram')->controller(TelegramController::class)->group(function () {
+    Route::post('/send-message', 'sendMessage');
+    Route::post('/send-photo', 'sendPhoto');
+
+});
+
+// For Game Dashboard
+Route::prefix('/recharge-request')->controller(RechargeRequestController::class)->group(function () {
+    Route::post('/', 'index');
+    Route::post('/create-recharge','createRecharge');
+});
+
 
 
