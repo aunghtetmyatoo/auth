@@ -26,6 +26,7 @@ return new class extends Migration
             $table->unsignedBigInteger("bet_coin")->default(0);
             $table->unsignedBigInteger("win_coin")->default(0);
             $table->unsignedBigInteger("loss_coin")->default(0);
+            $table->unsignedBigInteger("win_streak")->default(0);
             $table->enum("privacy", [Status::PLAY_WITH_USER, Status::PLAY_WITH_BOT])->nullable();
             $table->timestamps();
         });

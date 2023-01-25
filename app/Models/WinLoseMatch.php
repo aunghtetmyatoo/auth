@@ -20,6 +20,7 @@ class WinLoseMatch extends Model
         'bet_coin',
         'win_coin',
         'loss_coin',
+        'win_streak',
         'privacy',
     ];
 

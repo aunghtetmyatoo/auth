@@ -25,7 +25,7 @@ class RemoteWinLoseMatchController extends Controller
             $user_log = $this->create(user_id: $user_id, game_type_id: $game_type_id, privacy: $privacy);
         }
 
-        ['win_match' => $win_match, 'loss_match' => $loss_match, 'win_coin' => $win_coin, 'loss_coin' => $loss_coin, 'total_match' => $total_match, 'bet_coin' => $user_bet_coin] = $user_log;
+        ['win_match' => $win_match, 'loss_match' => $loss_match, 'win_coin' => $win_coin, 'loss_coin' => $loss_coin, 'total_match' => $total_match, 'bet_coin' => $user_bet_coin, 'win_streak' => $win_streak] = $user_log;
 
         $user_log->update([
             'win_match' => $win_lose_status === Status::WIN ? ++$win_match : $win_match,
@@ -34,6 +34,7 @@ class RemoteWinLoseMatchController extends Controller
             'bet_coin' => $user_bet_coin + $bet_coin,
             'win_coin' => $win_lose_status === Status::WIN ? ($win_coin + $win_lose_coin) : $win_coin,
             'loss_coin' => $win_lose_status === Status::LOSE ? ($loss_coin + $win_lose_coin) : $loss_coin,
+            'win_streak' => $win_lose_status === Status::WIN ? ++$win_streak : 0,
         ]);
 
         return $this->responseSucceed(
@@ -92,12 +93,13 @@ class RemoteWinLoseMatchController extends Controller
             $user_log = $this->create(user_id: $user_id, game_type_id: $game_type_id, privacy: $privacy);
         }
 
-        ['win_match' => $win_match, 'loss_match' => $loss_match, 'total_match' => $total_match] = $user_log;
+        ['win_match' => $win_match, 'loss_match' => $loss_match, 'total_match' => $total_match, 'win_streak' => $win_streak] = $user_log;
 
         $user_log->update([
             'win_match' => $win_lose_status === Status::WIN ? ++$win_match : $win_match,
             'loss_match' => $win_lose_status === Status::LOSE ? ++$loss_match : $loss_match,
             'total_match' => ++$total_match,
+            'win_streak' => $win_lose_status === Status::WIN ? ++$win_streak : 0,
         ]);
 
         return $this->responseSucceed(
@@ -117,6 +119,7 @@ class RemoteWinLoseMatchController extends Controller
             'bet_coin' => 0,
             'win_coin' => 0,
             'loss_coin' => 0,
+            'win_streak' => 0,
         ]);
 
         return $user_log;
