@@ -62,6 +62,10 @@ class UserSeeder extends Seeder
                 'phone_number' => '09257668976',
             ],
             [
+                'name' => 'User-K',
+                'phone_number' => '09883537611',
+            ],
+            [
                 'name' => 'Bot-A',
                 'phone_number' => '09777777771',
             ],
@@ -80,6 +84,22 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Bot-E',
                 'phone_number' => '09777777775',
+            ],
+            [
+                'name' => 'Bot-F',
+                'phone_number' => '09777777776',
+            ],
+            [
+                'name' => 'Bot-G',
+                'phone_number' => '09777777777',
+            ],
+            [
+                'name' => 'Bot-H',
+                'phone_number' => '09777777778',
+            ],
+            [
+                'name' => 'Bot-I',
+                'phone_number' => '09777777779',
             ],
         ];
 
