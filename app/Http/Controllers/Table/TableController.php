@@ -29,6 +29,7 @@ class TableController extends Controller
             'game_type_id' => $request->game_type_id,
             'banker_amount' => $request->banker_amount,
             'privacy'  => $request->privacy,
+            'is_side_bettor' => $request->is_side_bettor,
         ]);
     }
 
