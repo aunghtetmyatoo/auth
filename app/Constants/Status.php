@@ -14,6 +14,12 @@ class Status
     const STICKER = "STICKER";
     const TEXT = "TEXT";
     const REQUESTED = "REQUESTED";
+    const CONFIRMED = "CONFIRMED";
+    const CANCELLED = "CANCELLED";
+    const REFUNDED = "REFUNDED";
+    const DEBIT = "DR";
+    const CREDIT = "CR";
+
     const DONE = "DONE";
     const REJECTED = "REJECTED";
     const OPEN = "OPEN";

@@ -17,17 +17,32 @@ return new class extends Migration
     {
         Schema::create('withdraw_requests', function (Blueprint $table) {
             $table->uuid('id')->unique();
-            $table->string("reference_id", MigrationLength::REFERENCE_ID)->unique()->index();
-            $table->uuid("user_id")->nullable()->index();
+            $table->bigInteger('sequence')->unique();
+            $table->unsignedBigInteger("withdraw_cahnnel_id")->nullable()->index();
+            $table->foreign("withdraw_cahnnel_id")->references("id")->on("recharge_channels");
+            $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique()->index();
+            $table->uuid("user_id")->index();
             $table->foreign("user_id")->references("id")->on("users");
-            $table->unsignedBigInteger("payment_type_id")->nullable()->index();
-            $table->foreign("payment_type_id")->references("id")->on("payment_types");
-            $table->string("account_name", MigrationLength::NAME)->nullable();
-            $table->string("account_number", MigrationLength::NAME)->nullable();
-            $table->double("amount")->default(0.00);
-            $table->enum("withdraw_status", [Status::REQUESTED, Status::DONE, Status::REJECTED])->default(Status::REQUESTED);
-            $table->unsignedBigInteger("admin_id")->nullable()->index();
-            $table->foreign("admin_id")->references("id")->on("admins");
+            $table->unsignedBigInteger("confirmed_by")->nullable();
+            $table->foreign("confirmed_by")->references("id")->on("admins");
+
+            $table->unsignedBigInteger("completed_by")->nullable();
+            $table->foreign("completed_by")->references("id")->on("admins");
+            $table->double('rate')->nullable();
+            $table->string('payee')->nullable();
+            $table->string('bank_name')->nullable();
+            $table->string('account_number')->nullable();
+
+            $table->double('amount')->nullable();
+            $table->double('handling_fee')->nullable();
+            $table->double('transferred_amount')->nullable();
+
+            $table->string('screenshot')->nullable();
+            $table->text('description')->nullable();
+            $table->dateTime('read_at')->nullable();
+            $table->dateTime('confirmed_at')->nullable();
+            $table->string(' qr_code')->nullable();
+            $table->enum("status", [Status::CONFIRMED, Status::REQUESTED, Status::REFUNDED, Status::COMPLETED])->default(Status::REQUESTED);
             $table->timestamps();
         });
     }
