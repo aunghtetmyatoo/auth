@@ -26,7 +26,7 @@ return new class extends Migration
             $table->boolean('status');
             $table->string('qr_code')->nullable();
             $table->string('icon_active')->nullable();
-            $table->string('iconf_inactive')->nullable();
+            $table->string('icon_inactive')->nullable();
             $table->string('address');
             $table->timestamps();
         });

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->uuid('id')->unique();
             $table->bigInteger('sequence')->unique();
             $table->unsignedBigInteger("withdraw_cahnnel_id")->nullable()->index();
-            $table->foreign("withdraw_cahnnel_id")->references("id")->on("recharge_channels");
+            $table->foreign("withdraw_channel_id")->references("id")->on("recharge_channels");
             $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique()->index();
             $table->uuid("user_id")->index();
             $table->foreign("user_id")->references("id")->on("users");
