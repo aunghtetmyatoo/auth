@@ -18,7 +18,7 @@ return new class extends Migration
         Schema::create('withdraw_requests', function (Blueprint $table) {
             $table->uuid('id')->unique();
             $table->bigInteger('sequence')->unique();
-            $table->unsignedBigInteger("withdraw_cahnnel_id")->nullable()->index();
+            $table->unsignedBigInteger("withdraw_channel_id")->nullable()->index();
             $table->foreign("withdraw_channel_id")->references("id")->on("withdraw_channels");
             $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique()->index();
             $table->uuid("user_id")->index();
