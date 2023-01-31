@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\PaymentType\PaymentTypeController;
+use App\Http\Controllers\RechargeRequest\RechargeRequestController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Remote\RemoteUserController;
 use App\Http\Controllers\Remote\RemoteHistoryController;
@@ -32,3 +34,14 @@ Route::prefix('/transactions')->controller(RemoteTransactionController::class)->
     Route::post('/player', 'playerTransaction');
     Route::post('/bot', 'botTransaction');
 });
+
+// For Game Dashboard
+Route::prefix('/recharge-request')->controller(RechargeRequestController::class)->group(function () {
+    Route::post('/', 'index');
+    Route::post('/create-recharge','createRecharge');
+});
+
+Route::prefix('/payment-type')->controller(PaymentTypeController::class)->group(function () {
+    Route::post('/select', 'Select');
+});
+

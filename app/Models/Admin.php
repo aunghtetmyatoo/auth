@@ -64,4 +64,9 @@ class Admin extends Authenticatable
     {
         return $this->morphMany(History::class, 'historiable');
     }
+
+    public function recharge_request()
+    {
+        return $this->hasOne(RechargeRequest::class);
+    }
 }

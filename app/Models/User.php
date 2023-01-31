@@ -104,6 +104,11 @@ class User extends Authenticatable
         return $this->morphMany(History::class, 'transactionable');
     }
 
+    public function recharge_request()
+    {
+        return $this->hasOne(RechargeRequest::class);
+    }
+
 
 
 }

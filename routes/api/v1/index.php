@@ -51,11 +51,6 @@ Route::prefix('/telegram')->controller(TelegramController::class)->group(functio
 
 });
 
-// For Game Dashboard
-Route::prefix('/recharge-request')->controller(RechargeRequestController::class)->group(function () {
-    Route::post('/', 'index');
-    Route::post('/create-recharge','createRecharge');
-});
 
 
 
