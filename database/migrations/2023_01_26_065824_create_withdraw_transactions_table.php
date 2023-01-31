@@ -18,7 +18,7 @@ return new class extends Migration
             $table->uuid('id')->unique();
             $table->uuid("user_id")->index();
             $table->foreign("user_id")->references("id")->on("users");
-            $table->uuid("transaction_type_id")->index();
+            $table->unsignedBigInteger("transaction_type_id")->index();
             $table->foreign("transaction_type_id")->references("id")->on("transaction_types");
             $table->uuid("withdraw_request_id")->index();
             $table->foreign("withdraw_request_id")->references("id")->on("withdraw_requests");

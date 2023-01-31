@@ -21,7 +21,7 @@ return new class extends Migration
             $table->double('min_amount')->default(0);
             $table->double('max_amount')->default(0);
             $table->double('handling_fees')->default(0);
-            $table->id('telegram_channel_id');
+            $table->unsignedBigInteger('telegram_channel_id');
             $table->boolean('status');
             $table->string('icon_active')->nullable();
             $table->string('icon_inactive')->nullable();
