@@ -7,12 +7,18 @@ class ServerPath
     const CARD_GAME = 'http://card-games.test/api/v1/card-game/';
     const GAMBLING_AUTH = 'http://gamblingauth.test/api/v1/';
     const GAME_SOCKET = 'https://game-socket.com/api/v1/';
+    // const GAME_SOCKET = 'http://localhost:3000/api/v1/';
+
 
     // For Game Socket
     // For Game Socket, Friend API
     const FRIEND =  self::GAME_SOCKET . 'friends/';
     const ADD_FRIEND = self::FRIEND . 'add';
     const CONFIRM_FRIEND = self::FRIEND . 'confirm';
+
+    // For Game Socket , Admin Dashboard API
+    const ADMIN_DASHBOARD =  self::GAME_SOCKET . 'admin-dashboard/';
+    const GET_RECHARGE_REQUEST = self::ADMIN_DASHBOARD . 'get-recharge-request';
 
     // For Card Game
     // For Card Game, Match API

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Recharge;
 
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RechargeResource extends JsonResource
@@ -16,11 +17,12 @@ class RechargeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
+            'user_name' => $this->user->name,
             'transaction_screenshot' => $this->transaction_screenshot,
+            'payment_type' => $this->payment_type->name,
             'status' => $this->status,
-            'admin_id' => $this->admin_id,
-            'payment_type_id' => $this->payment_type_id,
+            'admin_name' => $this->admin_id ? $this->admin->name : '-',
+            'time_expire' =>$this->created_at->addMinutes(30)->format('Y-m-d H:i:s'),
             ];
     }
 }

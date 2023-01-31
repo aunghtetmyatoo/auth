@@ -13,4 +13,19 @@ class RechargeRequest extends Model
     protected $table = "recharge_requests";
 
     protected $fillable = ["user_id", "transaction_screenshot","status","admin_id","payment_type_id"];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function payment_type()
+    {
+        return $this->belongsTo(PaymentType::class);
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
+    }
 }
