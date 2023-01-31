@@ -1,9 +1,10 @@
 <?php
 
 use App\Constants\Status;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Constants\MigrationLength;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -15,15 +16,26 @@ return new class extends Migration
     public function up()
     {
         Schema::create('recharge_requests', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->uuid('id')->unique();
+            $table->bigInteger('sequence')->unique();
+            $table->unsignedBigInteger("recharge_cahnnel_id")->nullable()->index();
+            $table->foreign("recharge_cahnnel_id")->references("id")->on("recharge_channels");
+            $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique()->index();
             $table->uuid("user_id")->index();
             $table->foreign("user_id")->references("id")->on("users");
-            $table->string('transaction_screenshot');
-            $table->enum("status", [Status::REQUESTED, Status::COMPLETED, Status::REJECTED])->default(Status::REQUESTED);
-            $table->unsignedBigInteger("admin_id")->nullable();
-            $table->foreign("admin_id")->references("id")->on("admins");
-            $table->unsignedBigInteger("payment_type_id")->index();
-            $table->foreign("payment_type_id")->references("id")->on("payment_types");
+            $table->double('requested_amount')->nullable();
+            $table->double('confirmed_amount')->nullable();
+            $table->unsignedBigInteger("completed_by")->nullable();
+            $table->foreign("completed_by")->references("id")->on("admins");
+            $table->double('rate')->nullable();
+            $table->double('received_amount')->nullable();
+            $table->string('received_from')->nullable();
+            $table->string('screenshot')->nullable();
+            $table->text('description')->nullable();
+            $table->dateTime('read_at')->nullable();
+            $table->dateTime('expired_at')->nullable();
+            $table->dateTime('confirmed_at')->nullable();
+            $table->enum("status", [Status::REJECTED,Status::CONFIRMED, Status::REQUESTED, Status::CANCELLED,Status::COMPLETED])->default(Status::REQUESTED);
             $table->timestamps();
         });
     }
