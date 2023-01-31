@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Admin;
+use App\Models\WithdrawChannel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class WithdrawRequest extends Model
 {
@@ -14,5 +16,16 @@ class WithdrawRequest extends Model
     public function users()
     {
         return $this->belongsTo(User::class);
+    }
+
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
+    }
+
+    public function withdraw_channel()
+    {
+        return $this->belongsTo(WithdrawChannel::class);
     }
 }
