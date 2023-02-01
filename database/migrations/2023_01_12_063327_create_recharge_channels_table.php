@@ -18,9 +18,10 @@ return new class extends Migration
             $table->string('name');
             $table->unsignedBigInteger("currency_id")->nullable()->index();
             $table->foreign("currency_id")->references("id")->on("exchange_currencies");
-            $table->double('min_amount')->default(0);
-            $table->double('max_amount')->default(0);
-            $table->double('handling_fees')->default(0);
+            $table->unsignedDouble('min_per_transaction')->default(1);
+            $table->unsignedDouble('max_per_transaction')->default(1000000);
+            $table->unsignedDouble('max_daily')->default(1000000);
+            $table->unsignedDouble('handling_fees')->default(0);
             $table->unsignedBigInteger('telegram_channel_id');
             $table->dateTime('requests_expired_in')->nullable();
             $table->boolean('status');

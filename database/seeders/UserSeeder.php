@@ -104,7 +104,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            $reference_id = (new UserReference())->execute(UserPrefix::Bot->value, $user['phone_number']);
+            $reference_id = (new UserReference())->execute(str_contains($user['name'], 'User') ?UserPrefix::Player->value : UserPrefix::Bot->value, $user['phone_number']);
 
             $user = User::create([
                 'name' => $user['name'],
