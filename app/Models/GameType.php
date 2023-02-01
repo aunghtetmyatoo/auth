@@ -17,4 +17,9 @@ class GameType extends Model
     {
         return $this->belongsToMany(User::class)->withTimestamps();
     }
+
+    public function game_category()
+    {
+        return $this->belongsTo(GameCategory::class);
+    }
 }

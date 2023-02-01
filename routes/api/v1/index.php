@@ -5,9 +5,11 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\RefreshTokenController;
 use App\Http\Controllers\Deposite\DepositeController;
+use App\Http\Controllers\GameType\GameTypeController;
 use App\Http\Controllers\Payment\BankAccountController;
 use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Controllers\RechargeRequest\RechargeRequestController;
+use App\Http\Controllers\RoomType\RoomTypeController;
 use App\Http\Controllers\TelegramController;
 
 Route::prefix('register')->controller(RegisterController::class)->group(function () {
@@ -36,20 +38,20 @@ Route::prefix('/deposite')->controller(DepositeController::class)->group(functio
     Route::post('/', 'index');
 });
 
-Route::prefix('/remotes')->controller(RemoteController::class)->group(function () {
-    Route::post('/update-play-status', 'updatePlayStatus');
-    Route::post('/update-game-coin', 'updateGameCoin');
-    Route::post('/update-user-amount', 'updateUserAmount');
-    Route::post('/create-game-type-user', 'createGameTypeUser');
-    Route::post('/add-history','addHistory');
-    Route::post('/update-user-match-history','updateUserMatchHistory');
-});
-
 Route::prefix('/telegram')->controller(TelegramController::class)->group(function () {
     Route::post('/send-message', 'sendMessage');
     Route::post('/send-photo', 'sendPhoto');
-
 });
+
+Route::prefix('/game-type')->controller(GameTypeController::class)->group(function () {
+    Route::post('/list', 'list');
+});
+
+Route::prefix('/room-type')->controller(RoomTypeController::class)->group(function () {
+    Route::post('/list', 'list');
+});
+
+
 
 
 
