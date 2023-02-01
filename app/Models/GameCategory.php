@@ -13,4 +13,9 @@ class GameCategory extends Model
 
     protected $fillable = ["name"];
 
+    public function posts()
+    {
+        return $this->hasMany(GameType::class);
+    }
+
 }

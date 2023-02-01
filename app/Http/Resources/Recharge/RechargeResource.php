@@ -18,7 +18,7 @@ class RechargeResource extends JsonResource
         return [
             'id' => $this->id,
             'user_name' => $this->user->name,
-            'transaction_screenshot' => $this->transaction_screenshot,
+            // 'transaction_screenshot' => $this->transaction_screenshot,
             'payment_type' => $this->payment_type->name,
             'status' => $this->status,
             'admin_name' => $this->admin_id ? $this->admin->name : '-',

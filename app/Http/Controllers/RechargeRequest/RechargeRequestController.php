@@ -50,7 +50,7 @@ class RechargeRequestController extends Controller
 
         });
 
-        return new RechargeCollection ($rechargeRequest->paginate($request->perPage ? $request->perPage : 5));
+        return new RechargeCollection ($rechargeRequest->orderBy('created_at', 'DESC')->paginate($request->perPage ? $request->perPage : 10 ));
     }
 
     public  function createRecharge(RechargeCreateRequest $request)
