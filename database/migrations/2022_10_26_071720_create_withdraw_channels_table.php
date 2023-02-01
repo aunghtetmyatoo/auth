@@ -21,9 +21,9 @@ return new class extends Migration
             $table->unsignedDouble('min_per_transaction')->default(1);
             $table->unsignedDouble('max_per_transaction')->default(1000000);
             $table->unsignedDouble('max_daily')->default(1000000);
-            $table->unsignedDouble('handling_fees')->default(0);
-            $table->unsignedBigInteger('telegram_channel_id');
-            $table->boolean('status');
+            $table->unsignedDouble('handling_fee')->default(0);
+            $table->string('telegram_channel_id')->nullable();
+            $table->boolean('status')->default(1);
             $table->string('icon_active')->nullable();
             $table->string('icon_inactive')->nullable();
             $table->timestamps();

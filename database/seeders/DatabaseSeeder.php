@@ -33,5 +33,7 @@ class DatabaseSeeder extends Seeder
         $this->call(GeneralLedgerSeeder::class);
 
         $this->call(ExchangeCurrencySeeder::class);
+        $this->call(RechargeChannelSeeder::class);
+        $this->call(WithdrawChannelSeeder::class);
     }
 }
