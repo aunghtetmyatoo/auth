@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\Enquiry;
+namespace App\Http\Requests\Api\Recharge\Enquiry;
 
-use App\Models\RechargeChannel;
-use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UsdtRequest extends FormRequest
+class EnquiryKbzRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +24,7 @@ class UsdtRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount' => ['required','numeric'],
+            'amount'=>['required','numeric']
         ];
     }
 }
