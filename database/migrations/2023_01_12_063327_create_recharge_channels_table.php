@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('recharge_channels', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger("currency_id")->nullable()->index();
-            $table->foreign("currency_id")->references("id")->on("exchange_currencies");
+            $table->unsignedBigInteger("exchange_currency_id")->nullable()->index();
+            $table->foreign("exchange_currency_id")->references("id")->on("exchange_currencies");
             $table->unsignedDouble('min_per_transaction')->default(1);
             $table->unsignedDouble('max_per_transaction')->default(1000000);
             $table->unsignedDouble('max_daily')->default(1000000);

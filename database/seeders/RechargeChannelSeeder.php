@@ -19,12 +19,12 @@ class RechargeChannelSeeder extends Seeder
         $channels = [
             [
                 'name' => 'KBZ Pay',
-                'currency_id' => ExchangeCurrency::whereName('MMK')->pluck('id')->first(),
+                'exchange_currency_id' => ExchangeCurrency::whereName('MMK')->pluck('id')->first(),
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'USDT',
-                'currency_id' => ExchangeCurrency::whereName('USDT')->pluck('id')->first(),
+                'exchange_currency_id' => ExchangeCurrency::whereName('USDT')->pluck('id')->first(),
                 'telegram_channel_id' => '-1001733825869'
             ],
         ];

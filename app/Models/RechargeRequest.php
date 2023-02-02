@@ -13,7 +13,7 @@ class RechargeRequest extends Model
 
     protected $table = "recharge_requests";
 
-    protected $fillable = ["user_id", "transaction_screenshot", "status", "admin_id", "payment_type_id"];
+    protected $fillable = ["sequence", "recharge_channel_id", "reference_id", "user_id", "requested_amount", "confirmed_amount", "completed_by", "rate", "received_amount", "received_from", "screenshot", "description", "read_at", 'expired_at', "confirmed_at", "status"];
 
     public function user()
     {

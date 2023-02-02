@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Api\RechargeRequest;
+namespace App\Http\Requests\Api\Enquiry;
 
-use App\Constants\Status;
+use App\Models\RechargeChannel;
+use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RechargeCreateRequest extends FormRequest
+class UsdtRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +26,7 @@ class RechargeCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'screenshot' => ['required','image', 'mimes:png,jpg,jpeg'],
-            'amount' =>  ['required', 'integer'],
-            
-
+            'amount' => ['required','numeric'],
         ];
     }
 }

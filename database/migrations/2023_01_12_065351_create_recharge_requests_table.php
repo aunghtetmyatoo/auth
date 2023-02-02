@@ -17,9 +17,9 @@ return new class extends Migration
     {
         Schema::create('recharge_requests', function (Blueprint $table) {
             $table->uuid('id')->unique();
-            $table->bigInteger('sequence')->unique();
-            $table->unsignedBigInteger("recharge_cahnnel_id")->nullable()->index();
-            $table->foreign("recharge_cahnnel_id")->references("id")->on("recharge_channels");
+            $table->bigIncrements('sequence')->unique();
+            $table->unsignedBigInteger("recharge_channel_id")->nullable()->index();
+            $table->foreign("recharge_channel_id")->references("id")->on("recharge_channels");
             $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique()->index();
             $table->uuid("user_id")->index();
             $table->foreign("user_id")->references("id")->on("users");
