@@ -20,6 +20,7 @@ use App\Http\Requests\Api\Enquiry\UsdtRequest;
 use App\Exceptions\ServiceUnavailableException;
 use App\Http\Resources\Recharge\RechargeResource;
 use App\Http\Resources\Recharge\RechargeCollection;
+use App\Exceptions\RechargeRequestNotExistException;
 use App\Http\Requests\Api\RechargeRequest\RechargeCreateRequest;
 
 class RechargeRequestController extends Controller
@@ -29,7 +30,6 @@ class RechargeRequestController extends Controller
     public function __construct(private HandleEndpoint $handleEndpoint)
     {
     }
-
 
     public function index(Request $request)
     {
@@ -54,7 +54,7 @@ class RechargeRequestController extends Controller
                 && $query->whereIn('status', $request->status);
         });
 
-        return new RechargeCollection ($rechargeRequest->orderBy('created_at', 'DESC')->paginate($request->perPage ? $request->perPage : 10 ));
+        return new RechargeCollection($rechargeRequest->orderBy('created_at', 'DESC')->paginate($request->perPage ? $request->perPage : 10));
         // return new RechargeCollection($rechargeRequest->paginate($request->perPage ? $request->perPage : 5));
     }
     public function enquiryUsdt(UsdtRequest $request)
@@ -84,13 +84,13 @@ class RechargeRequestController extends Controller
             "recharge_channel_id" => $channel->id,
             "expired_at" => now()->addMinutes(30),
 
-
         ]);
 
         // For RealTime GameDashboard
         $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
             'rechargeRequest' =>  new RechargeResource(RechargeRequest::findOrFail($rechargeRequest->id))
         ]);
+
         $auth_user = auth()->user();
         $account_name = $auth_user->name;
         $account_phone_number = $auth_user->phone_number;
@@ -106,15 +106,48 @@ class RechargeRequestController extends Controller
         return $this->responseSucceed(message: "Add Recharge Request Successfully");
     }
 
+    public function cancelledUsdt(Request $request)
+    {
+        $channel = RechargeChannel::where('name', "USDT")->first();
+        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>=', now())->first();
+
+        $request_cancelled->update([
+            'status' => 'CANCELLED'
+        ]);
+
+        // For RealTime GameDashboard
+        $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
+            'rechargeRequest' =>  new RechargeResource(RechargeRequest::findOrFail($request_cancelled->id))
+        ]);
+
+        $auth_user = auth()->user();
+        $account_name = $auth_user->name;
+        $account_phone_number = $auth_user->phone_number;
+
+        $date = now()->format('Y-m-d H:i:s');
+
+        // For Telegram Bot
+        Http::post('https://api.telegram.org/bot' . TelegramConstant::bot_token . '/sendMessage', [
+            'chat_id' => TelegramConstant::chat_id,
+            'text' => 'Message=' . 'Recharge Cancelled' . PHP_EOL .
+                'Account Name = ' . $account_name . PHP_EOL .
+                'Account Number = ' . $account_phone_number . PHP_EOL .
+                'Request Id =' . $request_cancelled->reference_id . PHP_EOL .
+                'Date =' . $date
+        ]);
+
+        return $this->responseSucceed(message: "Recharge Cancelled Successfully");
+    }
     private function validation(string $channel_name)
     {
         $channel = RechargeChannel::whereName($channel_name)->first();
-        // if (!$channel->status) {
-        //     throw new ServiceUnavailableException();
-        // }
-        // if (RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('status', Status::REQUESTED)->exists()) {
-        //     throw new ServiceUnavailableException();
-        // }
+
+        if (!$channel->status) {
+            throw new RechargeRequestNotExistException();
+        }
+        if (RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('status', Status::REQUESTED)->exists()) {
+            throw new ServiceUnavailableException();
+        }
         return $channel;
     }
 }

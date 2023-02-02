@@ -10,6 +10,7 @@ class ServiceUnavailableException extends Exception
 {
     public function render()
     {
-        return ResponseHelpers::customResponse(422, 'kdjfldjf');
+        return ResponseHelpers::customResponse(422, trans('channels/recharge.requested'));
+
     }
 }

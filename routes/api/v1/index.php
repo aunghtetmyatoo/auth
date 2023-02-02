@@ -51,8 +51,14 @@ Route::prefix('/room-type')->controller(RoomTypeController::class)->group(functi
     Route::post('/list', 'list');
 });
 
-
-
+// For Game Dashboard
+Route::prefix('/users/recharge-request')->middleware('auth:player')->controller(RechargeRequestController::class)->group(function () {
+    Route::post('/', 'index');
+    Route::post('/enquiry-usdt', 'enquiryUsdt');
+    Route::post('/usdt', 'usdt');
+    Route::post('/cancelled/usdt', 'cancelledUsdt');
+    Route::post('/create-recharge', 'createRecharge');
+});
 
 
 

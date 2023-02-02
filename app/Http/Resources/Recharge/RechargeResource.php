@@ -21,13 +21,10 @@ class RechargeResource extends JsonResource
             "requested_amount" => $this->requested_amount,
             "status" => $this->status,
             'user_name' => $this->user->name,
-            // 'transaction_screenshot' => $this->transaction_screenshot,
-            // 'payment_type' => $this->payment_type->name,
             'screenshot' => $this->screenshot,
             'status' => $this->status,
             'admin_name' => $this->admin_id ? $this->admin->name : '-',
-            // 'time_expire' =>$this->created_at->addMinutes(30)->format('Y-m-d H:i:s'),
-            'time_expire' =>Carbon::now()->greaterThan($this->created_at->addMinutes(30)) ? "Expire" : $this->created_at->addMinutes(30)->format('Y-m-d H:i:s')
+            'time_expire' =>Carbon::now()->greaterThan($this->expired_at) ? "Expire" : $this->created_at->addMinutes(30)->format('Y-m-d H:i:s')
             ];
     }
 }
