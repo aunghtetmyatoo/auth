@@ -1,0 +1,17 @@
+<?php
+
+namespace App\CustomFunctions;
+
+class ResponseHelpers
+{
+    public static function customResponse($status_code, $message)
+    {
+        return response()->json(
+            [
+                'message' => $message,
+                'status'  => $status_code,
+            ],
+            $status_code
+        );
+    }
+}

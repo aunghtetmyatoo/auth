@@ -19,37 +19,37 @@ class WithdrawChannelSeeder extends Seeder
         $channels = [
             [
                 'name' => 'We Chat',
-                'currency_id' => ExchangeCurrency::whereName('CNY')->pluck('id')->first(),
+                'exchange_currency_id' => ExchangeCurrency::whereName('CNY')->pluck('id')->first(),
                 'handling_fee' => 0.7,
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'Alipay',
-                'currency_id' => ExchangeCurrency::whereName('CNY')->pluck('id')->first(),
+                'exchange_currency_id' => ExchangeCurrency::whereName('CNY')->pluck('id')->first(),
                 'handling_fee' => 0.7,
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'Bank Card',
-                'currency_id' => ExchangeCurrency::whereName('CNY')->pluck('id')->first(),
+                'exchange_currency_id' => ExchangeCurrency::whereName('CNY')->pluck('id')->first(),
                 'handling_fee' => 0.7,
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'KBZ Pay',
-                'currency_id' => ExchangeCurrency::whereName('MMK')->pluck('id')->first(),
+                'exchange_currency_id' => ExchangeCurrency::whereName('MMK')->pluck('id')->first(),
                 'handling_fee' => 0.7,
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'Thai Baht',
-                'currency_id' => ExchangeCurrency::whereName('THB')->pluck('id')->first(),
+                'exchange_currency_id' => ExchangeCurrency::whereName('THB')->pluck('id')->first(),
                 'handling_fee' => 0.7,
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'US Dollar',
-                'currency_id' => ExchangeCurrency::whereName('USD')->pluck('id')->first(),
+                'exchange_currency_id' => ExchangeCurrency::whereName('USD')->pluck('id')->first(),
                 'handling_fee' => 0.7,
                 'telegram_channel_id' => '-1001733825869'
             ],
