@@ -22,7 +22,8 @@ class RechargeResource extends JsonResource
             'payment_type' => $this->payment_type->name,
             'status' => $this->status,
             'admin_name' => $this->admin_id ? $this->admin->name : '-',
-            'time_expire' =>$this->created_at->addMinutes(30)->format('Y-m-d H:i:s'),
+            // 'time_expire' =>$this->created_at->addMinutes(30)->format('Y-m-d H:i:s'),
+            'time_expire' =>Carbon::now()->greaterThan($this->created_at->addMinutes(30)) ? "Expire" : $this->created_at->addMinutes(30)->format('Y-m-d H:i:s')
             ];
     }
 }

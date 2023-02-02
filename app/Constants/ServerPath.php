@@ -63,4 +63,8 @@ class ServerPath
     // For Card Game, Gift API
     const GIFT =  self::CARD_GAME . 'gift/';
     const BUY_GIFT = self::GIFT . 'buy-gift';
+
+    // For Card Game, Gift API
+    const ROOM_TYPE =  self::CARD_GAME . 'room-type/';
+    const ROOM_TYPE_LIST = self::ROOM_TYPE . 'list';
 }
