@@ -101,7 +101,6 @@ class RechargeRequestController extends Controller
     public function cancelledUsdt(Request $request)
     {
         return $this->cancelledRequest('USDT');
-
     }
     public function cancelledKbz(Request $request)
     {
@@ -138,7 +137,7 @@ class RechargeRequestController extends Controller
         $recharge_request->refresh();
 
         $recharge_request->update([
-           'reference_id' => (new RechargeGenerateReferenceId())->execute($prefix,$recharge_request->sequence, 12)
+            'reference_id' => (new RechargeGenerateReferenceId())->execute($prefix,$recharge_request->sequence, 12)
 
         ]);
 
@@ -156,7 +155,7 @@ class RechargeRequestController extends Controller
         Http::post('https://api.telegram.org/bot' . TelegramConstant::bot_token . '/sendMessage', [
             'chat_id' => TelegramConstant::chat_id,
             'text' =>  'Recharge Requested'."(" .$channel->name. ")".PHP_EOL.
-             'Account Name - ' . $account_name . PHP_EOL .
+            'Account Name - ' . $account_name . PHP_EOL .
                 'Phone Number - ' . $account_phone_number . PHP_EOL .
                 'Amount -' . $request->amount .PHP_EOL.
                 'Request Id -' . $recharge_request->reference_id . PHP_EOL .

@@ -16,6 +16,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
+        $this->call(RoleSeeder::class);
+
+        $this->call(PermissionSeeder::class);
+
         $this->call(PassportClientSeeder::class);
 
         $this->call(GameTypeCategorySeeder::class);
@@ -35,5 +39,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ExchangeCurrencySeeder::class);
         $this->call(RechargeChannelSeeder::class);
         $this->call(WithdrawChannelSeeder::class);
+
     }
 }
