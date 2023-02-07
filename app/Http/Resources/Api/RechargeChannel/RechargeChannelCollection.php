@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Recharge;
+namespace App\Http\Resources\Api\RechargeChannel;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class RechargeCollection extends ResourceCollection
+class RechargeChannelCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -14,9 +14,6 @@ class RechargeCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return [
-            'results' => $this->collection,
-            'has_more' => $this->nextPageUrl() ? true : false
-            ];
+        return parent::toArray($request);
     }
 }

@@ -36,6 +36,12 @@ class GeneralLedgerSeeder extends Seeder
                 'reference_id' => 'CASH_OUT',
                 'amount' => 900000,
             ],
+            [
+                'name' => 'withdraw payable',
+                'reference_id' => 'WDL_PAYABLE',
+                'amount' => 900000,
+            ],
+           
         ];
 
         foreach ($general_ledgers as $general_ledger) {
