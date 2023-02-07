@@ -38,6 +38,7 @@ class Status
     const AGENT = "AGENT";
     const COMPLETED = "COMPLETED";
     const RECHARGE = "RECHARGE";
+    const WITHDRAW = "WITHDRAW";
     const USER = "USER";
     const BOT = "BOT";
     const PLAY_WITH_USER = "PLAY_WITH_USER";

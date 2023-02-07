@@ -22,6 +22,9 @@ class TransactionTypeSeeder extends Seeder
             TransactionType::Cash,
             TransactionType::Bot,
             TransactionType::Player,
+            TransactionType::Withdraw,
+            TransactionType::Recharge,
+
         ];
 
         foreach ($transaction_types as $transaction_type) {

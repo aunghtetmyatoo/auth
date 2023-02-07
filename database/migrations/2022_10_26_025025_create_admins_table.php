@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('phone_number', MigrationLength::IDENTIFIER)->index();
             $table->string('password');
             $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique();
-
+            $table->string('role')->nullable();
+            $table->double('amount')->default(0.00);
             // security things
             $table->string('device_id', MigrationLength::DEVICE_ID)->nullable();
             $table->string('user_agent')->nullable();

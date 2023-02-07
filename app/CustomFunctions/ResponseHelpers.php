@@ -18,6 +18,4 @@ class ResponseHelpers
             $status_code
         );
     }
-
-
 }

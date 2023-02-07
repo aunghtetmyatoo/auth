@@ -3,12 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\Uuid;
+use App\Models\WithdrawRequest;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
-use App\Traits\Uuid;
-use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -107,6 +108,9 @@ class User extends Authenticatable
     public function recharge_request()
     {
         return $this->hasOne(RechargeRequest::class);
+    }
+    public function withdraw_request(){
+        return $this->hasOne(WithdrawRequest::class);
     }
 
 

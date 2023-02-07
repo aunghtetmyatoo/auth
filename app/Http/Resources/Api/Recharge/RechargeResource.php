@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Recharge;
+namespace App\Http\Resources\Api\Recharge;
 
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,12 +17,12 @@ class RechargeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            "recharge_cahnnel_id"=>$this->recharge_channel_id,
+            "recharge_channel_name"=>$this->recharge_channel->name,
+            "Reference"=>$this->reference_id,
+            'user_name' => $this->user->name,
+            'phone' => $this->user->phone_number,
             "requested_amount" => $this->requested_amount,
             "status" => $this->status,
-            'user_name' => $this->user->name,
-            'screenshot' => $this->screenshot,
-            'status' => $this->status,
             'admin_name' => $this->admin_id ? $this->admin->name : '-',
             'time_expire' =>Carbon::now()->greaterThan($this->expired_at) ? "Expire" : $this->created_at->addMinutes(30)->format('Y-m-d H:i:s')
             ];

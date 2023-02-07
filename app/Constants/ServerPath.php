@@ -6,8 +6,8 @@ class ServerPath
 {
     const CARD_GAME = 'http://card-games.test/api/v1/card-game/';
     const GAMBLING_AUTH = 'http://gamblingauth.test/api/v1/';
-    const GAME_SOCKET = 'https://game-socket.com/api/v1/';
-    // const GAME_SOCKET = 'http://localhost:3000/api/v1/';
+    // const GAME_SOCKET = 'https://game-socket.com/api/v1/';
+    const GAME_SOCKET = 'http://localhost:3000/api/v1/';
 
 
     // For Game Socket

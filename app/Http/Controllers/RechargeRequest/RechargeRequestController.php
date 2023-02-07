@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\RechargeRequest;
 
+use Exception;
 use App\Models\User;
 use App\Constants\Status;
 use App\Actions\StoreFile;
@@ -17,15 +18,18 @@ use App\Constants\TelegramConstant;
 use App\Actions\GenerateReferenceId;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
+use App\CustomFunctions\ResponseHelpers;
 use App\Actions\RechargeGenerateReferenceId;
+use App\Actions\RechargeWithdrawReferenceId;
 use App\Http\Requests\Api\Enquiry\UsdtRequest;
 use App\Exceptions\ServiceUnavailableException;
-use App\Http\Resources\Recharge\RechargeResource;
-use App\Http\Resources\Recharge\RechargeCollection;
 use App\Exceptions\RechargeRequestNotExistException;
+use App\Http\Resources\Api\Recharge\RechargeResource;
+use App\Http\Resources\Api\Recharge\RechargeCollection;
 use App\Http\Requests\Api\Recharge\Enquiry\EnquiryKbzRequest;
 use App\Http\Requests\Api\Recharge\Enquiry\EnquiryUsdtRequest;
 use App\Http\Requests\Api\RechargeRequest\RechargeCreateRequest;
+use App\Http\Resources\Api\RechargeChannel\RechargeChannelCollection;
 
 class RechargeRequestController extends Controller
 {
@@ -61,15 +65,33 @@ class RechargeRequestController extends Controller
         return new RechargeCollection($rechargeRequest->orderBy('created_at', 'DESC')->paginate($request->perPage ? $request->perPage : 10));
         // return new RechargeCollection($rechargeRequest->paginate($request->perPage ? $request->perPage : 5));
     }
+
+    public function channels()
+    {
+        $channels = RechargeChannel::all();
+        return $this->responseSucceed([
+            'channels' => new RechargeChannelCollection($channels),
+        ]);
+    }
+
     public function enquiryUsdt(EnquiryUsdtRequest $request)
     {
         $channel = $this->validation('USDT');
-        $ustd_amount = (float)($request->amount) * ($channel->exchange_currency->sell_rate);
+        $usdt_amount= (float)($request->amount) * ($channel->exchange_currency->sell_rate);
+        if (floor($usdt_amount) != $usdt_amount) {
+            [$number, $decimal] = explode('.', (string) $usdt_amount);
+
+            if (!str_starts_with($decimal, '0')) {
+                $number++;
+            }
+
+            $usdt_amount = $number;
+        }
 
         return $this->responseSucceed([
             'recharge_amount' => number_format($request->amount),
-            'code' => $ustd_amount . 'USDT.TRC20',
-            'usdt_amount' => $ustd_amount,
+            'code' => $usdt_amount . 'USDT.TRC20',
+            'usdt_amount' => $usdt_amount,
 
         ]);
     }
@@ -88,7 +110,7 @@ class RechargeRequestController extends Controller
 
         return $this->responseSucceed([
             'recharge_amount' => number_format($request->amount),
-            'code' => number_format($kbz_amount) .$channel->exchange_currency->sign,
+            'code' => number_format($kbz_amount) . $channel->exchange_currency->sign,
 
         ]);
     }
@@ -96,7 +118,7 @@ class RechargeRequestController extends Controller
     public  function kbzPay(RechargeCreateRequest $request)
     {
         $channel = $this->validation('KBZ Pay');
-        return $this->createRequest($request, $channel, ChannelPrefix::USTD);
+        return $this->createRequest($request, $channel, ChannelPrefix::KBZ_PAY);
     }
     public function cancelledUsdt(Request $request)
     {
@@ -114,7 +136,7 @@ class RechargeRequestController extends Controller
         if (!$channel->status) {
             throw new RechargeRequestNotExistException();
         }
-        if (RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('status', Status::REQUESTED)->exists()) {
+        if (RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->whereIn('status', [Status::REQUESTED,Status::CONFIRMED])->where('expired_at','>=',now())->exists()) {
             throw new ServiceUnavailableException();
         }
         return $channel;
@@ -122,23 +144,28 @@ class RechargeRequestController extends Controller
 
     private function createRequest(Request $request,RechargeChannel $channel, string $prefix){
 
-        $store_file = new StoreFile('Image/Recharge' . $request->user_id);
-        $transaction_screenshot_path = $store_file->execute(file: $request->file('screenshot'), file_prefix: Status::RECHARGE);
 
-        $recharge_request = RechargeRequest::create([
-            "user_id" => auth()->user()->id,
-            "screenshot" => $transaction_screenshot_path,
-            "requested_amount" => $request->amount,
-            'reference_id' => Str::uuid(),
-            "recharge_channel_id" => $channel->id,
-            "expired_at" => now()->addMinutes(30),
+        try{
+            $store_file = new StoreFile('Image/Recharge' . $request->user_id);
+            $transaction_screenshot_path = $store_file->execute(file: $request->file('screenshot'), file_prefix: Status::RECHARGE);
+            $recharge_request = RechargeRequest::create([
+                "user_id" => auth()->user()->id,
+                "screenshot" => $transaction_screenshot_path,
+                "requested_amount" => $request->amount,
+                'reference_id' => Str::uuid(),
+                "recharge_channel_id" => $channel->id,
+                "expired_at" => now()->addMinutes(30),
 
-        ]);
+            ]);
+        } catch (Exception $e) {
+            return ResponseHelpers::customResponse(422, __('channels/recharge.failed.default'));
+        }
+
 
         $recharge_request->refresh();
 
         $recharge_request->update([
-           'reference_id' => (new RechargeGenerateReferenceId())->execute($prefix,$recharge_request->sequence, 12)
+           'reference_id' => (new RechargeWithdrawReferenceId())->execute($prefix,$recharge_request->sequence, 12)
 
         ]);
 
@@ -174,7 +201,7 @@ class RechargeRequestController extends Controller
     public function cancelledRequest(string $channel){
 
         $channel = RechargeChannel::where('name', $channel)->first();
-        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>=', now())->first();
+        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>=', now())->where('status',Status::REQUESTED)->first();
 
         $request_cancelled->update([
             'status' => 'CANCELLED'

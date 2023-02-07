@@ -4,7 +4,7 @@ namespace App\Actions;
 
 use Illuminate\Support\Str;
 
-class RechargeGenerateReferenceId
+class RechargeWithdrawReferenceId
 {
     public function execute(string $prefix, int $digit, int $pad_length = 15)
     {
