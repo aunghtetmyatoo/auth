@@ -16,7 +16,7 @@ use App\Constants\TelegramConstant;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 use App\Http\Resources\Recharge\RechargeResource;
-use App\Http\Resources\Recharge\RechargeCollection;
+use App\Http\Resources\Api\Recharge\RechargeCollection;
 use App\Http\Requests\Api\Admin\Recharge\ConfirmRequest;
 use App\Http\Requests\Api\Admin\Recharge\CompleteRequest;
 use App\Http\Requests\Api\RechargeRequest\RechargeCreateRequest;

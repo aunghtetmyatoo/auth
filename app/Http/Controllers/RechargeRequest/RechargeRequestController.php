@@ -23,6 +23,7 @@ use App\Actions\RechargeGenerateReferenceId;
 use App\Actions\RechargeWithdrawReferenceId;
 use App\Http\Requests\Api\Enquiry\UsdtRequest;
 use App\Exceptions\ServiceUnavailableException;
+use App\Exceptions\CancelRechargeRequestException;
 use App\Exceptions\RechargeRequestNotExistException;
 use App\Http\Resources\Api\Recharge\RechargeResource;
 use App\Http\Resources\Api\Recharge\RechargeCollection;
@@ -77,17 +78,7 @@ class RechargeRequestController extends Controller
     public function enquiryUsdt(EnquiryUsdtRequest $request)
     {
         $channel = $this->validation('USDT');
-        $usdt_amount= (float)($request->amount) * ($channel->exchange_currency->sell_rate);
-        if (floor($usdt_amount) != $usdt_amount) {
-            [$number, $decimal] = explode('.', (string) $usdt_amount);
-
-            if (!str_starts_with($decimal, '0')) {
-                $number++;
-            }
-
-            $usdt_amount = $number;
-        }
-
+        $usdt_amount= ceil((float)($request->amount) * ($channel->exchange_currency->sell_rate));
         return $this->responseSucceed([
             'recharge_amount' => number_format($request->amount),
             'code' => $usdt_amount . 'USDT.TRC20',
@@ -200,11 +191,14 @@ class RechargeRequestController extends Controller
     public function cancelledRequest(string $channel){
 
         $channel = RechargeChannel::where('name', $channel)->first();
-        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>=', now())->where('status',Status::REQUESTED)->first();
+        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>', now())->where('status',Status::REQUESTED)->first();
 
-        $request_cancelled->update([
-            'status' => 'CANCELLED'
-        ]);
+        if($request_cancelled->status=="REQUESTED"){
+            $request_cancelled->update([
+                'status' => 'CANCELLED'
+            ]);
+        }
+
 
         // For RealTime GameDashboard
         $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [

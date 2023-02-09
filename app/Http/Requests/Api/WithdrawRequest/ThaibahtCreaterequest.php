@@ -31,6 +31,8 @@ class ThaibahtCreaterequest extends FormRequest
             'account_number' => ['required', 'string', 'max:255'],
             'bank_name' => ['required', 'string', 'max:255'],
             'amount' => ['min:' . $channel->min_per_transaction, 'max:' . $channel->max_per_transaction],
+            'passcode' => ['required', 'string'],
+
         ];
     }
 }
