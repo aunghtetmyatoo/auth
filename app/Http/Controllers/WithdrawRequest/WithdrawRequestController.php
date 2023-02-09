@@ -38,12 +38,12 @@ use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestResource;
 use App\Http\Resources\Api\RechargeChannel\RechargeChannelCollection;
 use App\Http\Resources\Api\WithdrawChannel\WithdrawChannelCollection;
 use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestCollection;
-
+use App\Actions\Auth\CheckPasscode;
 class WithdrawRequestController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct(private HandleEndpoint $handleEndpoint )
     {
     }
 
@@ -84,6 +84,7 @@ class WithdrawRequestController extends Controller
 
     public function findWithdrawChannel(string $channel_name)
     {
+
         $channel = WithdrawChannel::where('name', $channel_name)->first();
         if (!$channel) {
             return [
@@ -101,6 +102,7 @@ class WithdrawRequestController extends Controller
     public function enquiryKbz(Request $request)
     {
         $findWithdrawChannel = $this->findWithdrawChannel('KBZ Pay');
+
         $channel = $findWithdrawChannel['data'];
         $validation = $this->validation($request, $channel);
         if ($validation['result'] == 0) {
@@ -108,11 +110,11 @@ class WithdrawRequestController extends Controller
         }
 
         return $this->responseSucceed([
-            'withdraw_amount' => "¥ {$request->amount}",
-            'handling_fee' => "¥ {$channel->handling_fee}",
-            'balance' => "¥ " . auth()->user()->amount,
-            'exchange_rate' => "¥ 1 = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
-            'actual_arrival' => $channel->exchange_currency->sign . " " . $request->amount * $channel->exchange_currency->buy_rate,
+            'withdraw_amount' => "{$request->amount} MMK",
+            'handling_fee' => "{$channel->handling_fee} MMK",
+            'balance' =>auth()->user()->amount . "MMK",
+            // 'exchange_rate' => "¥ 1 = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
+            'actual_arrival' => "{$request->amount} MMK",
         ]);
     }
 
@@ -186,6 +188,17 @@ class WithdrawRequestController extends Controller
 
     public function kbzPay(KbzCreateRequest $request)
     {
+
+         $check_passcode=(new CheckPasscode())->execute($request->passcode);
+
+         if($check_passcode['result']==0){
+            return ResponseHelpers::customResponse(422, $check_passcode['message']);
+
+         }
+        if ($check_passcode['result'] == 0) {
+            return ResponseHelpers::customResponse(401, $check_passcode['message']);
+        }
+
         $findWithdrawChannel = $this->findWithdrawChannel('KBZ Pay');
         if ($findWithdrawChannel['result'] == 0) {
             return ResponseHelpers::customResponse(422, $findWithdrawChannel['message']);
@@ -198,12 +211,23 @@ class WithdrawRequestController extends Controller
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
 
+
         return $this->createRequest($channel, $request, ChannelPrefix::KBZ_PAY);
     }
 
     public function aliPay(AlipayCreateRequest $request)
     {
-        $findWithdrawChannel = $this->findWithdrawChannel('KBZ Pay');
+        $check_passcode = (new CheckPasscode())->execute($request->passcode);
+
+        if ($check_passcode['result'] == 0) {
+            return ResponseHelpers::customResponse(422, $check_passcode['message']);
+        }
+        if ($check_passcode['result'] == 0) {
+            return ResponseHelpers::customResponse(401, $check_passcode['message']);
+        }
+
+
+        $findWithdrawChannel = $this->findWithdrawChannel('Alipay');
         if ($findWithdrawChannel['result'] == 0) {
             return ResponseHelpers::customResponse(422, $findWithdrawChannel['message']);
         }
@@ -220,6 +244,15 @@ class WithdrawRequestController extends Controller
 
     public function bankCard(BankCardCreateRequest $request)
     {
+        $check_passcode = (new CheckPasscode())->execute($request->passcode);
+
+        if ($check_passcode['result'] == 0) {
+            return ResponseHelpers::customResponse(422, $check_passcode['message']);
+        }
+        if ($check_passcode['result'] == 0) {
+            return ResponseHelpers::customResponse(401, $check_passcode['message']);
+        }
+
         $findWithdrawChannel = $this->findWithdrawChannel('Bank Card');
         if ($findWithdrawChannel['result'] == 0) {
             return ResponseHelpers::customResponse(422, $findWithdrawChannel['message']);
@@ -236,6 +269,15 @@ class WithdrawRequestController extends Controller
 
     public function thaiBaht(ThaibahtCreaterequest $request)
     {
+        $check_passcode = (new CheckPasscode())->execute($request->passcode);
+
+        if ($check_passcode['result'] == 0) {
+            return ResponseHelpers::customResponse(422, $check_passcode['message']);
+        }
+        if ($check_passcode['result'] == 0) {
+            return ResponseHelpers::customResponse(401, $check_passcode['message']);
+        }
+
         $findWithdrawChannel = $this->findWithdrawChannel('Thai Baht');
         if ($findWithdrawChannel['result'] == 0) {
             return ResponseHelpers::customResponse(422, $findWithdrawChannel['message']);
@@ -252,6 +294,15 @@ class WithdrawRequestController extends Controller
 
     public function weChat(WeChatCreaterequest $request)
     {
+        $check_passcode = (new CheckPasscode())->execute($request->passcode);
+
+        if ($check_passcode['result'] == 0) {
+            return ResponseHelpers::customResponse(422, $check_passcode['message']);
+        }
+        if ($check_passcode['result'] == 0) {
+            return ResponseHelpers::customResponse(401, $check_passcode['message']);
+        }
+
         $findWithdrawChannel = $this->findWithdrawChannel('We Chat');
         if ($findWithdrawChannel['result'] == 0) {
             return ResponseHelpers::customResponse(422, $findWithdrawChannel['message']);
@@ -384,7 +435,7 @@ class WithdrawRequestController extends Controller
             return $this->responseSucceed([
                 'time' => $withdraw_request->created_at->format('H:i:s'),
                 'payee' => $withdraw_request->payee,
-                'withdraw_amount' => $withdraw_request->amount,
+                'withdraw_amount' => $withdraw_request->amount . "MMK ",
                 'handling_fee' => $withdraw_request->handling_fee,
             ]);
         } catch (Exception $e) {

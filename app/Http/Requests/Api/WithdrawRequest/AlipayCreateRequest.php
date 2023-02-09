@@ -30,6 +30,8 @@ class AlipayCreateRequest extends FormRequest
             'payee' => ['required', 'string', 'max:255'],
             'account_number' => ['required', 'string', 'max:255'],
             'amount' => ['min:' . $channel->min_per_transaction, 'max:' . $channel->max_per_transaction],
+            'passcode' => ['required', 'string'],
+
         ];
     }
 }

@@ -76,7 +76,7 @@ class AdminSeeder extends Seeder
 
             if( $admin['name'] == 'Admin-1'){
                 $admin->syncRoles('Admin');
-                $admin->givePermissionTo("'recharge request list");
+                // $admin->givePermissionTo("'recharge request list");
             }
         }
     }
