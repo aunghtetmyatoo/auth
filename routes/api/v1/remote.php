@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\PaymentType\PaymentTypeController;
-use App\Http\Controllers\RechargeRequest\RechargeRequestController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Remote\RemoteUserController;
 use App\Http\Controllers\Remote\RemoteHistoryController;
 use App\Http\Controllers\Remote\RemoteTransactionController;
 use App\Http\Controllers\Remote\RemoteGameTypeUserController;
+use App\Http\Controllers\Remote\RemoteRechargeRequestController;
 use App\Http\Controllers\Remote\RemoteWinLoseMatchController;
+use App\Http\Controllers\Remote\RemoteWithdrawRequestController;
 
 Route::prefix('/users')->controller(RemoteUserController::class)->group(function () {
     Route::post('/update-play-status', 'updatePlayStatus');
@@ -47,3 +48,15 @@ Route::prefix('/payment-type')->controller(PaymentTypeController::class)->group(
     Route::post('/select', 'Select');
 });
 
+Route::prefix('recharge-requests')->controller(RemoteRechargeRequestController::class)->group(function () {
+    Route::post('confirm', 'confirmRecharge');
+    Route::post('reject', 'rejectRecharge');
+    Route::post('request', 'requestRecharge');
+    Route::post('complete', 'completeRecharge');
+});
+
+Route::prefix('withdraw-requests')->controller(RemoteWithdrawRequestController::class)->group(function () {
+    Route::post('refund', 'refundWithdraw');
+    Route::post('confirm', 'confirmWithdraw');
+    Route::post('complete', 'completeWithdraw');
+});
