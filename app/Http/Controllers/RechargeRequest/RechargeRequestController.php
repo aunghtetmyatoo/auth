@@ -155,13 +155,13 @@ class RechargeRequestController extends Controller
         $recharge_request->refresh();
 
         $recharge_request->update([
-           'reference_id' => (new RechargeWithdrawReferenceId())->execute($prefix,$recharge_request->sequence, 12)
+            'reference_id' => (new RechargeWithdrawReferenceId())->execute($prefix,$recharge_request->sequence, 12)
 
         ]);
 
         // For RealTime GameDashboard
         $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
-            'rechargeRequest' =>  new RechargeResource(RechargeRequest::findOrFail($recharge_request->id))
+            'rechargeRequest' =>  $recharge_request->id
         ]);
 
         $auth_user = auth()->user();
