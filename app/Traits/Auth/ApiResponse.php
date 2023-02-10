@@ -96,4 +96,15 @@ trait ApiResponse
     {
         return response()->json($data, 200);
     }
+
+    public function responseBadRequest(string $message = '', $status_code = Response::HTTP_BAD_REQUEST): JsonResponse
+    {
+        $response = response()->json([
+            'data'    => [
+                ...$this->translate(message: $message, code: $status_code),
+            ],
+            'code'    => $status_code,
+        ], $status_code);
+        return $response;
+    }
 }

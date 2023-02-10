@@ -12,6 +12,19 @@ class History extends Model
 
     protected $table = "histories";
 
+    protected $fillable = [
+        'historiable_id',
+        'historiable_type',
+        'transactionable_id',
+        'transactionable_type',
+        'transaction_type_id',
+        'reference_id',
+        'transaction_amount',
+        'amount_before_transaction',
+        'amount_after_transaction',
+        'is_from',
+    ];
+
     public function historiable()
     {
         return $this->morphTo();

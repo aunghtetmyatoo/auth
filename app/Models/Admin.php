@@ -36,6 +36,11 @@ class Admin extends Authenticatable
         'created_at',
         'updated_at',
     ];
+
+    protected $fillable = [
+        'amount',
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *

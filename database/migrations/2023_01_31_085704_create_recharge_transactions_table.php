@@ -22,8 +22,7 @@ return new class extends Migration
             $table->foreign("transaction_type_id")->references("id")->on("transaction_types");
             $table->uuid("recharge_request_id")->index();
             $table->foreign("recharge_request_id")->references("id")->on("recharge_requests");
-            $table->uuid("transaction_id")->index();
-            $table->foreign("transaction_id")->references("id")->on("histories");
+            $table->string("reference_id")->index();
             $table->double('amount')->nullable();
             $table->enum("from_amount_status", [Status::DEBIT, Status::CREDIT])->default(Status::CREDIT);
             $table->enum("to_amount_status", [Status::DEBIT, Status::CREDIT])->default(Status::DEBIT);

@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers\Remote;
 
-use App\Models\GameType;
+use App\Models\User;
+use App\Models\Admin;
 use App\Constants\Status;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\RechargeRequest;
+use App\Models\TransactionType;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
+use App\Constants\TelegramConstant;
 use App\Http\Controllers\Controller;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Requests\Api\Remote\UpdateGameCoinRequest;
-use App\Http\Requests\Api\Remote\CreateGameTypeUserRequest;
+use Illuminate\Support\Facades\Http;
+use App\Actions\Transaction\ReferenceId;
+use App\Actions\Transaction\LogTransaction;
+use App\Exceptions\AmountNotEnoughException;
+use App\Enums\TransactionType as EnumsTransactionType;
 
 class RemoteRechargeRequestController extends Controller
 {
@@ -19,11 +25,11 @@ class RemoteRechargeRequestController extends Controller
 
     public function confirmRecharge(Request $request)
     {
-        $invalid_status = DB::transaction(function () use ($request) {
+        [$invalid_status, $recharge_request] = DB::transaction(function () use ($request) {
             $recharge_request_locked = RechargeRequest::lockForUpdate()->find($request->id);
 
             if ($recharge_request_locked->status != Status::REQUESTED) {
-                return true;
+                return [true, $recharge_request_locked];
             }
 
             $recharge_request_locked->update([
@@ -31,154 +37,178 @@ class RemoteRechargeRequestController extends Controller
                 'confirmed_amount' => $request->confirmed_amount,
                 'received_amount' => $request->received_amount,
                 'received_from' => $request->received_from,
-                // 'rate' => $recharge_request_locked->channel->currency->sell_rate,
+                'rate' => $recharge_request_locked->recharge_channel->exchange_currency->sell_rate,
                 'rate' => 400,
                 'description' => $request->description,
                 'confirmed_at' => now(),
-                // 'completed_by' => auth()->user()->id,
-                'completed_by' => 1,
+                'completed_by' => $request->admin_id,
                 'read_at' => null,
             ]);
+
+            $recharge_request_locked->refresh();
+            return [false, $recharge_request_locked];
         }, 5);
 
         if ($invalid_status) {
-            return response()->json([
-                'data' => [
-                    'message' => 'This request is not in Requested status!',
-                ],
-                'code' => 400,
-            ], 400);
+            return $this->responseBadRequest(
+                message: "This request is not in Requested status!"
+            );
         }
+
+        Http::post('https://api.telegram.org/bot' . TelegramConstant::bot_token . '/sendMessage', [
+            'chat_id' => TelegramConstant::chat_id,
+            'text' =>  'Recharge Requested' . "(" . $recharge_request->recharge_channel->name . ")" . PHP_EOL .
+                'Status -' . $recharge_request->status . PHP_EOL .
+                'Account Name - ' . $recharge_request->user->name . PHP_EOL .
+                'Phone Number - ' . $recharge_request->user->phone_number . PHP_EOL .
+                'Requested Amount -' . $recharge_request->requested_amount . PHP_EOL .
+                'Confirmed Amount -' . $recharge_request->confirmed_amount . PHP_EOL .
+                'Request Id -' . $recharge_request->reference_id . PHP_EOL .
+                'Date -' . now()->format('Y-m-d H:i:s')
+        ]);
 
         return $this->responseSucceed(
             message: "Successfully confirmed!."
         );
-
-        // $recharge_request->refresh();
-        // RechargeStatusUpdated::dispatch('StatusConfirmed', $recharge_request);
     }
 
     public function rejectRecharge(Request $request)
     {
-        $status = RechargeRequest::find($request->id)->pluck('status');
-        dd($status);
-        $invalid_status = DB::transaction(function () use ($request) {
+        [$invalid_status, $request_locked] = DB::transaction(function () use ($request) {
             $request_locked = RechargeRequest::lockForUpdate()->find($request->id);
 
             if ($request_locked->status != Status::REQUESTED) {
-                return true;
+                return [true, $request_locked];
             }
 
             $request_locked->update([
                 'status' => Status::REJECTED,
             ]);
+
+            $request_locked->refresh();
+            return [false, $request_locked];
         }, 5);
 
-        $status = RechargeRequest::find($request->id)->pluck('status');
-
         if ($invalid_status) {
-            return response()->json([
-                'data' => [
-                    'message' => 'Cannot reject!, this request is in ' . $status . ' status!',
-                ],
-            ], 400);
+            return $this->responseBadRequest(
+                message: "Cannot reject!, this request is in ' . $request_locked->status . ' status!"
+            );
         }
 
-        return "done";
+        Http::post('https://api.telegram.org/bot' . TelegramConstant::bot_token . '/sendMessage', [
+            'chat_id' => TelegramConstant::chat_id,
+            'text' =>  'Recharge Requested' . "(" . $request_locked->recharge_channel->name . ")" . PHP_EOL .
+                'Status -' . $request_locked->status . PHP_EOL .
+                'Account Name - ' . $request_locked->user->name . PHP_EOL .
+                'Phone Number - ' . $request_locked->user->phone_number . PHP_EOL .
+                'Requested Amount -' . $request_locked->requested_amount . PHP_EOL .
+                'Request Id -' . $request_locked->reference_id . PHP_EOL .
+                'Date -' . now()->format('Y-m-d H:i:s')
+        ]);
 
-        // RechargeStatusUpdated::dispatch('StatusRejected', $request);
+        return $this->responseSucceed(
+            message: "Successfully rejected!."
+        );
     }
 
     public function requestRecharge(Request $request)
     {
-        [$invalid_status, $requested] = DB::transaction(function () use ($request) {
+        [$invalid_status, $requested, $request_locked] = DB::transaction(function () use ($request) {
             $request_locked = RechargeRequest::lockForUpdate()->find($request->id);
+
             if ($request_locked->status != Status::CANCELLED && ($request_locked->status == Status::REQUESTED  && !$request_locked->expired_at->isFuture())) {
-                return [false, true];
+                return [true, false, $request_locked];
             }
 
-            $requested = $request_locked->user->recharge_request->whereHas('recharge_channel', function ($query) use ($request_locked) {
+            $requested = $request_locked->user->recharge_requests()->whereHas('recharge_channel', function ($query) use ($request_locked) {
                 $query->where('name', $request_locked->recharge_channel->name);
             })->whereIn('status', [Status::REQUESTED, Status::CONFIRMED])
                 ->where('expired_at', '>=', now())->first();
 
             if ($requested) {
-                return [false, true];
+                return [false, true, $request_locked];
             }
 
             $request_locked->update([
                 'status' => Status::REQUESTED,
                 'expired_at' => now()->addMinutes($request_locked->recharge_channel->requests_expired_in),
             ]);
+
+            $request_locked->refresh();
+            return [false, true, $request_locked];
         }, 5);
 
         if ($invalid_status) {
-            return response()->json([
-                'message' => 'This request is not in cancelled or expired status!'
-            ], 400);
+            return $this->responseBadRequest(
+                message: "This request is not in cancelled or expired status!"
+            );
         }
 
         if ($requested) {
-            return response()->json([
-                'message' => 'This user currently have a request in process!'
-            ], 400);
+            return $this->responseBadRequest(
+                message: "This user currently have a request in process!"
+            );
         }
 
-        return "done";
+        Http::post('https://api.telegram.org/bot' . TelegramConstant::bot_token . '/sendMessage', [
+            'chat_id' => TelegramConstant::chat_id,
+            'text' =>  'Recharge Requested' . "(" . $request_locked->recharge_channel->name . ")" . PHP_EOL .
+                'Status -' . $request_locked->status . PHP_EOL .
+                'Account Name - ' . $request_locked->user->name . PHP_EOL .
+                'Phone Number - ' . $request_locked->user->phone_number . PHP_EOL .
+                'Requested Amount -' . $request_locked->requested_amount . PHP_EOL .
+                'Request Id -' . $request_locked->reference_id . PHP_EOL .
+                'Date -' . now()->format('Y-m-d H:i:s')
+        ]);
 
-        // $request->refresh();
-        // RechargeStatusUpdated::dispatch('StatusRequested', $request);
+        return $this->responseSucceed(
+            message: "Successfully requested!."
+        );
     }
 
-    public function completeRecharge(CompleteRequest $request, RechargeRequest $recharge_request)
+    public function completeRecharge(Request $request)
     {
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return response()->json([
-                'message' => 'Your password is incorrect.'
-            ], 400);
-        }
-
-        $invalid_status = DB::transaction(function () use ($recharge_request) {
-            $recharge_request_locked = RechargeRequest::lockForUpdate()->find($recharge_request->id);
+        [$invalid_status, $recharge_request_locked] = DB::transaction(function () use ($request) {
+            $recharge_request_locked = RechargeRequest::lockForUpdate()->find($request->id);
 
             if ($recharge_request_locked->status != Status::CONFIRMED) {
-                return true;
+                return [true, $recharge_request_locked];
             }
 
-            $pay_user_locked = Pay_user::lockForUpdate()->find($recharge_request_locked->pay_user->id);
-            $om_locked = User::lockForUpdate()->whereHas('roles', function ($query) {
-                $query->where('name', 'Operation Manager');
-            })->first();
+            $user_locked = User::lockForUpdate()->find($recharge_request_locked->user->id);
+            $om_locked = Admin::lockForUpdate()->whereId($request->admin_id)->whereRole('Operation Manager')->first();
 
             if ($om_locked->amount < $recharge_request_locked->confirmed_amount) {
                 throw new AmountNotEnoughException();
             }
 
-            $transaction_type = Transaction_type::whereType('Recharge')->first();
+            $transaction_type = TransactionType::whereName(EnumsTransactionType::Recharge)->first();
 
-            $invalid_log = (new MonitorTransaction([$pay_user_locked, $om_locked]))->execute();
-            if ($invalid_log) {
-                throw new TransactionFailedException();
-            }
+            // $invalid_log = (new MonitorTransaction([$user_locked, $om_locked]))->execute();
+            // if ($invalid_log) {
+            //     throw new TransactionFailedException();
+            //     throw new GeneralError();
+            // }
 
             $from_amount_before = $om_locked->amount;
             $from_amount_after = (float) bcsub($from_amount_before, $recharge_request_locked->confirmed_amount, 4);
 
-            $to_amount_before = $pay_user_locked->amount;
+            $to_amount_before = $user_locked->amount;
             $to_amount_after = (float) bcadd($to_amount_before, $recharge_request_locked->confirmed_amount, 4);
 
             $om_locked->update([
                 'amount' => $from_amount_after,
             ]);
 
-            $pay_user_locked->update([
+            $user_locked->update([
                 'amount' => $to_amount_after,
             ]);
 
             $transaction = $recharge_request_locked->recharge_transaction()->create([
                 'transaction_type_id' => $transaction_type->id,
-                'user_id' => $om_locked->id,
-                'transaction_id' => Str::uuid(),
+                'recharge_request_id' => $recharge_request_locked->id,
+                'user_id' => $user_locked->id,
+                'reference_id' => Str::uuid(),
                 'amount' => $recharge_request_locked->confirmed_amount,
                 'remark' => 'Recharge',
             ]);
@@ -189,41 +219,65 @@ class RemoteRechargeRequestController extends Controller
             ]);
 
             (new LogTransaction(
-                $transaction->user_transaction_log(),
+                $transaction->history(),
                 [
-                    'user_id' => $om_locked->id,
-                    'last_amount' => $from_amount_before,
-                    'current_amount' => $from_amount_after,
-                    'transaction_amount' => $transaction->amount,
+                    // For Operation Manager
+                    'historiable_id' => $om_locked->id,
+                    'historiable_type' => get_class($om_locked),
+                    'transactionable_id' => $transaction->id,
+                    'transactionable_type' => get_class($transaction),
+                    'transaction_type_id' => $transaction_type->id,
+                    'reference_id' => $recharge_request_locked->reference_id,
+                    'transaction_amount' => $recharge_request_locked->confirmed_amount,
+                    'amount_before_transaction' => $from_amount_before,
+                    'amount_after_transaction' => $from_amount_after,
+                    'is_from' => 0,
                 ],
-                $transaction->pay_user_transaction_log(),
+                $transaction->history(),
                 [
-                    'pay_user_id' => $pay_user_locked->id,
-                    'last_amount' => $to_amount_before,
-                    'current_amount' => $to_amount_after,
-                    'transaction_amount' => $transaction->amount,
-                    'to_account' => 1,
+                    // For User
+                    'historiable_id' => $user_locked->id,
+                    'historiable_type' => get_class($user_locked),
+                    'transactionable_id' => $transaction->id,
+                    'transactionable_type' => get_class($transaction),
+                    'transaction_type_id' => $transaction_type->id,
+                    'reference_id' => $recharge_request_locked->reference_id,
+                    'transaction_amount' => $recharge_request_locked->confirmed_amount,
+                    'amount_before_transaction' => $from_amount_before,
+                    'amount_after_transaction' => $from_amount_after,
+                    'is_from' => 1,
                 ]
             ))->execute();
 
             $recharge_request_locked->update([
-                'status' => 'Completed',
-                'completed_by' => auth()->id()
+                'status' => Status::COMPLETED,
+                'completed_by' => $request->admin_id,
             ]);
 
-            $recharge_request_locked->record()->create([
-                'pay_user_id' => $pay_user_locked->id,
-                'status' => 'Succeed',
-            ]);
+            $recharge_request_locked->refresh();
+            return [false, $recharge_request_locked];
         }, 5);
 
         if ($invalid_status) {
-            return response()->json([
-                'message' => 'This request is not in Confirmed status!'
-            ], 400);
+            return $this->responseBadRequest(
+                message: "This request is not in Confirmed status!"
+            );
         }
 
-        $recharge_request->refresh();
-        RechargeStatusCompleted::dispatch('StatusCompleted', $recharge_request);
+        Http::post('https://api.telegram.org/bot' . TelegramConstant::bot_token . '/sendMessage', [
+            'chat_id' => TelegramConstant::chat_id,
+            'text' =>  'Recharge Requested' . "(" . $recharge_request_locked->recharge_channel->name . ")" . PHP_EOL .
+                'Status -' . $recharge_request_locked->status . PHP_EOL .
+                'Account Name - ' . $recharge_request_locked->user->name . PHP_EOL .
+                'Phone Number - ' . $recharge_request_locked->user->phone_number . PHP_EOL .
+                'Requested Amount -' . $recharge_request_locked->requested_amount . PHP_EOL .
+                'Confirmed Amount -' . $recharge_request_locked->confirmed_amount . PHP_EOL .
+                'Request Id -' . $recharge_request_locked->reference_id . PHP_EOL .
+                'Date -' . now()->format('Y-m-d H:i:s')
+        ]);
+
+        return $this->responseSucceed(
+            message: "Successfully completed!."
+        );
     }
 }
