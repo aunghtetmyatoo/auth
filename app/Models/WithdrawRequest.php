@@ -12,14 +12,30 @@ class WithdrawRequest extends Model
 {
     use HasFactory, Uuid;
 
-    protected $table = "withdraw_requests";
-    protected $fillable = ["user_id", "sequence", "withdraw_channel_id", "reference_id", "rate","bank_name" , "payee","account_number","amount","handling_fee","screenshot"];
+    protected $table = 'withdraw_requests';
+
+    protected $fillable = [
+        'user_id',
+        'sequence',
+        'withdraw_channel_id',
+        'reference_id',
+        'rate',
+        'bank_name',
+        'payee',
+        'account_number',
+        'amount',
+        'handling_fee',
+        'screenshot',
+        'status',
+        'confirmed_at',
+        'confirmed_by',
+        'completed_by',
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
 
     public function admin()
     {
@@ -29,5 +45,10 @@ class WithdrawRequest extends Model
     public function withdraw_channel()
     {
         return $this->belongsTo(WithdrawChannel::class);
+    }
+
+    public function withdraw_transaction()
+    {
+        return $this->hasOne(WithdrawTransaction::class);
     }
 }

@@ -12,14 +12,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class WithdrawTransaction extends Model
 {
-    use HasFactory,Uuid;
-    protected $table = "withdraw_transactions";
-    protected $fillable=['user_id','transaction_type_id','withdraw_request_id','transaction_id','amount','handling_fees','from_amount_status','to_amount_status','remark'];
+    use HasFactory, Uuid;
+    protected $table = 'withdraw_transactions';
+    protected $fillable = [
+        'user_id',
+        'transaction_type_id',
+        'withdraw_request_id',
+        'reference_id',
+        'amount',
+        'handling_fees',
+        'from_amount_status',
+        'to_amount_status',
+        'remark'
+    ];
+
     public function users()
     {
         return $this->belongsTo(User::class);
     }
-
 
     public function transaction_type()
     {

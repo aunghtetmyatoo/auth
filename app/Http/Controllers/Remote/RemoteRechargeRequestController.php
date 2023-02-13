@@ -32,13 +32,16 @@ class RemoteRechargeRequestController extends Controller
                 return [true, $recharge_request_locked];
             }
 
+            $currency = $recharge_request_locked->recharge_channel->exchange_currency;
+            $rate = $currency->sell_rate;
+            $confirmed_amount = floor((float) bcdiv($request->received_amount, $rate, 4));
+
             $recharge_request_locked->update([
                 'status' => Status::CONFIRMED,
-                'confirmed_amount' => $request->confirmed_amount,
+                'confirmed_amount' => $confirmed_amount,
                 'received_amount' => $request->received_amount,
                 'received_from' => $request->received_from,
-                'rate' => $recharge_request_locked->recharge_channel->exchange_currency->sell_rate,
-                'rate' => 400,
+                'rate' => $rate,
                 'description' => $request->description,
                 'confirmed_at' => now(),
                 'completed_by' => $request->admin_id,
@@ -113,6 +116,7 @@ class RemoteRechargeRequestController extends Controller
 
     public function requestRecharge(Request $request)
     {
+        info($request);
         [$invalid_status, $requested, $request_locked] = DB::transaction(function () use ($request) {
             $request_locked = RechargeRequest::lockForUpdate()->find($request->id);
 
@@ -135,7 +139,7 @@ class RemoteRechargeRequestController extends Controller
             ]);
 
             $request_locked->refresh();
-            return [false, true, $request_locked];
+            return [false, false, $request_locked];
         }, 5);
 
         if ($invalid_status) {
@@ -215,7 +219,7 @@ class RemoteRechargeRequestController extends Controller
 
             $transaction->refresh();
             $transaction->update([
-                'transaction_id' => (new ReferenceId())->execute('RC', $transaction->id),
+                'reference_id' => (new ReferenceId())->execute('RC', $transaction->id),
             ]);
 
             (new LogTransaction(
@@ -243,8 +247,8 @@ class RemoteRechargeRequestController extends Controller
                     'transaction_type_id' => $transaction_type->id,
                     'reference_id' => $recharge_request_locked->reference_id,
                     'transaction_amount' => $recharge_request_locked->confirmed_amount,
-                    'amount_before_transaction' => $from_amount_before,
-                    'amount_after_transaction' => $from_amount_after,
+                    'amount_before_transaction' => $to_amount_before,
+                    'amount_after_transaction' => $to_amount_after,
                     'is_from' => 1,
                 ]
             ))->execute();

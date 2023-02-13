@@ -20,11 +20,13 @@ use App\Models\WithdrawRequest;
 use App\Constants\ChannelPrefix;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
+use App\Actions\Auth\CheckPasscode;
 use App\Constants\TelegramConstant;
 use App\Models\WithdrawTransaction;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
+use App\Actions\Transaction\ReferenceId;
 use App\CustomFunctions\ResponseHelpers;
 use App\Actions\RechargeGenerateReferenceId;
 use App\Actions\RechargeWithdrawReferenceId;
@@ -38,7 +40,7 @@ use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestResource;
 use App\Http\Resources\Api\RechargeChannel\RechargeChannelCollection;
 use App\Http\Resources\Api\WithdrawChannel\WithdrawChannelCollection;
 use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestCollection;
-use App\Actions\Auth\CheckPasscode;
+
 class WithdrawRequestController extends Controller
 {
     use ApiResponse;
@@ -402,14 +404,19 @@ class WithdrawRequestController extends Controller
             $pay_user_history->transactionable()->associate($transaction_type);
             $pay_user_history->save();
 
-            WithdrawTransaction::create([
+            $transaction = WithdrawTransaction::create([
                 'user_id' => $user->id,
                 'withdraw_request_id' => $withdraw_request->id,
                 'transaction_type_id' => $transaction_type->id,
                 'amount' => $request->amount,
                 'handling_fees' => $channel->handling_fee,
-                'transaction_id' => $pay_user_history->id,
+                'reference_id' => Str::uuid(),
                 'remark' => 'Withdraw Request'
+            ]);
+
+            $transaction->refresh();
+            $transaction->update([
+                'transaction_id' => (new ReferenceId())->execute('RC', $transaction->id),
             ]);
 
             // For RealTime GameDashboard

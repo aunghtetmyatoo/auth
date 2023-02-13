@@ -10,4 +10,6 @@ class GlAccount extends Model
     use HasFactory;
 
     protected $table = 'gl_accounts';
+
+    protected $fillable = ['amount'];
 }
