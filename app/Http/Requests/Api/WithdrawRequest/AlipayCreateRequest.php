@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\WithdrawRequest;
 
 use App\Models\WithdrawChannel;
+use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AlipayCreateRequest extends FormRequest
@@ -25,12 +26,16 @@ class AlipayCreateRequest extends FormRequest
     public function rules()
     {
         $channel = WithdrawChannel::where('name','Alipay')->first();
-
+        (new DevelopmentValidator())->handle([
+            // 'device_id' => ['required', 'string', 'max:32'],
+            // 'session_id' => ['required', 'string', 'max:60'],
+            'passcode' => ['required', 'string'],
+            // 'amount' => ['required', 'numeric', 'integer'],
+        ]);
         return [
             'payee' => ['required', 'string', 'max:255'],
             'account_number' => ['required', 'string', 'max:255'],
             'amount' => ['min:' . $channel->min_per_transaction, 'max:' . $channel->max_per_transaction],
-            'passcode' => ['required', 'string'],
 
         ];
     }
