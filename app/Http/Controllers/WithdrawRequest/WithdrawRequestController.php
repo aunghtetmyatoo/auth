@@ -416,7 +416,7 @@ class WithdrawRequestController extends Controller
 
             $transaction->refresh();
             $transaction->update([
-                'transaction_id' => (new ReferenceId())->execute('RC', $transaction->id),
+                'reference_id' => (new ReferenceId())->execute('RC', $transaction->id),
             ]);
 
             // For RealTime GameDashboard

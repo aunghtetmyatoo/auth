@@ -29,35 +29,35 @@ class RemoteWithdrawRequestController extends Controller
 {
     use ApiResponse;
 
-    public function refundWithdraw(Request $request, WithdrawRequest $withdraw_request)
+    public function refundWithdraw(Request $request)
     {
-        $invalid_status = DB::transaction(function () use ($withdraw_request, $request) {
-            $withdraw_request_locked = WithdrawRequest::lockForUpdate()->find($withdraw_request->id);
+        [$invalid_status, $withdraw_request] = DB::transaction(function () use ($request) {
+            $withdraw_request_locked = WithdrawRequest::lockForUpdate()->find($request->id);
 
-            if ($withdraw_request->status != 'Requested') {
-                return true;
+            if ($withdraw_request_locked->status != Status::REQUESTED) {
+                return [true, $withdraw_request_locked];
             }
 
-            $wdl_payable_locked = ExchangeGl::lockForUpdate()->whereReferenceId('WDL_PAYABLE')->first();
-            $wdl_income_locked = ExchangeGl::lockForUpdate()->whereReferenceId('WDL_INCOME')->first();
-            $pay_user_locked = Pay_user::lockForUpdate()->find($withdraw_request_locked->pay_user->id);
+            $wdl_payable_locked = GlAccount::lockForUpdate()->whereReferenceId('WDL_PAYABLE')->first();
+            $wdl_income_locked = GlAccount::lockForUpdate()->whereReferenceId('WDL_INCOME')->first();
+            $user_locked = User::lockForUpdate()->find($withdraw_request_locked->user->id);
             $transaction = WithdrawTransaction::lockForUpdate()->where('withdraw_request_id', $withdraw_request_locked->id)->first();
 
-            $invalid_log = (new MonitorTransaction([$pay_user_locked]))->execute();
-            if ($invalid_log) {
-                throw new TransactionFailedException();
-            }
+            // $invalid_log = (new MonitorTransaction([$user_locked]))->execute();
+            // if ($invalid_log) {
+            //     throw new TransactionFailedException();
+            // }
 
             $payable_before = $wdl_payable_locked->amount;
             $payable_after = (float) bcsub($payable_before, $transaction->amount, 4);
 
             $income_before = $wdl_income_locked->amount;
-            $income_after = (float) bcsub($income_before, $transaction->handling_fee, 4);
+            $income_after = (float) bcsub($income_before, $transaction->handling_fees, 4);
 
-            $to_amount_before = $pay_user_locked->amount;
-            $to_amount_after = (float) bcadd($to_amount_before, bcadd($transaction->amount, $transaction->handling_fee, 4), 4);
+            $to_amount_before = $user_locked->amount;
+            $to_amount_after = (float) bcadd($to_amount_before, bcadd($transaction->amount, $transaction->handling_fees, 4), 4);
 
-            $pay_user_locked->update([
+            $user_locked->update([
                 'amount' => $to_amount_after,
             ]);
 
@@ -69,42 +69,28 @@ class RemoteWithdrawRequestController extends Controller
                 'amount' => $income_after,
             ]);
 
-            $transaction_type = Transaction_type::whereType('Withdraw Refund')->first();
+            $transaction_type = TransactionType::whereName(EnumsTransactionType::Withdraw)->first();
 
-            $complete_transaction = $withdraw_request_locked->withdraw_transactions()->create([
+            $complete_transaction = $withdraw_request_locked->withdraw_transaction()->create([
                 'transaction_type_id' => $transaction_type->id,
-                'user_id' => auth()->id(),
-                'transaction_id' => Str::uuid(),
+                'user_id' => $transaction->user_id,
+                'reference_id' => Str::uuid(),
                 'amount' => $transaction->amount,
-                'handling_fee' => $transaction->handling_fee,
+                'handling_fees' => $transaction->handling_fees,
                 'remark' => 'Refund',
             ]);
 
             $complete_transaction->refresh();
             $complete_transaction->update([
-                'transaction_id' => (new ReferenceId())->execute('WDF', $transaction->id),
-            ]);
-
-            $transaction->pay_user_transaction_log()->create([
-                'pay_user_id' => $pay_user_locked->id,
-                'last_amount' => $to_amount_before,
-                'current_amount' => $to_amount_after,
-                'transaction_amount' => (float) bcadd($complete_transaction->amount, $complete_transaction->handling_fee, 4),
-            ]);
-
-            $withdraw_request_locked->record->update([
-                'status' => 'Failed',
-            ]);
-
-            $withdraw_request_locked->record()->create([
-                'pay_user_id' => $pay_user_locked->id,
-                'status' => 'Refunded',
+                'reference_id' => (new ReferenceId())->execute('WDF', $transaction->id),
             ]);
 
             $withdraw_request_locked->update([
-                'status' => 'Refunded',
-                'description' => $request->description
+                'status' => Status::REFUNDED,
+                'description' => $request->description ? $request->description : '',
             ]);
+
+            return [false, $withdraw_request_locked];
         }, 5);
 
         if ($invalid_status) {
@@ -113,8 +99,19 @@ class RemoteWithdrawRequestController extends Controller
             ], 400);
         }
 
-        $withdraw_request->refresh();
-        WithdrawStatusUpdated::dispatch('StatusRefunded', $withdraw_request);
+        Http::post('https://api.telegram.org/bot' . TelegramConstant::bot_token . '/sendMessage', [
+            'chat_id' => TelegramConstant::chat_id,
+            'text' =>  'Withdraw Requested' . "(" . $withdraw_request->withdraw_channel->name . ")" . PHP_EOL .
+                'Status -' . $withdraw_request->status . PHP_EOL .
+                'Account Name - ' . $withdraw_request->user->name . PHP_EOL .
+                'Phone Number - ' . $withdraw_request->user->phone_number . PHP_EOL .
+                'Request Id -' . $withdraw_request->reference_id . PHP_EOL .
+                'Date -' . now()->format('Y-m-d H:i:s')
+        ]);
+
+        return $this->responseSucceed(
+            message: "Successfully refunded!."
+        );
     }
 
     public function confirmWithdraw(Request $request)
