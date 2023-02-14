@@ -74,9 +74,9 @@ class AdminSeeder extends Seeder
                 'amount'=>$admin['amount']
             ]);
 
-            if( $admin['name'] == 'Admin-1'){
-                $admin->syncRoles('Admin');
-            }
+            // if( $admin['name'] == 'Admin-1'){
+            //     $admin->syncRoles('Admin');
+            // }
         }
     }
 }
