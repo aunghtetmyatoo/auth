@@ -38,6 +38,7 @@ Route::prefix('/withdraw-request')->middleware('auth:player')->controller(Withdr
     Route::post('/thaibaht', 'thaiBaht');
     Route::post('/bank-card', 'bankCard');
     Route::post('/wechat', 'weChat');
-
+    Route::post('/encryptname','encryptName');
 
 });
+

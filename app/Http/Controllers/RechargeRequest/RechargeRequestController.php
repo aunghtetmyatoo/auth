@@ -13,6 +13,7 @@ use App\Actions\HandleEndpoint;
 use App\Models\RechargeChannel;
 use App\Models\RechargeRequest;
 use App\Constants\ChannelPrefix;
+use App\Services\Crypto\DataKey;
 use App\Traits\Auth\ApiResponse;
 use App\Constants\TelegramConstant;
 use App\Actions\GenerateReferenceId;
@@ -78,21 +79,14 @@ class RechargeRequestController extends Controller
     public function enquiryUsdt(EnquiryUsdtRequest $request)
     {
         $channel = $this->validation('USDT');
-        $usdt_amount= ceil((float)($request->amount) * ($channel->exchange_currency->sell_rate));
+        $usdt_amount = ceil((float)($request->amount) * ($channel->exchange_currency->sell_rate));
+
         return $this->responseSucceed([
             'recharge_amount' => number_format($request->amount),
             'code' => $usdt_amount . 'USDT.TRC20',
             'usdt_amount' => $usdt_amount,
 
         ]);
-    }
-
-    public  function usdt(RechargeCreateRequest $request)
-    {
-        $channel = $this->validation('USDT');
-        return $this->createRequest($request, $channel, ChannelPrefix::USTD);
-
-
     }
     public function enquiryKbz(EnquiryKbzRequest $request)
     {
@@ -106,11 +100,20 @@ class RechargeRequestController extends Controller
         ]);
     }
 
+    public  function usdt(RechargeCreateRequest $request)
+    {
+        $channel = $this->validation('USDT');
+        return $this->createRequest($request, $channel, ChannelPrefix::USTD);
+    }
+
     public  function kbzPay(RechargeCreateRequest $request)
     {
         $channel = $this->validation('KBZ Pay');
         return $this->createRequest($request, $channel, ChannelPrefix::KBZ_PAY);
     }
+
+
+
     public function cancelledUsdt(Request $request)
     {
         return $this->cancelledRequest('USDT');
@@ -126,18 +129,32 @@ class RechargeRequestController extends Controller
         if (!$channel->status) {
             throw new RechargeRequestNotExistException();
         }
-        if (RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->whereIn('status', [Status::REQUESTED,Status::CONFIRMED])->where('expired_at','>=',now())->exists()) {
+        if (RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->whereIn('status', [Status::REQUESTED, Status::CONFIRMED])->where('expired_at', '>=', now())->exists()) {
             throw new ServiceUnavailableException();
         }
         return $channel;
     }
 
-    private function createRequest(Request $request,RechargeChannel $channel, string $prefix){
+    private function createRequest(Request $request, RechargeChannel $channel, string $prefix)
+    {
 
 
-        try{
+        try {
             $store_file = new StoreFile('Image/Recharge' . $request->user_id);
             $transaction_screenshot_path = $store_file->execute(file: $request->file('screenshot'), file_prefix: Status::RECHARGE);
+
+            // for encryption and decryption
+            $validateResponse = (new DataKey())->validate(
+                $request,
+                ['amount']
+            );
+
+            if ($validateResponse['result'] == 0) {
+                return ResponseHelpers::customResponse(422, $validateResponse['message']);
+            }
+            // end encryption and decryption
+
+
             $recharge_request = RechargeRequest::create([
                 "user_id" => auth()->user()->id,
                 "screenshot" => $transaction_screenshot_path,
@@ -155,7 +172,7 @@ class RechargeRequestController extends Controller
         $recharge_request->refresh();
 
         $recharge_request->update([
-            'reference_id' => (new RechargeWithdrawReferenceId())->execute($prefix,$recharge_request->sequence, 12)
+            'reference_id' => (new RechargeWithdrawReferenceId())->execute($prefix, $recharge_request->sequence, 12)
 
         ]);
 
@@ -172,28 +189,30 @@ class RechargeRequestController extends Controller
         // For Telegram Bot
         Http::post('https://api.telegram.org/bot' . TelegramConstant::bot_token . '/sendMessage', [
             'chat_id' => TelegramConstant::chat_id,
-            'text' =>  'Recharge Requested'."(" .$channel->name. ")".PHP_EOL.
-            'Account Name - ' . $account_name . PHP_EOL .
+            'text' =>  'Recharge Requested' . "(" . $channel->name . ")" . PHP_EOL .
+                'Account Name - ' . $account_name . PHP_EOL .
                 'Phone Number - ' . $account_phone_number . PHP_EOL .
-                'Amount -' . $request->amount .PHP_EOL.
+                'Amount -' . $request->amount . PHP_EOL .
                 'Request Id -' . $recharge_request->reference_id . PHP_EOL .
                 'Date -' . $date
         ]);
 
 
-        return $this->responseSucceed([
-            'time' => $recharge_request->created_at->format('H:i:s'),
-            'payee' => $recharge_request->user->name,
-            'recharge_amount' => $recharge_request->requested_amount,
-        ]);
+        return $this->response([
+            'amount'=>$request->amount
+            // 'time' => $recharge_request->created_at->format('H:i:s'),
+            // 'payee' => $recharge_request->user->name,
+            // 'recharge_amount' => $recharge_request->requested_amount,
+        ], 200);
     }
 
-    public function cancelledRequest(string $channel){
+    public function cancelledRequest(string $channel)
+    {
 
         $channel = RechargeChannel::where('name', $channel)->first();
-        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>', now())->where('status',Status::REQUESTED)->first();
+        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>', now())->where('status', Status::REQUESTED)->first();
 
-        if($request_cancelled->status=="REQUESTED"){
+        if ($request_cancelled->status == "REQUESTED") {
             $request_cancelled->update([
                 'status' => 'CANCELLED'
             ]);
@@ -225,4 +244,3 @@ class RechargeRequestController extends Controller
         return $this->responseSucceed(message: "Recharge Cancelled Successfully");
     }
 }
-

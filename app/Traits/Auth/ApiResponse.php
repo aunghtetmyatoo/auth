@@ -2,7 +2,9 @@
 
 namespace App\Traits\Auth;
 
+use App\Services\Crypto\DataKey;
 use Illuminate\Http\JsonResponse;
+use App\Services\Crypto\RequestKey;
 use Symfony\Component\HttpFoundation\Response;
 
 trait ApiResponse
@@ -107,4 +109,16 @@ trait ApiResponse
         ], $status_code);
         return $response;
     }
+
+    private function response(array $data, int $code)
+    {
+
+        return response()->json(
+            (new DataKey())->encrypt($data),
+            $code,
+        );
+    }
 }
+
+
+

@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Actions\Passport\PasswordGrant;
-use App\Actions\UserReference;
+use App\Models\User;
 use App\Enums\Language;
-use App\Http\Controllers\Controller;
-use App\Services\Auth\AccessToken;
-use App\Http\Requests\Api\Auth\Register\GetOtpRequest;
-use App\Http\Requests\Api\Auth\Register\VerifyOtpRequest;
-use App\Services\Auth\OneTimePassword;
 use App\Enums\OtpAction;
 use App\Enums\UserPrefix;
-use App\Http\Requests\Api\Auth\Register\PlayerRegisterRequest;
-use App\Http\Resources\Api\Auth\PlayerResource;
-use App\Models\User;
+use Illuminate\Support\Str;
+use App\Actions\UserReference;
 use App\Traits\Auth\ApiResponse;
+use App\Services\Auth\AccessToken;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Services\Auth\OneTimePassword;
+use App\Actions\Passport\PasswordGrant;
+use App\Http\Resources\Api\Auth\PlayerResource;
+use App\Http\Requests\Api\Auth\Register\GetOtpRequest;
+use App\Http\Requests\Api\Auth\Register\VerifyOtpRequest;
+use App\Http\Requests\Api\Auth\Register\PlayerRegisterRequest;
 
 class RegisterController extends Controller
 {
@@ -66,7 +67,7 @@ class RegisterController extends Controller
                 UserPrefix::Player->value,
                 $request->phone_number
             );
-            User::create([
+             User::create([
                 'name' => $request->name,
                 'phone_number' => $request->phone_number,
                 'password' => bcrypt($request->password),
@@ -76,10 +77,13 @@ class RegisterController extends Controller
                 'user_agent' => $request->user_agent,
                 'noti_token' => $request->noti_token,
                 'ip_address' => $request->ip_address,
+                'secret_key'=> Str::random(32) ,
                 'registered_at' => now(),
                 'last_logged_in_at' => now(),
             ]);
+
             $user = User::where('phone_number', $request->phone_number)->first();
+
             DB::commit();
 
             $response = (new PasswordGrant(user: $user))->execute(request: $request);

@@ -18,6 +18,7 @@ use App\Models\TransactionType;
 use App\Models\WithdrawChannel;
 use App\Models\WithdrawRequest;
 use App\Constants\ChannelPrefix;
+use App\Services\Crypto\DataKey;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
 use App\Actions\Auth\CheckPasscode;
@@ -31,6 +32,7 @@ use App\CustomFunctions\ResponseHelpers;
 use App\Actions\RechargeGenerateReferenceId;
 use App\Actions\RechargeWithdrawReferenceId;
 use App\Exceptions\WithdrawAmountNotEnoughExcepion;
+use App\Enums\TransactionType as EnumsTransactionType;
 use App\Http\Requests\Api\WithdrawRequest\KbzCreateRequest;
 use App\Http\Requests\Api\WithdrawRequest\AlipayCreateRequest;
 use App\Http\Requests\Api\WithdrawRequest\WeChatCreaterequest;
@@ -45,7 +47,7 @@ class WithdrawRequestController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private HandleEndpoint $handleEndpoint )
+    public function __construct(private HandleEndpoint $handleEndpoint)
     {
     }
 
@@ -114,7 +116,7 @@ class WithdrawRequestController extends Controller
         return $this->responseSucceed([
             'withdraw_amount' => "{$request->amount} MMK",
             'handling_fee' => "{$channel->handling_fee} MMK",
-            'balance' =>auth()->user()->amount . "MMK",
+            'balance' => auth()->user()->amount . "MMK",
             // 'exchange_rate' => "¥ 1 = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => "{$request->amount} MMK",
         ]);
@@ -191,12 +193,12 @@ class WithdrawRequestController extends Controller
     public function kbzPay(KbzCreateRequest $request)
     {
 
-         $check_passcode=(new CheckPasscode())->execute($request->passcode);
 
-         if($check_passcode['result']==0){
+        $check_passcode = (new CheckPasscode())->execute($request->passcode);
+
+        if ($check_passcode['result'] == 0) {
             return ResponseHelpers::customResponse(422, $check_passcode['message']);
-
-         }
+        }
         if ($check_passcode['result'] == 0) {
             return ResponseHelpers::customResponse(401, $check_passcode['message']);
         }
@@ -214,11 +216,13 @@ class WithdrawRequestController extends Controller
         }
 
 
+
         return $this->createRequest($channel, $request, ChannelPrefix::KBZ_PAY);
     }
 
     public function aliPay(AlipayCreateRequest $request)
     {
+
         $check_passcode = (new CheckPasscode())->execute($request->passcode);
 
         if ($check_passcode['result'] == 0) {
@@ -318,12 +322,23 @@ class WithdrawRequestController extends Controller
         }
         return $this->createRequest($channel, $request, ChannelPrefix::WE_CHAT);
     }
+        // Needed Delete File
+    public function encryptName(Request $request){
+
+        $validateResponse = (new DataKey())->validate(
+            $request,['name']
+        );
+        if ($validateResponse['result'] == 0) {
+            return ResponseHelpers::customResponse(422, $validateResponse['message']);
+        }
+        return "success";
+
+    }
 
     private function validation($request, $channel)
     {
         $today_withdraw_request_amount = WithdrawRequest::where('user_id', auth()->user()->id)->where('withdraw_channel_id', $channel->id)->whereIn('status', [Status::CONFIRMED, Status::REQUESTED, Status::COMPLETED])->sum('amount');
         $available_request_amount = $channel->max_daily - $today_withdraw_request_amount;
-
         if ($available_request_amount < $request->amount) {
             return [
                 'result' => 0,
@@ -341,8 +356,10 @@ class WithdrawRequestController extends Controller
     {
         DB::beginTransaction();
         try {
+
             // $store_file = new StoreFile('Image/Recharge' . $request->user_id);
             // $transaction_screenshot_path = $store_file->execute(file: $request->file('screenshot'), file_prefix: Status::WITHDRAW);
+
             $auth_user = auth()->user();
             $user = User::lockForUpdate()->find($auth_user->id);
 
@@ -356,6 +373,18 @@ class WithdrawRequestController extends Controller
             $user->update([
                 'amount' => $user_amount_after,
             ]);
+
+            // Encryption and Decryption
+            $validateResponse = (new DataKey())->validate(
+                $request,
+                $request->bank_name ?
+                ['amount', 'account_number','passcode','bank_name','payee']:['amount','account_number','passcode','payee']
+            );
+
+            if ($validateResponse['result'] == 0) {
+                return ResponseHelpers::customResponse(422, $validateResponse['message']);
+            }
+            // end Encryption and Decryption
 
             $withdraw_request = WithdrawRequest::create([
                 'user_id' => $user->id,
@@ -374,36 +403,11 @@ class WithdrawRequestController extends Controller
                 'reference_id' => (new RechargeWithdrawReferenceId())->execute($prefix, $withdraw_request->sequence, 12)
             ]);
 
-            $transaction_type = TransactionType::where('name', 'Withdraw Request Transaction')->first();
+            $transaction_type = TransactionType::where('name', EnumsTransactionType::Withdraw)->first();
             $operation_manager = Admin::lockForUpdate()->where('role', 'Operation Manager')->first();
 
             $om_amount_before = $operation_manager->amount;
             $om_amount_after = $om_amount_before + $request->amount + $withdraw_request->handling_fee;
-
-            // For Operation Manager
-            $om_history = new History;
-            $om_history->transaction_type_id = $transaction_type->id;
-            $om_history->reference_id = $withdraw_request->reference_id;
-            $om_history->transaction_amount = $request->amount;
-            $om_history->amount_before_transaction = $om_amount_before;
-            $om_history->amount_after_transaction = $om_amount_after;
-            $om_history->is_from = $request->om_is_from;
-            $om_history->historiable()->associate($operation_manager);
-            $om_history->transactionable()->associate($transaction_type);
-            $om_history->save();
-
-            // For Pay User
-            $pay_user_history = new History;
-            $pay_user_history->transaction_type_id = $transaction_type->id;
-            $pay_user_history->reference_id = $withdraw_request->reference_id;
-            $pay_user_history->transaction_amount = $request->amount;
-            $pay_user_history->amount_before_transaction = $user_amount_before;
-            $pay_user_history->amount_after_transaction = $user_amount_after;
-            $pay_user_history->is_from = $request->pay_user_is_from;
-            $pay_user_history->historiable()->associate($user);
-            $pay_user_history->transactionable()->associate($transaction_type);
-            $pay_user_history->save();
-
             $transaction = WithdrawTransaction::create([
                 'user_id' => $user->id,
                 'withdraw_request_id' => $withdraw_request->id,
@@ -416,13 +420,39 @@ class WithdrawRequestController extends Controller
 
             $transaction->refresh();
             $transaction->update([
-                'transaction_id' => (new ReferenceId())->execute('RC', $transaction->id),
+                'reference_id' => (new ReferenceId())->execute('RC', $transaction->id),
             ]);
+            $transaction = WithdrawTransaction::lockForUpdate()->where('withdraw_request_id', $withdraw_request->id)->first();
+
+            // For Operation Manager
+            $om_history = new History;
+            $om_history->transaction_type_id = $transaction_type->id;
+            $om_history->reference_id = $withdraw_request->reference_id;
+            $om_history->transaction_amount = $request->amount;
+            $om_history->amount_before_transaction = $om_amount_before;
+            $om_history->amount_after_transaction = $om_amount_after;
+            $om_history->is_from = $request->om_is_from;
+            $om_history->historiable()->associate($operation_manager);
+            $om_history->transactionable()->associate($transaction);
+            $om_history->save();
+
+            // For Pay User
+            $pay_user_history = new History;
+            $pay_user_history->transaction_type_id = $transaction_type->id;
+            $pay_user_history->reference_id = $withdraw_request->reference_id;
+            $pay_user_history->transaction_amount = $request->amount;
+            $pay_user_history->amount_before_transaction = $user_amount_before;
+            $pay_user_history->amount_after_transaction = $user_amount_after;
+            $pay_user_history->is_from = $request->pay_user_is_from;
+            $pay_user_history->historiable()->associate($user);
+            $pay_user_history->transactionable()->associate($transaction);
+            $pay_user_history->save();
+
 
             // For RealTime GameDashboard
             $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
                 'rechargeRequest' =>  new WithdrawRequestResource(WithdrawRequest::findOrFail($withdraw_request->id))
-            ]);;
+            ]);
             $account_name = $user->name;
             $account_phone_number = $user->phone_number;
             $date = now()->format('Y-m-d H:i:s');
@@ -439,12 +469,13 @@ class WithdrawRequestController extends Controller
             ]);
 
             DB::commit();
-            return $this->responseSucceed([
+            return $this->response([
                 'time' => $withdraw_request->created_at->format('H:i:s'),
                 'payee' => $withdraw_request->payee,
                 'withdraw_amount' => $withdraw_request->amount . "MMK ",
                 'handling_fee' => $withdraw_request->handling_fee,
-            ]);
+            ], 200);
+            
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e);

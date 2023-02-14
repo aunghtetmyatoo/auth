@@ -117,6 +117,7 @@ class UserSeeder extends Seeder
                 'payment_account_number' => $user['phone_number'],
                 'payment_account_name' => $user['name'],
                 'payment_type_id' => 1,
+                'secret_key'=> Str::random(32),
                 'role' => str_contains($user['name'], 'User') ? Status::USER : Status::BOT,
             ]);
 
