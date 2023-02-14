@@ -30,6 +30,9 @@ class WithdrawRequest extends Model
         'confirmed_at',
         'confirmed_by',
         'completed_by',
+        'transferred_amount',
+        'description',
+        'read_at',
     ];
 
     public function user()
