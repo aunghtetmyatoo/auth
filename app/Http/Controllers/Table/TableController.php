@@ -23,6 +23,7 @@ class TableController extends Controller
 
     public function create(Request $request)
     {
+        
         return $this->handleEndpoint->handle(server_path:ServerPath::CREATE_TABLE, request: [
             'user_id' => auth()->user()->id,
             'name' => $request->name,

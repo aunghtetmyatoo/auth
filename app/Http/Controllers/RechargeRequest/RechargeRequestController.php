@@ -199,10 +199,9 @@ class RechargeRequestController extends Controller
 
 
         return $this->response([
-            'amount'=>$request->amount
-            // 'time' => $recharge_request->created_at->format('H:i:s'),
-            // 'payee' => $recharge_request->user->name,
-            // 'recharge_amount' => $recharge_request->requested_amount,
+            'time' => $recharge_request->created_at->format('H:i:s'),
+            'payee' => $recharge_request->user->name,
+            'recharge_amount' => $recharge_request->requested_amount,
         ], 200);
     }
 

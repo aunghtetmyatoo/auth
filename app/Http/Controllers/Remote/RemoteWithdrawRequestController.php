@@ -118,7 +118,6 @@ class RemoteWithdrawRequestController extends Controller
     {
         [$invalid_status, $withdraw_request] = DB::transaction(function () use ($request) {
             $withdraw_request_locked = WithdrawRequest::lockForUpdate()->find($request->id);
-
             if ($withdraw_request_locked->status != Status::REQUESTED) {
                 return [true, $withdraw_request_locked];
             }
