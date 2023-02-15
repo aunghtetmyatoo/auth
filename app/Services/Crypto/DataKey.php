@@ -11,7 +11,7 @@ class DataKey
     {
     }
 
- 
+
     public function encrypt(mixed $data): mixed
     {
         $encrypter = new \Illuminate\Encryption\Encrypter($this->getKey(), config('app.cipher'));
@@ -26,7 +26,6 @@ class DataKey
     {
         $decrypter = new \Illuminate\Encryption\Encrypter($this->getKey(), config('app.cipher'));
         $decrypted = $decrypter->decryptString($data);
-
         if ($this->isJson($decrypted)) {
             return json_decode($decrypted, true);
         }
@@ -49,7 +48,6 @@ class DataKey
     public function validate($request, $validate_key_array)
     {
         $decrypt_data = (new DataKey())->decrypt($request->encrypt);
-
         foreach($validate_key_array as $validate_key){
             if($decrypt_data[$validate_key] != $request->{$validate_key}){
                 return [

@@ -435,7 +435,7 @@ class WithdrawRequestController extends Controller
             // For RealTime GameDashboard
             $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
                 'rechargeRequest' =>  new WithdrawRequestResource(WithdrawRequest::findOrFail($withdraw_request->id))
-            ]);;
+            ]);
             $account_name = $user->name;
             $account_phone_number = $user->phone_number;
             $date = now()->format('Y-m-d H:i:s');
@@ -453,6 +453,11 @@ class WithdrawRequestController extends Controller
 
             DB::commit();
             return $this->response([
+                // 'payee'=>$request->payee,
+                // 'amount'=>$request->amount,
+                // 'account_number'=>$request->account_number,
+                // 'bank_name' => $request->bank_name,
+                // 'passcode'=>$request->passcode
 
                 'time' => $withdraw_request->created_at->format('H:i:s'),
                 'payee' => $withdraw_request->payee,

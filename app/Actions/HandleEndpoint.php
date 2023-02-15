@@ -16,8 +16,8 @@ class HandleEndpoint
             'client_secret' => env('SOCKET_CLIENT_SECRET', 'SOSC44zmcA8nGvEGBFmvLj8FpQlHgIfxIqt0lBbgRLnPwNheWQyMD')
         ]) : $request);
 
-        // return json_decode($response, true);
-        return $response;
+        return json_decode($response, true);
+        // return $response;
         // $data=json_decode($response);
         //     return (new DataKey())->encrypt([
         //         $data
