@@ -9,7 +9,6 @@ use App\Models\History;
 use App\Constants\Status;
 use App\Actions\StoreFile;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Constants\ServerPath;
 use App\Models\GeneralLedger;
 use App\Actions\HandleEndpoint;
@@ -36,7 +35,12 @@ use App\Http\Requests\Api\WithdrawRequest\KbzCreateRequest;
 use App\Http\Requests\Api\WithdrawRequest\AlipayCreateRequest;
 use App\Http\Requests\Api\WithdrawRequest\WeChatCreaterequest;
 use App\Http\Requests\Api\WithdrawRequest\BankCardCreateRequest;
+use App\Http\Requests\Api\WithdrawRequest\Enquiry\AliPayRequest;
+use App\Http\Requests\Api\WithdrawRequest\Enquiry\KbzPayRequest;
+use App\Http\Requests\Api\WithdrawRequest\Enquiry\WeChatRequest;
 use App\Http\Requests\Api\WithdrawRequest\ThaibahtCreaterequest;
+use App\Http\Requests\Api\WithdrawRequest\Enquiry\BankCardRequest;
+use App\Http\Requests\Api\WithdrawRequest\Enquiry\ThaiBahtRequest;
 use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestResource;
 use App\Http\Resources\Api\RechargeChannel\RechargeChannelCollection;
 use App\Http\Resources\Api\WithdrawChannel\WithdrawChannelCollection;
@@ -50,31 +54,6 @@ class WithdrawRequestController extends Controller
     {
     }
 
-    public function index(Request $request)
-    {
-        $withdraw_request = WithdrawRequest::where(function ($query) use ($request) {
-
-            $request->has('user_name') && $request->user_name != null
-                && $query->whereHas("user", function ($q) use ($request) {
-                    $q->where("name", 'like', '%' . $request->user_name . '%');
-                });
-
-            $request->has('admin_name') && $request->admin_name != null
-                && $query->whereHas("admin", function ($q) use ($request) {
-                    $q->where("name", 'like', '%' . $request->admin_name . '%');
-                });
-
-            $request->has('payment_type') && $request->payment_type != null
-                && $query->whereHas("payment_type", function ($q) use ($request) {
-                    $q->whereIn("name", $request->payment_type);
-                });
-
-            $request->has('status') && $request->status != null
-                && $query->whereIn('status', $request->status);
-        });
-
-        return new WithdrawRequestCollection($withdraw_request->orderBy('created_at', 'DESC')->paginate($request->perPage ? $request->perPage : 10));
-    }
 
     public function channels()
     {
@@ -102,7 +81,7 @@ class WithdrawRequestController extends Controller
         ];
     }
 
-    public function enquiryKbz(Request $request)
+    public function enquiryKbz(KbzPayRequest $request)
     {
         $findWithdrawChannel = $this->findWithdrawChannel('KBZ Pay');
 
@@ -112,16 +91,16 @@ class WithdrawRequestController extends Controller
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
 
-        return $this->responseSucceed([
+        return $this->response([
             'withdraw_amount' => "{$request->amount} MMK",
             'handling_fee' => "{$channel->handling_fee} MMK",
             'balance' =>auth()->user()->amount . "MMK",
             // 'exchange_rate' => "¥ 1 = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => "{$request->amount} MMK",
-        ]);
+        ],200);
     }
 
-    public function enquiryWechat(Request $request)
+    public function enquiryWechat(WeChatRequest $request)
     {
         $findWithdrawChannel = $this->findWithdrawChannel('We Chat');
         $channel = $findWithdrawChannel['data'];
@@ -129,16 +108,16 @@ class WithdrawRequestController extends Controller
         if ($validation['result'] == 0) {
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
-        return $this->responseSucceed([
-            'withdraw_amount' => "¥ {$request->amount}",
-            'handling_fee' => "¥ {$channel->handling_fee}",
-            'balance' => "¥ " . auth()->user()->amount,
-            'exchange_rate' => "¥ 1 = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
+        return $this->response([
+            'withdraw_amount' => "{$request->amount} MMK",
+            'handling_fee' => "{$channel->handling_fee} MMK",
+            'balance' => auth()->user()->amount. "MMK",
+            'exchange_rate' => "1 MMK = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => $channel->exchange_currency->sign . " " . $request->amount * $channel->exchange_currency->buy_rate,
-        ]);
+        ],200);
     }
 
-    public function enquiryAliPay(Request $request)
+    public function enquiryAliPay(AliPayRequest $request)
     {
         $findWithdrawChannel = $this->findWithdrawChannel('Alipay');
         $channel = $findWithdrawChannel['data'];
@@ -146,16 +125,16 @@ class WithdrawRequestController extends Controller
         if ($validation['result'] == 0) {
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
-        return $this->responseSucceed([
-            'withdraw_amount' => "¥ {$request->amount}",
-            'handling_fee' => "¥ {$channel->handling_fee}",
-            'balance' => "¥ " . auth()->user()->amount,
-            'exchange_rate' => "¥ 1 = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
+        return $this->response([
+            'withdraw_amount' => "{$request->amount} MMK",
+            'handling_fee' => "{$channel->handling_fee} MMK",
+            'balance' => auth()->user()->amount . "MMK",
+            'exchange_rate' => "1 MMK = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => $channel->exchange_currency->sign . " " . $request->amount * $channel->exchange_currency->buy_rate,
-        ]);
+        ],200);
     }
 
-    public function enquiryThaiBaht(Request $request)
+    public function enquiryThaiBaht(ThaiBahtRequest $request)
     {
         $findWithdrawChannel = $this->findWithdrawChannel('Thai Baht');
         $channel = $findWithdrawChannel['data'];
@@ -163,15 +142,15 @@ class WithdrawRequestController extends Controller
         if ($validation['result'] == 0) {
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
-        return $this->responseSucceed([
-            'withdraw_amount' => "¥ {$request->amount}",
-            'handling_fee' => "¥ {$channel->handling_fee}",
-            'balance' => "¥ " . auth()->user()->amount,
-            'exchange_rate' => "¥ 1 = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
+        return $this->response([
+            'withdraw_amount' => "{$request->amount} MMK",
+            'handling_fee' => "{$channel->handling_fee} MMK",
+            'balance' => auth()->user()->amount . "MMK",
+            'exchange_rate' => "1 MMK = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => $channel->exchange_currency->sign . " " . $request->amount * $channel->exchange_currency->buy_rate,
-        ]);
+        ],200);
     }
-    public function enquiryBankCard(Request $request)
+    public function enquiryBankCard(BankCardRequest $request)
     {
 
         $findWithdrawChannel = $this->findWithdrawChannel('Bank Card');
@@ -180,13 +159,13 @@ class WithdrawRequestController extends Controller
         if ($validation['result'] == 0) {
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
-        return $this->responseSucceed([
-            'withdraw_amount' => "¥ {$request->amount}",
-            'handling_fee' => "¥ {$channel->handling_fee}",
-            'balance' => "¥ " . auth()->user()->amount,
-            'exchange_rate' => "¥ 1 = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
+        return $this->response([
+            'withdraw_amount' => "{$request->amount} MMK",
+            'handling_fee' => "{$channel->handling_fee} MMK",
+            'balance' => auth()->user()->amount . "MMK",
+            'exchange_rate' => "1 MMK = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => $channel->exchange_currency->sign . " " . $request->amount * $channel->exchange_currency->buy_rate,
-        ]);
+        ],200);
     }
 
     public function kbzPay(KbzCreateRequest $request)
@@ -338,7 +317,7 @@ class WithdrawRequestController extends Controller
         ];
     }
 
-    private function createRequest(WithdrawChannel $channel, Request $request, string $prefix)
+    private function createRequest(WithdrawChannel $channel,$request, string $prefix)
     {
         DB::beginTransaction();
         try {

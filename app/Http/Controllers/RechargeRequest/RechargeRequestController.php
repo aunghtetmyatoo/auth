@@ -32,6 +32,7 @@ use App\Http\Requests\Api\Recharge\Enquiry\EnquiryKbzRequest;
 use App\Http\Requests\Api\Recharge\Enquiry\EnquiryUsdtRequest;
 use App\Http\Requests\Api\RechargeRequest\RechargeCreateRequest;
 use App\Http\Resources\Api\RechargeChannel\RechargeChannelCollection;
+use Illuminate\Support\Facades\Storage;
 
 class RechargeRequestController extends Controller
 {
@@ -81,23 +82,24 @@ class RechargeRequestController extends Controller
         $channel = $this->validation('USDT');
         $usdt_amount = ceil((float)($request->amount) * ($channel->exchange_currency->sell_rate));
 
-        return $this->responseSucceed([
+        return $this->response([
             'recharge_amount' => number_format($request->amount),
             'code' => $usdt_amount . 'USDT.TRC20',
             'usdt_amount' => $usdt_amount,
-
-        ]);
+            'qr_code'=>Storage::url('Image/Recharge/qr_photo.jpg')
+        ],200);
     }
     public function enquiryKbz(EnquiryKbzRequest $request)
     {
         $channel = $this->validation('KBZ Pay');
         $kbz_amount = (float)($request->amount) * ($channel->exchange_currency->sell_rate);
 
-        return $this->responseSucceed([
+        return $this->response([
             'recharge_amount' => number_format($request->amount),
             'code' => number_format($kbz_amount) . $channel->exchange_currency->sign,
+            'qr_code' => Storage::url('Image/Recharge/qr_photo.jpg')
 
-        ]);
+        ],200);
     }
 
     public  function usdt(RechargeCreateRequest $request)
