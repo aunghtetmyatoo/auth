@@ -110,6 +110,7 @@ class RemoteRechargeRequestController extends Controller
         ]);
 
         return $this->responseSucceed(
+            data: ["id" => $request->id],
             message: "Successfully rejected!."
         );
     }
