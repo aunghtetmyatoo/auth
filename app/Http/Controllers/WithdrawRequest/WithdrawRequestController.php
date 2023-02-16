@@ -411,10 +411,6 @@ class WithdrawRequestController extends Controller
                 'transaction_id' => (new ReferenceId())->execute('RC', $transaction->id),
             ]);
 
-            // For RealTime GameDashboard
-            $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
-                'rechargeRequest' =>  new WithdrawRequestResource(WithdrawRequest::findOrFail($withdraw_request->id))
-            ]);
             $account_name = $user->name;
             $account_phone_number = $user->phone_number;
             $date = now()->format('Y-m-d H:i:s');
@@ -428,6 +424,11 @@ class WithdrawRequestController extends Controller
                     'Amount -' . $request->amount . PHP_EOL .
                     'Request Id -' . $withdraw_request->reference_id . PHP_EOL .
                     'Date -' . $date
+            ]);
+
+            // For RealTime GameDashboard
+            $this->handleEndpoint->handle(server_path: ServerPath::GET_WITHDRAW_REQUEST, request: [
+                'withdrawRequest' => $withdraw_request->id,
             ]);
 
             DB::commit();

@@ -19,6 +19,7 @@ class ServerPath
     // For Game Socket , Admin Dashboard API
     const ADMIN_DASHBOARD =  self::GAME_SOCKET . 'admin-dashboard/';
     const GET_RECHARGE_REQUEST = self::ADMIN_DASHBOARD . 'get-recharge-request';
+    const GET_WITHDRAW_REQUEST = self::ADMIN_DASHBOARD . 'get-withdraw-request';
 
     // For Card Game
     // For Card Game, Match API
