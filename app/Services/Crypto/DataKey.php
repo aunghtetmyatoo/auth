@@ -35,8 +35,11 @@ class DataKey
 
     private function getKey()
     {
-        $secret_key = auth()->user()->secret_key;
-        return $secret_key;
+        if(auth()->check()){
+            $secret_key = auth()->user()->secret_key;
+            return $secret_key;
+        }
+
     }
 
     private function isJson($str)

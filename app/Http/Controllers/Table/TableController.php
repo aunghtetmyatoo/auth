@@ -23,7 +23,7 @@ class TableController extends Controller
 
     public function create(Request $request)
     {
-        
+
         return $this->handleEndpoint->handle(server_path:ServerPath::CREATE_TABLE, request: [
             'user_id' => auth()->user()->id,
             'name' => $request->name,
@@ -31,6 +31,7 @@ class TableController extends Controller
             'banker_amount' => $request->banker_amount,
             'privacy'  => $request->privacy,
             'is_side_bettor' => $request->is_side_bettor,
+            'encrypt'=>$request->encrypt
         ]);
     }
 

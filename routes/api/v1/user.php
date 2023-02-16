@@ -5,10 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RechargeRequest\RechargeRequestController;
 use App\Http\Controllers\WithdrawRequest\WithdrawRequestController;
 
-Route::prefix('/recharge-request')->controller(RechargeRequestController::class)->group(function(){
-    Route::post('/', 'index');
 
-});
 // For Recharge
 Route::prefix('/recharge-request')->middleware('auth:player')->controller(RechargeRequestController::class)->group(function () {
     Route::post('/channels','channels');
