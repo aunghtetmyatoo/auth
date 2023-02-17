@@ -179,7 +179,7 @@ class RechargeRequestController extends Controller
 
         // For RealTime GameDashboard
         $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
-            'rechargeRequest' =>  $recharge_request->id
+            'rechargeRequest' => [ "id" => $recharge_request->id,"new" => true ]
         ]);
 
         $auth_user = auth()->user();
@@ -222,7 +222,7 @@ class RechargeRequestController extends Controller
 
         // For RealTime GameDashboard
         $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
-             'rechargeRequest' =>  $request_cancelled->id
+                'rechargeRequest' => [ "id" => $request_cancelled->id,"new" => false,"status" =>  'CANCELLED' ]
         ]);
 
         $auth_user = auth()->user();
