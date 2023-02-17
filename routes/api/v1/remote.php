@@ -36,27 +36,6 @@ Route::prefix('/transactions')->controller(RemoteTransactionController::class)->
     Route::post('/bot', 'botTransaction');
 });
 
-// For Game Dashboard
-// Route::prefix('/recharge-request')->middleware('auth:player')->controller(RechargeRequestController::class)->group(function () {
-//     Route::post('/', 'index');
-//     Route::post('/enquiry-usdt', 'enquiryUsdt');
-//     Route::post('/usdt', 'usdt');
-//     Route::post('/create-recharge','createRecharge');
-// });
-
 Route::prefix('/payment-type')->controller(PaymentTypeController::class)->group(function () {
     Route::post('/select', 'Select');
-});
-
-Route::prefix('recharge-requests')->controller(RemoteRechargeRequestController::class)->group(function () {
-    Route::post('confirm', 'confirmRecharge');
-    Route::post('reject', 'rejectRecharge');
-    Route::post('request', 'requestRecharge');
-    Route::post('complete', 'completeRecharge');
-});
-
-Route::prefix('withdraw-requests')->controller(RemoteWithdrawRequestController::class)->group(function () {
-    Route::post('refund', 'refundWithdraw');
-    Route::post('confirm', 'confirmWithdraw');
-    Route::post('complete', 'completeWithdraw');
 });
