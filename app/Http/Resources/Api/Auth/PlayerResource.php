@@ -22,6 +22,7 @@ class PlayerResource extends JsonResource
             'points' => $this->coins,
             'language' => $this->language,
             'reference_id' => $this->reference_id,
+            'secret_key'=>$this->secret_key
         ];
     }
 }

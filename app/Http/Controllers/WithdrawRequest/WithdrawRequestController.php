@@ -338,15 +338,15 @@ class WithdrawRequestController extends Controller
             ]);
 
             // for encryption and decryption
-            $validateResponse = (new DataKey())->validate(
-                $request,
-                $request->bank_name ?
-                ['payee','bank_name','account_number','passcode','amount']:
-                ['payee','account_number','passcode','amount']
-            );
-            if ($validateResponse['result'] == 0) {
-                return ResponseHelpers::customResponse(422, $validateResponse['message']);
-            }
+            // $validateResponse = (new DataKey())->validate(
+            //     $request,
+            //     $request->bank_name ?
+            //     ['payee','bank_name','account_number','passcode','amount']:
+            //     ['payee','account_number','passcode','amount']
+            // );
+            // if ($validateResponse['result'] == 0) {
+            //     return ResponseHelpers::customResponse(422, $validateResponse['message']);
+            // }
             // end encryption and decryption
 
             $withdraw_request = WithdrawRequest::create([
