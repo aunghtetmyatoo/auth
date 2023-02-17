@@ -146,13 +146,13 @@ class RechargeRequestController extends Controller
             $transaction_screenshot_path = $store_file->execute(file: $request->file('screenshot'), file_prefix: Status::RECHARGE);
 
             // for encryption and decryption
-            $validateResponse = (new DataKey())->validate(
-                $request,
-                ['amount']
-            );
-            if ($validateResponse['result'] == 0) {
-                return ResponseHelpers::customResponse(422, $validateResponse['message']);
-            }
+            // $validateResponse = (new DataKey())->validate(
+            //     $request,
+            //     ['amount']
+            // );
+            // if ($validateResponse['result'] == 0) {
+            //     return ResponseHelpers::customResponse(422, $validateResponse['message']);
+            // }
             // end encryption and decryption
 
 

@@ -71,6 +71,7 @@ class RemoteRechargeRequestController extends Controller
         ]);
 
         return $this->responseSucceed(
+            data: ["id" => $request->id],
             message: "Successfully confirmed!."
         );
     }
@@ -167,6 +168,7 @@ class RemoteRechargeRequestController extends Controller
         ]);
 
         return $this->responseSucceed(
+            data: ["id" => $request->id],
             message: "Successfully requested!."
         );
     }
@@ -282,6 +284,7 @@ class RemoteRechargeRequestController extends Controller
         ]);
 
         return $this->responseSucceed(
+            data: ["id" => $request->id],
             message: "Successfully completed!."
         );
     }

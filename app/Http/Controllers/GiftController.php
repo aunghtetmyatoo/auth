@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\HandleEndpoint;
-use App\Constants\ServerPath;
+use Exception;
+use App\Models\User;
+use App\Models\History;
 use App\Constants\Status;
-use App\Constants\TransactionType;
+use Illuminate\Http\Request;
+use App\Constants\ServerPath;
+use App\Enums\TransactionType as EnumTransactionType;
+use App\Models\TransactionType;
+use App\Actions\HandleEndpoint;
 use App\Exceptions\GeneralError;
+use App\Traits\Auth\ApiResponse;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Api\GiftRequest\BuyGiftRequest;
 use App\Http\Requests\Api\GiftRequest\GiveGiftRequest;
-use App\Models\History;
-use App\Models\TransactionType;
-use App\Models\User;
-use App\Traits\Auth\ApiResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Exception;
 
 class GiftController extends Controller
 {
@@ -28,7 +28,7 @@ class GiftController extends Controller
     public function buyGift(BuyGiftRequest $request)
     {
 
-        $transaction_type_id = TransactionType::where('name', TransactionType::Gift)->pluck('id')->first();
+        $transaction_type_id = TransactionType::where('name', EnumTransactionType::Gift)->pluck('id')->first();
 
         DB::beginTransaction();
         try {
@@ -68,7 +68,7 @@ class GiftController extends Controller
     public function GiveGift(GiveGiftRequest $request)
     {
 
-        $transaction_type_id = TransactionType::where('name', TransactionType::Gift)->pluck('id')->first();
+        $transaction_type_id = TransactionType::where('name', EnumTransactionType::Gift)->pluck('id')->first();
 
         $friend = User::find($request->friend_id);
 
