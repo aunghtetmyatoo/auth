@@ -28,9 +28,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 use App\Actions\Transaction\ReferenceId;
 use App\CustomFunctions\ResponseHelpers;
+use App\Actions\Transaction\LogTransaction;
 use App\Actions\RechargeGenerateReferenceId;
 use App\Actions\RechargeWithdrawReferenceId;
 use App\Exceptions\WithdrawAmountNotEnoughExcepion;
+use App\Enums\TransactionType as EnumsTransactionType;
 use App\Http\Requests\Api\WithdrawRequest\KbzCreateRequest;
 use App\Http\Requests\Api\WithdrawRequest\AlipayCreateRequest;
 use App\Http\Requests\Api\WithdrawRequest\WeChatCreaterequest;
@@ -321,8 +323,7 @@ class WithdrawRequestController extends Controller
     {
         DB::beginTransaction();
         try {
-            // $store_file = new StoreFile('Image/Recharge' . $request->user_id);
-            // $transaction_screenshot_path = $store_file->execute(file: $request->file('screenshot'), file_prefix: Status::WITHDRAW);
+            
             $auth_user = auth()->user();
             $user = User::lockForUpdate()->find($auth_user->id);
 
@@ -366,35 +367,12 @@ class WithdrawRequestController extends Controller
                 'reference_id' => (new RechargeWithdrawReferenceId())->execute($prefix, $withdraw_request->sequence, 12)
             ]);
 
-            $transaction_type = TransactionType::where('name', 'Withdraw Request Transaction')->first();
+            $transaction_type = TransactionType::whereName(EnumsTransactionType::Withdraw)->first();
+
             $operation_manager = Admin::lockForUpdate()->where('role', 'Operation Manager')->first();
 
             $om_amount_before = $operation_manager->amount;
             $om_amount_after = $om_amount_before + $request->amount + $withdraw_request->handling_fee;
-
-            // For Operation Manager
-            $om_history = new History;
-            $om_history->transaction_type_id = $transaction_type->id;
-            $om_history->reference_id = $withdraw_request->reference_id;
-            $om_history->transaction_amount = $request->amount;
-            $om_history->amount_before_transaction = $om_amount_before;
-            $om_history->amount_after_transaction = $om_amount_after;
-            $om_history->is_from = $request->om_is_from;
-            $om_history->historiable()->associate($operation_manager);
-            $om_history->transactionable()->associate($transaction_type);
-            $om_history->save();
-
-            // For Pay User
-            $pay_user_history = new History;
-            $pay_user_history->transaction_type_id = $transaction_type->id;
-            $pay_user_history->reference_id = $withdraw_request->reference_id;
-            $pay_user_history->transaction_amount = $request->amount;
-            $pay_user_history->amount_before_transaction = $user_amount_before;
-            $pay_user_history->amount_after_transaction = $user_amount_after;
-            $pay_user_history->is_from = $request->pay_user_is_from;
-            $pay_user_history->historiable()->associate($user);
-            $pay_user_history->transactionable()->associate($transaction_type);
-            $pay_user_history->save();
 
             $transaction = WithdrawTransaction::create([
                 'user_id' => $user->id,
@@ -407,9 +385,44 @@ class WithdrawRequestController extends Controller
             ]);
 
             $transaction->refresh();
+
             $transaction->update([
-                'transaction_id' => (new ReferenceId())->execute('RC', $transaction->id),
+                'reference_id' => (new ReferenceId())->execute('RC', $transaction->id),
             ]);
+
+            (new LogTransaction(
+                $transaction->history(),
+                [
+                    // For Operation Manager
+                    'historiable_id' => $operation_manager->id,
+                    'historiable_type' => get_class($operation_manager),
+                    'transactionable_id' => $transaction->id,
+                    'transactionable_type' => get_class($transaction),
+                    'transaction_type_id' => $transaction_type->id,
+                    'reference_id' => $withdraw_request->reference_id,
+                    'transaction_amount' => $request->amount,
+                    'amount_before_transaction' => $om_amount_before,
+                    'amount_after_transaction' => $om_amount_after,
+                    'is_from' => 0,
+                ],
+                $transaction->history(),
+                [
+                    // For User
+                    'historiable_id' => $transaction->user_id,
+                    'historiable_type' => get_class(User::find($transaction->user_id)),
+                    'transactionable_id' => $transaction->id,
+                    'transactionable_type' => get_class($transaction),
+                    'transaction_type_id' => $transaction_type->id,
+                    'reference_id' => $withdraw_request->reference_id,
+                    'transaction_amount' => $request->amount,
+                    'amount_before_transaction' => $user_amount_before,
+                    'amount_after_transaction' => $user_amount_after,
+                    'is_from' => 1,
+                ]
+            ))->execute();
+
+
+
 
             // For RealTime GameDashboard
             $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
