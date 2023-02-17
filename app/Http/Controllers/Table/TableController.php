@@ -42,6 +42,8 @@ class TableController extends Controller
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
             'reference_id' => $request->reference_id,
+            'encrypt' => $request->encrypt
+
         ]);
     }
 

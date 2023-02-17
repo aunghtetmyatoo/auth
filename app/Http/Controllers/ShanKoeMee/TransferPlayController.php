@@ -24,6 +24,8 @@ class TransferPlayController extends Controller
             'user_id' => auth()->user()->id,
             'game_type_id' => $game_type_id,
             'amount' => $amount,
+            'encrypt' => $request->encrypt
+
         ]);
     }
 
@@ -34,7 +36,8 @@ class TransferPlayController extends Controller
         return $this->handleEndpoint->handle(server_path:ServerPath::TRANSFER_FROM_GAME, request: [
             'user_id' => auth()->user()->id,
             'game_type_id' => $game_type_id,
-            'coin' => $coin,
+            'coin' => $coin, 'encrypt' => $request->encrypt
+
         ]);
     }
 }
