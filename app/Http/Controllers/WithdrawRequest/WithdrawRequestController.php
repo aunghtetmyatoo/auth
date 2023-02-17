@@ -441,7 +441,7 @@ class WithdrawRequestController extends Controller
 
             // For RealTime GameDashboard
             $this->handleEndpoint->handle(server_path: ServerPath::GET_WITHDRAW_REQUEST, request: [
-                'withdrawRequest' => $withdraw_request->id,
+                'withdrawRequest' => ["id" => $withdraw_request->id, "new" => true],
             ]);
 
             DB::commit();
