@@ -86,8 +86,8 @@ class RechargeRequestController extends Controller
             'recharge_amount' => number_format($request->amount),
             'code' => $usdt_amount . 'USDT.TRC20',
             'usdt_amount' => $usdt_amount,
-            'qr_code'=>Storage::url('Image/Recharge/qr_photo.jpg')
-        ],200);
+            'qr_code' => Storage::url('Image/Recharge/qr_photo.jpg')
+        ], 200);
     }
     public function enquiryKbz(EnquiryKbzRequest $request)
     {
@@ -99,7 +99,7 @@ class RechargeRequestController extends Controller
             'code' => number_format($kbz_amount) . $channel->exchange_currency->sign,
             'qr_code' => Storage::url('Image/Recharge/qr_photo.jpg')
 
-        ],200);
+        ], 200);
     }
 
     public  function usdt(RechargeCreateRequest $request)
@@ -179,7 +179,7 @@ class RechargeRequestController extends Controller
 
         // For RealTime GameDashboard
         $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
-            'rechargeRequest' => [ "id" => $recharge_request->id,"new" => true ]
+            'rechargeRequest' => ["id" => $recharge_request->id, "new" => true]
         ]);
 
         $auth_user = auth()->user();
@@ -211,18 +211,15 @@ class RechargeRequestController extends Controller
     {
 
         $channel = RechargeChannel::where('name', $channel)->first();
-        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>', now())->where('status', Status::REQUESTED)->first();
-
-        if ($request_cancelled->status == "REQUESTED") {
-            $request_cancelled->update([
-                'status' => 'CANCELLED'
-            ]);
-        }
+        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>=', now())->where('status',Status::REQUESTED,)->first();
+        $request_cancelled->update([
+            'status' => 'CANCELLED'
+        ]);
 
 
         // For RealTime GameDashboard
         $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
-                'rechargeRequest' => [ "id" => $request_cancelled->id,"new" => false,"status" =>  'CANCELLED' ]
+            'rechargeRequest' => ["id" => $request_cancelled->id, "new" => false, "status" =>  'CANCELLED']
         ]);
 
         $auth_user = auth()->user();

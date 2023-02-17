@@ -4,16 +4,17 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\User;
+use App\Models\Friend;
 use App\Models\History;
 use App\Constants\Status;
 use Illuminate\Http\Request;
 use App\Constants\ServerPath;
-use App\Enums\TransactionType as EnumTransactionType;
-use App\Models\TransactionType;
 use App\Actions\HandleEndpoint;
+use App\Models\TransactionType;
 use App\Exceptions\GeneralError;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
+use App\Enums\TransactionType as EnumTransactionType;
 use App\Http\Requests\Api\GiftRequest\BuyGiftRequest;
 use App\Http\Requests\Api\GiftRequest\GiveGiftRequest;
 
@@ -43,22 +44,23 @@ class GiftController extends Controller
                     'amount' => $request->amount,
                     'user_amount_before_transaction' => $user->amount,
                     'store_id' => $request->store_id,
+                    'encrypt'=>$request->encrypt
                 ]
             );
-
-            if ($response) {
+            if ($response['data']['message']=='Success') {
                 if (!($request->type == Status::STICKER)) {
                     User::where('id', auth()->user()->id)
                         ->update(['amount' => $user->amount - $request->amount]);
                 }
             } else {
                 throw new GeneralError();
+
             }
 
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
-            throw new GeneralError();
+            return $response;
         }
 
         return $this->responseSucceed(message: 'Success');
@@ -70,8 +72,7 @@ class GiftController extends Controller
 
         $transaction_type_id = TransactionType::where('name', EnumTransactionType::Gift)->pluck('id')->first();
 
-        $friend = User::find($request->friend_id);
-
+        $friend = Friend::where('user_id',auth()->user()->id)->where('friend_id', $request->friend_id)->where('confirm_status', Status::CONFIRMED_FRIEND)->first();
         if ($friend) {
             DB::beginTransaction();
             try {
@@ -89,24 +90,28 @@ class GiftController extends Controller
                         'user_amount_before_transaction' => $user->amount,
                         'friend_amount' => $friend->amount,
                         'store_id' => $request->store_id,
+                        'encrypt' => $request->encrypt
+
                     ]
                 );
 
-                if ($response) {
+                if ($response['data']['message']== 'Success') {
                     if (!($request->type == Status::STICKER)) {
                         User::where('id', auth()->user()->id)
                             ->update(['amount' => $user->amount - $request->amount]);
                     }
                 } else {
+
                     throw new GeneralError();
                 }
 
                 DB::commit();
             } catch (Exception $e) {
                 DB::rollback();
-                throw new GeneralError();
-            }
+                return $response;
 
+                // throw new GeneralError();
+            }
             return $this->responseSucceed(message: 'Success');
         } else {
             return $this->responseSomethingWentWrong(message: "Something went wrong");
