@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('sign')->nullable();
             $table->double('buy_rate')->default(0.0000);
             $table->double('sell_rate')->default(0.0000);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

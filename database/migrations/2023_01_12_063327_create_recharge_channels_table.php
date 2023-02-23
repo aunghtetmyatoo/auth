@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('icon_active')->nullable();
             $table->string('icon_inactive')->nullable();
             $table->string('address')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
