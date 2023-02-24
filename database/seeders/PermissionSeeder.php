@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PermissionGroup;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PermissionSeeder extends Seeder
 {
@@ -16,19 +16,29 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        $permissions = [
-            'recharge request list',
-            'recharge request create',
-            'recharge request edit',
-            'recharge request delete',
+        $adminPermissions = [
+            'User' => [
+                'recharge request list',
+                'recharge request create',
+                'recharge request edit',
+                'recharge request delete',
+            ],
         ];
 
         $role = Role::where('name', 'Super Admin')->where('guard_name','admin')->first();
 
-        foreach ($permissions as $permission)
+        foreach ($adminPermissions as $group_name => $permissions)
         {
-            $permission  = Permission::create(['name' => $permission]);
-            // $role->givePermissionTo($permission);
+            $group = PermissionGroup::where('name', $group_name)->first();
+
+            foreach ($permissions as $permission) {
+                $permission = $group->permissions()->create([
+                    'name' => $permission,
+                ]);
+
+                $role->givePermissionTo($permission);
+            }
+
         }
     }
 }
