@@ -36,7 +36,7 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Admin-3',
                 'phone_number' => '09967735625',
-                'role' => 'Officer',
+                'role' => 'Operation Manager',
                 'amount' => 900000
 
 
