@@ -22,13 +22,13 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Admin-1',
                 'phone_number' => '09873673861',
-                'role'=>'Operation Manager',
+                'role'=>'Super Admin',
                 'amount'=>900000
             ],
             [
                 'name' => 'Admin-2',
                 'phone_number' => '09837627622',
-                'role' => 'IT',
+                'role' => 'Admin',
                 'amount' => 900000
 
 
@@ -36,7 +36,7 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Admin-3',
                 'phone_number' => '09967735625',
-                'role' => 'Admin',
+                'role' => 'Officer',
                 'amount' => 900000
 
 
@@ -44,7 +44,7 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Admin-4',
                 'phone_number' => '09448767198',
-                'role' => 'Admin',
+                'role' => 'Officer',
                 'amount' => 900000
 
 
@@ -52,7 +52,7 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Admin-5',
                 'phone_number' => '09775637163',
-                'role' => 'Admin',
+                'role' => 'Officer',
                 'amount' => 900000
 
 
@@ -74,14 +74,17 @@ class AdminSeeder extends Seeder
                 'amount'=>$admin['amount']
             ]);
 
-            if( $admin['name'] == 'Admin-1'){
+            if( $admin['role'] == 'Super Admin'){
                 $admin->assignRole('Super Admin');
             }
 
-            if( $admin['name'] == 'Admin-2'){
+            if( $admin['role'] == 'Admin'){
                 $admin->assignRole('Admin');
             }
 
+            if( $admin['role'] == 'Officer'){
+                $admin->assignRole('Officer');
+            }
 
         }
     }

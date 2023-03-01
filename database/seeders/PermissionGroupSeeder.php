@@ -17,9 +17,9 @@ class PermissionGroupSeeder extends Seeder
     public function run()
     {
         $groups = [
-            'User',
-            'Member',
-            'Authorization',
+            'GroupOne',
+            'GroupTwo',
+            'GroupThree',
         ];
 
         foreach ($groups as $group) {

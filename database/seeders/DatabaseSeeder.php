@@ -16,11 +16,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        $this->call(RoleSeeder::class);
-
         $this->call(PermissionGroupSeeder::class);
 
         $this->call(PermissionSeeder::class);
+
+        $this->call(RoleSeeder::class);
 
         $this->call(PassportClientSeeder::class);
 
