@@ -52,6 +52,7 @@ class PermissionSeeder extends Seeder
                 'recharge request list',
                 'recharge request confirm',
                 'recharge request reject',
+                'recharge request rerequest',
                 'recharge request complete',
                 'recharge channel list',
                 'recharge channel create',

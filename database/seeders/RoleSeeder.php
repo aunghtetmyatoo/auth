@@ -43,6 +43,7 @@ class RoleSeeder extends Seeder
             'recharge channel list',
             'recharge channel create',
             'recharge channel edit',
+            'recharge channel rerequest',
             'recharge channel delete',
             'withdraw channel list',
             'withdraw channel create',
