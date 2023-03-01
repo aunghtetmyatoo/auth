@@ -85,9 +85,9 @@ class RoleSeeder extends Seeder
         $admin_permissions = [
             'dashboard',
             'withdraw recharge dashbord',
-            'bot player list',
-            'bot player create',
-            'bot player edit',
+            'bot list',
+            'bot create',
+            'bot edit',
             'recharge request list',
             'recharge request confirm',
             'recharge request reject',
@@ -117,7 +117,7 @@ class RoleSeeder extends Seeder
         $officer_permissions = [
             'dashboard',
             'withdraw recharge dashbord',
-            'bot player list',
+            'bot list',
             'recharge request list',
             'withdraw request list',
             'recharge channel list',
