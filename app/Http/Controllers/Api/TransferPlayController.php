@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\ShanKoeMee;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Actions\HandleEndpoint;

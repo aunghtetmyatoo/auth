@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Payment;
+namespace App\Http\Controllers\Api\Payment;
 
 use App\Models\User;
 use App\Models\CoinFillRequest;

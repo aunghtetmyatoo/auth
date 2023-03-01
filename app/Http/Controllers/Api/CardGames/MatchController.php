@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Match;
+namespace App\Http\Controllers\Api\CardGames;
 
 use App\Actions\HandleEndpoint;
 use App\Constants\ServerPath;

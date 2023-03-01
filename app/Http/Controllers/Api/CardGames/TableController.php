@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Table;
+namespace App\Http\Controllers\Api\CardGames;
 
 use Illuminate\Http\Request;
 use App\Actions\HandleEndpoint;
@@ -24,32 +24,31 @@ class TableController extends Controller
     public function create(Request $request)
     {
 
-        return $this->handleEndpoint->handle(server_path:ServerPath::CREATE_TABLE, request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::CREATE_TABLE, request: [
             'user_id' => auth()->user()->id,
             'name' => $request->name,
             'game_type_id' => $request->game_type_id,
             'banker_amount' => $request->banker_amount,
             'privacy'  => $request->privacy,
             'is_side_bettor' => $request->is_side_bettor,
-            'encrypt'=>$request->encrypt
+            'encrypt' => $request->encrypt
         ]);
     }
 
     public function join(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path:ServerPath::JOIN_TABLE, request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::JOIN_TABLE, request: [
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
             'reference_id' => $request->reference_id,
             'encrypt' => $request->encrypt
-
         ]);
     }
 
     public function leave(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path:ServerPath::LEAVE_TABLE, request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::LEAVE_TABLE, request: [
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
         ]);
@@ -57,7 +56,7 @@ class TableController extends Controller
 
     public function inviteFriend(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path:ServerPath::INVITE_FRIEND, request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::INVITE_FRIEND, request: [
             'from_invite_id' => auth()->user()->id,
             'to_invite_id' => $request->to_invite_id,
             'room_id' => $request->room_id,
@@ -66,7 +65,7 @@ class TableController extends Controller
 
     public function kickOut(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path:ServerPath::KICK_OUT, request: [
+        return $this->handleEndpoint->handle(server_path: ServerPath::KICK_OUT, request: [
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
             'kick_user_id' => $request->kick_user_id,

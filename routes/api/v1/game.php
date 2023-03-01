@@ -1,18 +1,16 @@
 <?php
 
-use App\Http\Controllers\CashOutRequest\CashOutRequestController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GiftController;
-use App\Http\Controllers\FriendController;
-use App\Http\Controllers\RemoteController;
-use App\Http\Controllers\MessageController;
-use App\Http\Controllers\Play\PlayController;
-use App\Http\Controllers\Match\MatchController;
-use App\Http\Controllers\Table\TableController;
-use App\Http\Controllers\Payment\TransactionController;
-use App\Http\Controllers\RechargeRequest\RechargeRequestController;
-use App\Http\Controllers\ShanKoeMee\TransferPlayController;
-use App\Http\Controllers\TicketMoney\TicketMoneyController;
+use App\Http\Controllers\Api\GiftController;
+use App\Http\Controllers\Api\FriendController;
+use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\TransferPlayController;
+use App\Http\Controllers\Api\CardGames\PlayController;
+use App\Http\Controllers\Api\CardGames\MatchController;
+use App\Http\Controllers\Api\CardGames\TableController;
+use App\Http\Controllers\Api\Payment\TransactionController;
+use App\Http\Controllers\Api\CardGames\TicketMoneyController;
+use App\Http\Controllers\Api\Payment\CashOutRequestController;
 
 Route::prefix('/transactions')->controller(TransactionController::class)->group(function () {
     Route::post('/deposit', 'deposit');
@@ -28,7 +26,6 @@ Route::prefix('/friends')->controller(FriendController::class)->group(function (
     Route::post('/unfriend', 'unfriend');
 });
 
-//Card_Games
 Route::prefix('/transfers')->controller(TransferPlayController::class)->group(function () {
     Route::post('to-game', 'transferToGame');
     Route::post('from-game', 'transferFromGame');
@@ -37,7 +34,6 @@ Route::prefix('/transfers')->controller(TransferPlayController::class)->group(fu
 Route::prefix('/ticket-money')->controller(TicketMoneyController::class)->group(function () {
     Route::post('/', 'index');
 });
-
 
 Route::prefix('/tables')->controller(TableController::class)->group(function () {
     Route::post('/list', 'listPublicTable');
@@ -48,12 +44,10 @@ Route::prefix('/tables')->controller(TableController::class)->group(function () 
     Route::post('/kick-out', 'kickOut');
 });
 
-
 Route::prefix('/plays')->controller(PlayController::class)->group(function () {
     Route::post('/direct', 'playDirect');
     Route::post('/play-with-bots', 'playWithBots');
 });
-
 
 Route::prefix('/matches')->controller(MatchController::class)->group(function () {
     Route::post('/ready', 'readyForPlay');
@@ -77,13 +71,7 @@ Route::prefix('/gift')->controller(GiftController::class)->group(function () {
     Route::post('/give-gift', 'GiveGift');
 });
 
-Route::prefix('/recharge-request')->controller(RechargeRequestController::class)->group(function () {
-    Route::post('/', 'index');
-    Route::post('/create-recharge','createRecharge');
-});
-
 Route::prefix('/cash-out-request')->controller(CashOutRequestController::class)->group(function () {
     Route::post('/', 'index');
-    Route::post('/create-cash-out','createCashOut');
+    Route::post('/create-cash-out', 'createCashOut');
 });
-

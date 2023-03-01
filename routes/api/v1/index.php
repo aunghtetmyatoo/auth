@@ -2,15 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Api\GameTypeController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\RefreshTokenController;
-use App\Http\Controllers\Deposite\DepositeController;
-use App\Http\Controllers\GameType\GameTypeController;
 use App\Http\Controllers\Payment\BankAccountController;
 use App\Http\Controllers\Payment\TransactionController;
-use App\Http\Controllers\RechargeRequest\RechargeRequestController;
-use App\Http\Controllers\RoomType\RoomTypeController;
-use App\Http\Controllers\TelegramController;
+use App\Http\Controllers\Api\Payment\DepositeController;
+use App\Http\Controllers\Api\CardGames\RoomTypeController;
 
 Route::prefix('register')->controller(RegisterController::class)->group(function () {
     Route::post('get/otp', 'getOtp');
@@ -38,11 +36,6 @@ Route::prefix('/deposite')->controller(DepositeController::class)->group(functio
     Route::post('/', 'index');
 });
 
-Route::prefix('/telegram')->controller(TelegramController::class)->group(function () {
-    Route::post('/send-message', 'sendMessage');
-    Route::post('/send-photo', 'sendPhoto');
-});
-
 Route::prefix('/game-type')->controller(GameTypeController::class)->group(function () {
     Route::post('/list', 'list');
 });
@@ -50,15 +43,3 @@ Route::prefix('/game-type')->controller(GameTypeController::class)->group(functi
 Route::prefix('/room-type')->controller(RoomTypeController::class)->group(function () {
     Route::post('/list', 'list');
 });
-
-// For Game Dashboard
-Route::prefix('/users/recharge-request')->middleware('auth:player')->controller(RechargeRequestController::class)->group(function () {
-    Route::post('/', 'index');
-    Route::post('/enquiry-usdt', 'enquiryUsdt');
-    Route::post('/usdt', 'usdt');
-    Route::post('/cancelled/usdt', 'cancelledUsdt');
-    Route::post('/create-recharge', 'createRecharge');
-});
-
-
-

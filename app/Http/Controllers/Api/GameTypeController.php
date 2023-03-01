@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\RoomType;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\GameType\GameTypeResource;
+use App\Models\GameType;
 use Illuminate\Http\Request;
 use App\Actions\HandleEndpoint;
-use App\Constants\ServerPath;
 
-class RoomTypeController extends Controller
+class GameTypeController extends Controller
 {
     public function __construct(private HandleEndpoint $handleEndpoint)
     {
@@ -15,7 +16,6 @@ class RoomTypeController extends Controller
 
     public function list()
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::ROOM_TYPE_LIST, request: [
-        ]);
+        return GameTypeResource::collection(GameType::all());
     }
 }

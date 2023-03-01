@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Deposite;
+namespace App\Http\Controllers\Api\Payment;
 
 use App\Actions\DeleteFile;
 use App\Actions\StoreFile;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\PaymentType;
+namespace App\Http\Controllers\Api\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\PaymentType\PaymentTypeSelectCollection;
@@ -16,6 +16,6 @@ class PaymentTypeController extends Controller
                 && $query->where('name', 'like', '%' . $request->name . '%');
         });
 
-            return response()->json(new PaymentTypeSelectCollection($paymentType->paginate(5)));
+        return response()->json(new PaymentTypeSelectCollection($paymentType->paginate(5)));
     }
 }

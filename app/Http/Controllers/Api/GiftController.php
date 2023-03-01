@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Exception;
 use App\Models\User;
 use App\Models\Friend;
@@ -28,7 +29,6 @@ class GiftController extends Controller
 
     public function buyGift(BuyGiftRequest $request)
     {
-
         $transaction_type_id = TransactionType::where('name', EnumTransactionType::Gift)->pluck('id')->first();
 
         DB::beginTransaction();
@@ -44,17 +44,16 @@ class GiftController extends Controller
                     'amount' => $request->amount,
                     'user_amount_before_transaction' => $user->amount,
                     'store_id' => $request->store_id,
-                    'encrypt'=>$request->encrypt
+                    'encrypt' => $request->encrypt
                 ]
             );
-            if ($response['data']['message']=='Success') {
+            if ($response['data']['message'] == 'Success') {
                 if (!($request->type == Status::STICKER)) {
                     User::where('id', auth()->user()->id)
                         ->update(['amount' => $user->amount - $request->amount]);
                 }
             } else {
                 throw new GeneralError();
-
             }
 
             DB::commit();
@@ -66,13 +65,11 @@ class GiftController extends Controller
         return $this->responseSucceed(message: 'Success');
     }
 
-
     public function GiveGift(GiveGiftRequest $request)
     {
-
         $transaction_type_id = TransactionType::where('name', EnumTransactionType::Gift)->pluck('id')->first();
 
-        $friend = Friend::where('user_id',auth()->user()->id)->where('friend_id', $request->friend_id)->where('confirm_status', Status::CONFIRMED_FRIEND)->first();
+        $friend = Friend::where('user_id', auth()->user()->id)->where('friend_id', $request->friend_id)->where('confirm_status', Status::CONFIRMED_FRIEND)->first();
         if ($friend) {
             DB::beginTransaction();
             try {
@@ -95,7 +92,7 @@ class GiftController extends Controller
                     ]
                 );
 
-                if ($response['data']['message']== 'Success') {
+                if ($response['data']['message'] == 'Success') {
                     if (!($request->type == Status::STICKER)) {
                         User::where('id', auth()->user()->id)
                             ->update(['amount' => $user->amount - $request->amount]);

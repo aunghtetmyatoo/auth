@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Play;
+namespace App\Http\Controllers\Api\CardGames;
 
 use Illuminate\Http\Request;
 use App\Actions\HandleEndpoint;

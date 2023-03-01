@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\CashOutRequest;
+namespace App\Http\Controllers\Api\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\CashOutRequest\CashOutIndexRequest;
