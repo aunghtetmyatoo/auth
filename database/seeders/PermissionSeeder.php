@@ -47,6 +47,10 @@ class PermissionSeeder extends Seeder
                 'permission create',
                 'permission edit',
                 'permission delete',
+                'permission group list',
+                'permission group create',
+                'permission group edit',
+                'permission group delete'
             ],
             'GroupTwo' =>[
                 'recharge request list',
