@@ -28,10 +28,10 @@ class RoleSeeder extends Seeder
         $super_admin_permissions = [
             'dashboard',
             'withdraw recharge dashbord',
-            'bot player list',
-            'bot player create',
-            'bot player edit',
-            'bot player delete',
+            'bot list',
+            'bot create',
+            'bot edit',
+            'bot delete',
             'recharge request list',
             'recharge request confirm',
             'recharge request reject',
@@ -71,6 +71,10 @@ class RoleSeeder extends Seeder
             'permission create',
             'permission edit',
             'permission delete',
+            'permission group list',
+            'permission group create',
+            'permission group edit',
+            'permission group delete'
         ];
 
         $role = Role::where('name', 'Super Admin')->where('guard_name','admin')->first();
