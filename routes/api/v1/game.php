@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\TransferPlayController;
 use App\Http\Controllers\Api\CardGames\PlayController;
 use App\Http\Controllers\Api\CardGames\MatchController;
 use App\Http\Controllers\Api\CardGames\TableController;
+use App\Http\Controllers\Api\CardGames\RoomTypeController;
 use App\Http\Controllers\Api\Payment\TransactionController;
 use App\Http\Controllers\Api\CardGames\TicketMoneyController;
 use App\Http\Controllers\Api\Payment\CashOutRequestController;
@@ -74,4 +75,8 @@ Route::prefix('/gift')->controller(GiftController::class)->group(function () {
 Route::prefix('/cash-out-request')->controller(CashOutRequestController::class)->group(function () {
     Route::post('/', 'index');
     Route::post('/create-cash-out', 'createCashOut');
+});
+
+Route::prefix('/room-type')->controller(RoomTypeController::class)->group(function () {
+    Route::post('/list', 'list');
 });

@@ -8,7 +8,6 @@ use App\Http\Controllers\Auth\RefreshTokenController;
 use App\Http\Controllers\Payment\BankAccountController;
 use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Controllers\Api\Payment\DepositeController;
-use App\Http\Controllers\Api\CardGames\RoomTypeController;
 
 Route::prefix('register')->controller(RegisterController::class)->group(function () {
     Route::post('get/otp', 'getOtp');
@@ -37,9 +36,5 @@ Route::prefix('/deposite')->controller(DepositeController::class)->group(functio
 });
 
 Route::prefix('/game-type')->controller(GameTypeController::class)->group(function () {
-    Route::post('/list', 'list');
-});
-
-Route::prefix('/room-type')->controller(RoomTypeController::class)->group(function () {
     Route::post('/list', 'list');
 });
