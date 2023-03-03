@@ -4,11 +4,11 @@ namespace App\Constants;
 
 class ServerPath
 {
-    const CARD_GAME = 'http://card-games.test/api/v1/card-game/';
-    const GAMBLING_AUTH = 'http://gamblingauth.test/api/v1/';
-    // const GAME_SOCKET = 'https://game-socket.com/api/v1/';
-    // const GAME_SOCKET = 'http://localhost:3000/api/v1/';
-    const GAME_SOCKET = 'https://game-socket.com:8081/api/v1/';
+    // const CARD_GAME = 'http://card-games.test/api/v1/card-game';
+    const CARD_GAME = 'https://card.game-socket.com/';
+    // const GAMBLING_AUTH = 'http://gamblingauth.test/api/v1';
+    const GAMBLING_AUTH = 'https://auth.game-socket.com/';
+    const GAME_SOCKET = 'https://game-socket.com:8081/api/v1';
 
     // For Game Socket
     // For Game Socket, Friend API
