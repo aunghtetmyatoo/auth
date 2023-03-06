@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Actions\HandleEndpoint;
+use App\Models\User;
 use App\Constants\ServerPath;
+use App\Actions\HandleEndpoint;
+use App\Exceptions\UserNotExistException;
 use App\Traits\Auth\ApiResponse;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\User\UserResource;
+use App\Http\Requests\Api\Message\PublicMessageRequest;
+use App\Http\Requests\Api\Message\PrivateMessageRequest;
 
 class MessageController extends Controller
 {
@@ -16,21 +20,43 @@ class MessageController extends Controller
     {
     }
 
-    public function publicMessage(Request $request)
+    public function publicMessage(PublicMessageRequest $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::PUBLIC_MESSAGE, request: [
-            'user_id' => auth()->user()->id,
-            'room_id' => $request->room_id,
+        $user = User::find(auth()->user()->id);
+
+        if (!$user) {
+            throw new UserNotExistException();
+        }
+
+        $this->handleEndpoint->handle(server_path: ServerPath::PUBLIC_MESSAGE, request: [
+            'from_user' => new UserResource($user),
             'message' => $request->message,
+            'room_id' => $request->room_id,
         ]);
+
+        return $this->responseSucceed(
+            message: "Successfully sent!.",
+        );
     }
 
-    public function privateMessage(Request $request)
+    public function privateMessage(PrivateMessageRequest $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::PRIVATE_MESSAGE, request: [
-            'user_id' => auth()->user()->id,
-            'to_user_id' => $request->to_user_id,
+        $users = User::find([auth()->user()->id, $request->to_user_id]);
+
+        [0 => $from_user, 1 => $to_user] = $users;
+
+        if (!$from_user && !$to_user) {
+            throw new UserNotExistException();
+        }
+
+        $this->handleEndpoint->handle(server_path: ServerPath::PRIVATE_MESSAGE, request: [
+            'from_user' => new UserResource($from_user),
             'message' => $request->message,
+            'to_user_id' => $request->to_user_id,
         ]);
+
+        return $this->responseSucceed(
+            message: "Successfully sent!.",
+        );
     }
 }

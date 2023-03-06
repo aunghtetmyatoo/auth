@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Backend\Admin\RechargeChannel;
+namespace App\Http\Requests\Api\Transfer;
 
+use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RechargeChannelShowRequest extends FormRequest
+class TransferFromPlayRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +25,8 @@ class RechargeChannelShowRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => ['required', 'integer'],
+            'game_type_id' => ['required', 'integer'],
+            'coin' => ['required', 'integer'],
         ];
     }
 }

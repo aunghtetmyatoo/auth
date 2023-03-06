@@ -43,4 +43,7 @@ class Status
     const BOT = "BOT";
     const PLAY_WITH_USER = "PLAY_WITH_USER";
     const PLAY_WITH_BOT = "PLAY_WITH_BOT";
+
+    const CONVERT_COIN = "CONVERT COIN";
+    const CONVERT_AMOUNT = "CONVERT AMOUNT";
 }

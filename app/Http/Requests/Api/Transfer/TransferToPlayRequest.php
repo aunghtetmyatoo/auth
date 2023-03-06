@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Backend\Admin\WithdrawChannel;
+namespace App\Http\Requests\Api\Transfer;
 
+use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class WithdrawChannelIndexRequest extends FormRequest
+class TransferToPlayRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +25,8 @@ class WithdrawChannelIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'game_type_id' => ['required', 'integer'],
+            'amount' => ['required', 'numeric', 'min:100'],
         ];
     }
 }

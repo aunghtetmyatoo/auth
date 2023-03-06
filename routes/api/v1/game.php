@@ -27,7 +27,7 @@ Route::prefix('/friends')->controller(FriendController::class)->group(function (
     Route::post('/unfriend', 'unfriend');
 });
 
-Route::prefix('/transfers')->controller(TransferPlayController::class)->group(function () {
+Route::middleware('check_coin_amount')->prefix('/transfers')->controller(TransferPlayController::class)->group(function () {
     Route::post('to-game', 'transferToGame');
     Route::post('from-game', 'transferFromGame');
 });

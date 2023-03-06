@@ -73,11 +73,17 @@ class Handler extends ExceptionHandler
                 message: $exception->getMessage() ? $exception->getMessage() : 'otp.invalid'
             );
         }
+
         if ($exception instanceof PasswordInvalidException) {
             return $this->responseUnauthenticated(
                 message: $exception->getMessage() ? $exception->getMessage() : 'passwords.invalid'
             );
         }
+
+        if ($exception instanceof CannotConvertCoin) {
+            return $this->responseUnprocessableEntity(message: 'Cannot Convert to Coin.Please enter value which can be divided by 100');
+        }
+
         /**
          *  Laravel form request validation exception
          */

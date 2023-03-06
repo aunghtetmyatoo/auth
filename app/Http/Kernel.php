@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'multi-game' => \App\Http\Middleware\PreventFromPlayingMultipleGame::class,
         'bank-account' => \App\Http\Middleware\PreventNullBankAccount::class,
         'check_relationship' => \App\Http\Middleware\CheckRelationship::class,
+        'check_coin_amount' => \App\Http\Middleware\CheckCoinAmount::class,
     ];
 }

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Backend\Admin\RechargeChannel;
+namespace App\Http\Requests\Api\Message;
 
+use App\Actions\DevelopmentValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RechargeChannelIndexRequest extends FormRequest
+class PublicMessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +24,12 @@ class RechargeChannelIndexRequest extends FormRequest
      */
     public function rules()
     {
+        (new DevelopmentValidator())->handle([
+            'room_id' => ['required', 'integer'],
+        ]);
+
         return [
-            //
+            'message' => ['required', 'string'],
         ];
     }
 }
