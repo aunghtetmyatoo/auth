@@ -4,11 +4,11 @@ namespace App\Constants;
 
 class ServerPath
 {
-    // const CARD_GAME = 'http://card-games.test/api/v1/card-game';
+    // const CARD_GAME = 'http://card-games.test/api/v1/card-game/';
     const CARD_GAME = 'https://card.game-socket.com/';
-    // const GAMBLING_AUTH = 'http://gamblingauth.test/api/v1';
+    // const GAMBLING_AUTH = 'http://gamblingauth.test/api/v1/';
     const GAMBLING_AUTH = 'https://auth.game-socket.com/';
-    const GAME_SOCKET = 'https://game-socket.com:8081/api/v1';
+    const GAME_SOCKET = 'https://game-socket.com:8081/api/v1/';
 
     // For Game Socket
     // For Game Socket, Friend API
@@ -20,6 +20,11 @@ class ServerPath
     const ADMIN_DASHBOARD =  self::GAME_SOCKET . 'admin-dashboard/';
     const GET_RECHARGE_REQUEST = self::ADMIN_DASHBOARD . 'get-recharge-request';
     const GET_WITHDRAW_REQUEST = self::ADMIN_DASHBOARD . 'get-withdraw-request';
+
+    // For Card Game, Message API
+    const MESSAGES = self::GAME_SOCKET . 'messages/';
+    const PUBLIC_MESSAGE = self::MESSAGES . 'public';
+    const PRIVATE_MESSAGE = self::MESSAGES . 'private';
 
     // For Card Game
     // For Card Game, Match API
@@ -43,11 +48,6 @@ class ServerPath
     const INVITE_FRIEND =  self::TABLES . 'invite';
     const KICK_OUT = self::TABLES . 'kick-out';
 
-    // For Card Game, Transfer API
-    const TRANSFERS =  self::CARD_GAME . 'transfers/';
-    const TRANSFER_TO_GAME = self::TRANSFERS . 'to-game';
-    const TRANSFER_FROM_GAME = self::TRANSFERS . 'from-game';
-
     // For Card Game, Ticket Money API
     const TICKET_MONEY = self::CARD_GAME . 'ticket-money';
 
@@ -55,11 +55,6 @@ class ServerPath
     const PLAY = self::CARD_GAME . 'plays/';
     const PLAY_DIRECT = self::PLAY . 'direct';
     const PLAY_WITH_BOT = self::PLAY . 'play-with-bots';
-
-    // For Card Game, Message API
-    const MESSAGES = self::CARD_GAME . 'messages/';
-    const PUBLIC_MESSAGE = self::MESSAGES . 'public';
-    const PRIVATE_MESSAGE = self::MESSAGES . 'private';
 
     // For Card Game, Gift API
     const GIFT =  self::CARD_GAME . 'gift/';
