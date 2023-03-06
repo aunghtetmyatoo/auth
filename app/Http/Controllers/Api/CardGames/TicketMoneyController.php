@@ -19,7 +19,7 @@ class TicketMoneyController extends Controller
     public function index(Request $request)
     {
         return $this->handleEndpoint->handle(server_path: ServerPath::TICKET_MONEY, request: [
-            'from_user_id' => $request->from_user_id,
+            'from_user_id' => auth()->user()->id,
             'amount' => $request->amount,
             'to_user_id' => $request->to_user_id,
         ]);
