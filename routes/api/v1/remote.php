@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\PaymentType\PaymentTypeController;
+use App\Http\Controllers\Api\Payment\PaymentTypeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Remote\RemoteUserController;
 use App\Http\Controllers\Remote\RemoteHistoryController;
