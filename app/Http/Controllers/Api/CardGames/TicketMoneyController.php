@@ -22,6 +22,7 @@ class TicketMoneyController extends Controller
             'from_user_id' => auth()->user()->id,
             'amount' => $request->amount,
             'to_user_id' => $request->to_user_id,
+            'game_type_id' => $request->game_type_id,
         ]);
     }
 }
