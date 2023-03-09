@@ -65,8 +65,8 @@ class TableController extends Controller
     public function inviteFriend(Request $request)
     {
         return $this->handleEndpoint->handle(server_path: ServerPath::INVITE_FRIEND, request: [
-            'from_invite_id' => auth()->user()->id,
-            'to_invite_id' => $request->to_invite_id,
+            'from_id' => auth()->user()->id,
+            'to_id' => $request->to_id,
             'room_id' => $request->room_id,
         ]);
     }
