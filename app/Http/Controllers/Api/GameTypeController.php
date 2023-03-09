@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\GameType;
+use App\Services\Crypto\DataKey;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\GameType\GameTypeResource;
-use App\Models\GameType;
-use Illuminate\Http\Request;
-use App\Actions\HandleEndpoint;
 
 class GameTypeController extends Controller
 {
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct()
     {
     }
 
-    public function list()
+    public function index()
     {
-        return GameTypeResource::collection(GameType::all());
+        $response =  GameTypeResource::collection(GameType::all());
+
+        return response()->json((new DataKey())->encrypt(json_encode($response)));
     }
 }

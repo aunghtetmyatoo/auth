@@ -12,7 +12,7 @@ class RoomTypeController extends Controller
     {
     }
 
-    public function list()
+    public function index()
     {
         return $this->handleEndpoint->handle(server_path: ServerPath::ROOM_TYPE_LIST, request: []);
     }

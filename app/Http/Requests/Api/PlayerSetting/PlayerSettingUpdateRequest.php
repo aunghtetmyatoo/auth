@@ -24,7 +24,6 @@ class PlayerSettingUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => ['required', 'uuid'],
             'game_type_id' => ['required', 'integer'],
             'sound_status' => ['nullable'],
             'vibration_status' => ['nullable'],

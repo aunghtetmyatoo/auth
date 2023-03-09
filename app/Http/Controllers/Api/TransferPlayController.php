@@ -24,7 +24,7 @@ class TransferPlayController extends Controller
     {
     }
 
-    public function transferToGame(TransferToPlayRequest $request)
+    public function amountToCoin(TransferToPlayRequest $request)
     {
         ['game_type_id' => $game_type_id, 'amount' => $amount] = $request->all();
 
@@ -56,12 +56,11 @@ class TransferPlayController extends Controller
                     "coin" => $game_type_user->coin,
                     "amount" => $user->amount,
                 ],
-                $user->secret_key
             )
         ]);
     }
 
-    public function transferFromGame(TransferFromPlayRequest $request)
+    public function CoinToAmount(TransferFromPlayRequest $request)
     {
         ['game_type_id' => $game_type_id, 'coin' => $coin] = $request->all();
 
@@ -91,7 +90,6 @@ class TransferPlayController extends Controller
                     "coin" => $game_type_user->coin,
                     "amount" => $user->amount,
                 ],
-                $user->secret_key
             )
         ]);
     }

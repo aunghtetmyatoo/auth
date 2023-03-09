@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\GiftController;
 use App\Http\Controllers\Api\FriendController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\GameTypeController;
 use App\Http\Controllers\Api\TransferPlayController;
+use App\Http\Controllers\Api\PlayerSettingController;
 use App\Http\Controllers\Api\CardGames\PlayController;
 use App\Http\Controllers\Api\CardGames\MatchController;
 use App\Http\Controllers\Api\CardGames\TableController;
@@ -12,6 +14,11 @@ use App\Http\Controllers\Api\CardGames\RoomTypeController;
 use App\Http\Controllers\Api\Payment\TransactionController;
 use App\Http\Controllers\Api\CardGames\TicketMoneyController;
 use App\Http\Controllers\Api\Payment\CashOutRequestController;
+
+Route::prefix('/settings')->controller(PlayerSettingController::class)->group(function () {
+    Route::post('/', 'index');
+    Route::post('/update', 'update');
+});
 
 Route::prefix('/transactions')->controller(TransactionController::class)->group(function () {
     Route::post('/deposit', 'deposit');
@@ -27,9 +34,9 @@ Route::prefix('/friends')->controller(FriendController::class)->group(function (
     Route::post('/unfriend', 'unfriend');
 });
 
-Route::middleware('check_coin_amount')->prefix('/transfers')->controller(TransferPlayController::class)->group(function () {
-    Route::post('to-game', 'transferToGame');
-    Route::post('from-game', 'transferFromGame');
+Route::prefix('/transfers')->controller(TransferPlayController::class)->middleware('check_coin_amount')->group(function () {
+    Route::post('amount-to-coin', 'amountToCoin');
+    Route::post('coin-to-amount', 'CoinToAmount');
 });
 
 Route::prefix('/ticket-money')->controller(TicketMoneyController::class)->group(function () {
@@ -78,6 +85,10 @@ Route::prefix('/cash-out-request')->controller(CashOutRequestController::class)-
     Route::post('/create-cash-out', 'createCashOut');
 });
 
-Route::prefix('/room-type')->controller(RoomTypeController::class)->group(function () {
-    Route::post('/list', 'list');
+Route::prefix('/game-types')->controller(GameTypeController::class)->group(function () {
+    Route::post('/', 'index');
+});
+
+Route::prefix('/room-types')->controller(RoomTypeController::class)->group(function () {
+    Route::post('/', 'index');
 });

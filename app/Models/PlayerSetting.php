@@ -9,4 +9,7 @@ class PlayerSetting extends Model
 {
     use HasFactory;
 
+    protected $table = 'player_settings';
+
+    protected $fillable = ['sound_status', 'vibration_status', 'challenge_status', 'friend_status'];
 }
