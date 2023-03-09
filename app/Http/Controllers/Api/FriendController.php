@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Friend;
 use App\Constants\Status;
-use App\Actions\HandleEndpoint;
 use App\Constants\ServerPath;
+use App\Actions\HandleEndpoint;
+use App\Services\Crypto\DataKey;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Friend\UnfriendRequest;
 use App\Http\Requests\Api\Friend\FriendAddRequest;
 use App\Http\Resources\Api\Friend\FriendCollection;
@@ -26,16 +27,20 @@ class FriendController extends Controller
 
     public function index()
     {
-        $friend_list = Friend::where('user_id', auth()->user()->id)->where('confirm_status', Status::CONFIRMED_FRIEND);
+        $friend_list = Friend::whereUserId(auth()->user()->id)->whereConfirmStatus(Status::CONFIRMED_FRIEND);
 
-        return $this->responseCollection(new FriendCollection($friend_list->paginate(5)));
+        $response = $this->responseCollection(new FriendCollection($friend_list->paginate(5)));
+
+        return response()->json((new DataKey())->encrypt(json_encode($response->getData())));
     }
 
     public function requestList()
     {
-        $request_list = Friend::where('user_id', auth()->user()->id)->where('confirm_status', Status::RECEIVED_FRIEND);
+        $request_list = Friend::whereUserId(auth()->user()->id)->whereConfirmStatus(Status::RECEIVED_FRIEND);
 
-        return $this->responseCollection(new RequestFriendCollection($request_list->paginate(5)));
+        $response = $this->responseCollection(new RequestFriendCollection($request_list->paginate(5)));
+
+        return response()->json((new DataKey())->encrypt(json_encode($response->getData())));
     }
 
     public function addFriend(FriendAddRequest $request)
@@ -90,9 +95,11 @@ class FriendController extends Controller
             $friend->delete();
         });
 
-        return $this->responseSucceed(
+        $response = $this->responseSucceed(
             message: "Successfully canceled!.",
         );
+
+        return response()->json((new DataKey())->encrypt(json_encode($response->getData())));
     }
 
     public function unfriend(UnfriendRequest $request)
@@ -104,23 +111,25 @@ class FriendController extends Controller
             $friend->delete();
         });
 
-        return $this->responseSucceed(
+        $response = $this->responseSucceed(
             message: "Successfully unfriend!.",
         );
+
+        return response()->json((new DataKey())->encrypt(json_encode($response->getData())));
     }
 
     public function getFriendRelationship(string $friend_id, string $condition)
     {
         if ($condition === 'friend') {
-            $user =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $friend_id)->where('confirm_status', Status::CONFIRMED_FRIEND)->first();
+            $user =  Friend::whereUserId(auth()->user()->id)->whereFriendId($friend_id)->whereConfirmStatus(Status::CONFIRMED_FRIEND)->first();
 
-            $friend =  Friend::where('user_id', $friend_id)->where('friend_id', auth()->user()->id)->where('confirm_status', Status::CONFIRMED_FRIEND)->first();
+            $friend =  Friend::whereUserId($friend_id)->whereFriendId(auth()->user()->id)->whereConfirmStatus(Status::CONFIRMED_FRIEND)->first();
         }
 
         if ($condition === 'not_yet_friend') {
-            $user =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $friend_id)->where('confirm_status', Status::RECEIVED_FRIEND)->first();
+            $user =  Friend::whereUserId(auth()->user()->id)->whereFriendId($friend_id)->whereConfirmStatus(Status::RECEIVED_FRIEND)->first();
 
-            $friend =  Friend::where('user_id', $friend_id)->where('friend_id', auth()->user()->id)->where('confirm_status', Status::ADDED_FRIEND)->first();
+            $friend =  Friend::whereUserId($friend_id)->whereFriendId(auth()->user()->id)->whereConfirmStatus(Status::ADDED_FRIEND)->first();
         }
 
         return [$user, $friend];

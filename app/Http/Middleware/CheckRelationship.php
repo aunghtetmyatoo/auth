@@ -23,11 +23,9 @@ class CheckRelationship
             'friend_id' => ['required', 'uuid'],
         ]);
 
-        $added = Friend::where('user_id', auth()->user()->id)->where('friend_id', $request->friend_id)->where('confirm_status', Status::ADDED_FRIEND)->first();
+        $exists = Friend::where('user_id', auth()->user()->id)->where('friend_id', $request->friend_id)->exists();
 
-        $confirmed = Friend::where('user_id', auth()->user()->id)->where('friend_id', $request->friend_id)->where('confirm_status', Status::CONFIRMED_FRIEND)->first();
-
-        if ($added || $confirmed) {
+        if ($exists) {
             throw new GeneralError();
         }
 

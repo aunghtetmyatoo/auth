@@ -42,6 +42,7 @@ class ServerPath
     const TABLES_LIST =  self::TABLES . 'list';
     const CREATE_TABLE = self::TABLES . 'create';
     const JOIN_TABLE =  self::TABLES . 'join';
+    const JOIN_TABLE_SIDE_BETTOR =  self::TABLES . 'join/side-bettor';
     const LEAVE_TABLE = self::TABLES . 'leave';
     const INVITE_FRIEND =  self::TABLES . 'invite';
     const KICK_OUT = self::TABLES . 'kick-out';
