@@ -27,16 +27,17 @@ class PlayerRegisterRequest extends FormRequest
     {
         (new DevelopmentValidator)->handle([
             'device_id' => ['required', 'string'],
-            'noti_token' => ['required', 'string', 'max:' . MigrationLength::NOTI_TOKEN],
+            // 'noti_token' => ['required', 'string', 'max:' . MigrationLength::NOTI_TOKEN],
+            'language' => ['required', 'string'],
+        ]);
+
+        return [
+            'name' => ['required', 'string', 'min:2', 'max:100'],
             'phone_number' => [
                 'required',
                 'unique:users',
                 'unique:admins',
             ],
-            'name' => ['required', 'string', 'min:2', 'max:100'],
-        ]);
-
-        return [
             'password' => ['required', 'min:6'],
         ];
     }
