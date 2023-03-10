@@ -26,7 +26,7 @@ class LoginRequest extends FormRequest
     {
         (new DevelopmentValidator())->handle([
             'device_id' => ['required', 'string'],
-            'noti_token' => ['required', 'string'],
+            'noti_token' => ['string'],
             'language' => ['required', 'string'],
         ]);
         return [
