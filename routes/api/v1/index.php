@@ -1,12 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\GameTypeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\RefreshTokenController;
 use App\Http\Controllers\Payment\BankAccountController;
 use App\Http\Controllers\Payment\TransactionController;
-use App\Http\Controllers\Api\Payment\DepositeController;
 
 Route::prefix('register')->controller(RegisterController::class)->group(function () {
     Route::post('get/otp', 'getOtp');
@@ -30,6 +30,6 @@ Route::prefix('account')->middleware(["auth:player", "spam"])->group(function ()
 
 Route::post('/refresh-token', [RefreshTokenController::class, '__invoke'])->middleware("refresh_token");
 
-Route::prefix('/deposite')->controller(DepositeController::class)->group(function () {
-    Route::post('/', 'index');
+Route::prefix('/game-type')->controller(GameTypeController::class)->group(function () {
+    Route::post('/list', 'list');
 });
