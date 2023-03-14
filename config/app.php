@@ -125,6 +125,11 @@ return [
     'key' => env('APP_KEY'),
 
     'cipher' => 'AES-256-CBC',
+    'cipher_iv' => 'GN3SE5qaW29StpVA',
+
+    'sms' => env('APP_SMS', true),
+
+    'otp' => env('APP_OTP', true),
 
     /*
     |--------------------------------------------------------------------------
