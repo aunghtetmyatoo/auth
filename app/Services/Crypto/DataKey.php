@@ -4,6 +4,7 @@ namespace App\Services\Crypto;
 
 use App\Helpers\AuthHelper;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\EncryptException;
 
 class DataKey
@@ -30,11 +31,7 @@ class DataKey
             throw new EncryptException('Could not encrypt the data.');
         }
 
-        // $mac = self::$supportedCiphers[strtolower($this->cipher)]['aead']
-        //     ? '' // For AEAD-algoritms, the tag / MAC is returned by openssl_encrypt...
-        //     : $this->hash($iv, $value);
-
-        $mac = '';
+        $mac = hash_hmac('sha256', $iv . $value, $this->getKey());
 
         $json = json_encode(compact('iv', 'value', 'mac'), JSON_UNESCAPED_SLASHES);
 
@@ -53,6 +50,15 @@ class DataKey
     public function decrypt(string $data): mixed
     {
         $payload = json_decode(base64_decode($data), true);
+
+        $valid_mac = hash_equals(
+            hash_hmac('sha256', $payload['iv'] . $payload['value'], $this->getKey()),
+            $payload['mac']
+        );
+
+        if (!$valid_mac) {
+            throw new DecryptException('The MAC is invalid.');
+        }
 
         $iv = base64_decode($payload['iv']);
 
@@ -74,7 +80,7 @@ class DataKey
     private function getKey()
     {
         if (auth()->check()) {
-            $secret_key = auth()->user()->secret_key;
+            $secret_key = 'vn4FU0tnf94Vp8cLnzww9wbm6T5TgNWU';
             return $secret_key;
         }
     }
