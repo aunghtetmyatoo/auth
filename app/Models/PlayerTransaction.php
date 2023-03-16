@@ -23,4 +23,9 @@ class PlayerTransaction extends Model
     {
         return $this->morphMany(History::class, 'transactionable');
     }
+
+    public function history()
+    {
+        return $this->belongsTo(History::class);
+    }
 }
