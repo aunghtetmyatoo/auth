@@ -23,8 +23,10 @@ class AccessTokenMiddleware
         if (!$request->has('token') || !$request->has('phone_number')) {
             return $this->responseUnauthenticated();
         }
+
         $token = AccessToken::whereIdentifier($request->phone_number)
             ->whereAction($action)->first();
+
         if (!$token) {
             return $this->responseUnauthenticated();
         }

@@ -9,7 +9,7 @@ class SendSms
 {
     public function execute(string $phone_number, string $text)
     {
-        $phone_number = str_replace('09', '959', $phone_number);
+        // $phone_number = str_replace('09', '+959', $phone_number);
         $response = Http::withHeaders([
             'Accept'        => 'application/json',
             'Authorization' => 'Bearer ' . config('sms.token')
@@ -17,11 +17,13 @@ class SendSms
             "verify" => config('app.env') === 'production' ?? false
         ])->post(config('sms.end_point'), [
             'from' => 'BPSMS MM',
-            'text' => $text,
+            'message' => $text,
             'to'   => $phone_number
         ]);
-        if ($response['status'] != '0') {
-            throw new SmsFailedExcetion();
-        }
+
+        info($response);
+        // if ($response['status'] != '0') {
+        //     throw new SmsFailedExcetion();
+        // }
     }
 }

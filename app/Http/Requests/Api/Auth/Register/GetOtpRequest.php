@@ -27,9 +27,13 @@ class GetOtpRequest extends FormRequest
         (new DevelopmentValidator)->handle([
             'device_id' => ['required', 'string'],
         ]);
+
         return [
             'phone_number' => [
                 'required',
+                'unique:users',
+                'string',
+                'regex:/^((09)|(\+959)|())((2[5-7])|(4[0-5])|(7[6-9])|(9[6-9])|(7[7-9])|(6[6-9])|(3[1-2]))[0-9]{7}$/'
             ],
         ];
     }

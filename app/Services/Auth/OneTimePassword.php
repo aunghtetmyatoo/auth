@@ -4,7 +4,6 @@ namespace App\Services\Auth;
 
 use App\Actions\Auth\InvalidOtp;
 use App\Actions\Auth\ResetOtpMistake;
-use App\Constants\AuthConstant;
 use App\Enums\OtpAction;
 use App\Events\OtpRequested;
 use App\Exceptions\OtpBlockedException;
@@ -40,17 +39,17 @@ class OneTimePassword
         Otp::where('identifier', $this->phone_number)->delete();
 
         //generate token
-        $token = get_random_digit(6);
+        $otp = get_random_digit(6);
 
         //create otp for a given expired time
         Otp::create([
             'identifier' => $this->phone_number,
             'device_id' => $this->device_id,
-            'token' => Hash::make($token),
+            'token' => Hash::make($otp),
             'expired_at' => now()->addMinutes($life_time)
         ]);
 
-        return $token;
+        return $otp;
     }
 
     public function send(Admin|User $user = null, OtpAction $action, int $life_time): void
@@ -77,8 +76,8 @@ class OneTimePassword
         if (!config('app.otp')) {
             return;
         }
-        $requested_otp = $this->checkRequested();
 
+        $requested_otp = $this->checkRequested();
         $this->checkVerifyLimit($user);
         $this->checkOtpValid(user: $user, requested_otp: $requested_otp, confirm_otp: $otp);
         $this->checkOtpExpire(otp: $requested_otp);
@@ -88,10 +87,6 @@ class OneTimePassword
     // check phone number exceeded the limit to request otp
     private function checkRequestLimit()
     {
-        // if (in_array($this->phone_number, AuthConstant::DEV_PHONE_NUMBERS)) {
-        //     return;
-        // }
-
         $otp_requests = OtpRequest::where('phone_number', $this->phone_number)->get();
 
         if (count($otp_requests) >= config('auth.index.allow.requests.otp')) {
@@ -116,7 +111,7 @@ class OneTimePassword
         }
     }
 
-    // check user blocked to request an otp 
+    // check user blocked to request an otp
     private function checkBlocked()
     {
         // if an admin block this device id
@@ -159,6 +154,7 @@ class OneTimePassword
             $user->$mistake_col = 0;
             $user->save();
         }
+
         $otp->delete();
     }
 }

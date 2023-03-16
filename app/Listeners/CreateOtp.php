@@ -31,10 +31,9 @@ class CreateOtp
             device_id: $event->device_id,
             is_backend: $event->is_backend
         ))->generate($event->life_time, $event->action);
-        if (!config('app.sms')) {
-            info('Generated Otp >>>>', [$otp]);
-        }
 
-        (new SendSms())->execute(phone_number: $event->phone_number, text: $otp . trans('otp.message'));
+        info('Generated Otp >>>>', [strval($otp)]);
+
+        // (new SendSms())->execute(phone_number: $event->phone_number, text: $otp . trans('otp.message'));
     }
 }

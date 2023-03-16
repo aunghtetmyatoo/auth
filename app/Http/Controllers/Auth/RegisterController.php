@@ -12,6 +12,7 @@ use App\Traits\Auth\ApiResponse;
 use App\Services\Auth\AccessToken;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use App\Services\Auth\OneTimePassword;
 use App\Actions\Passport\PasswordGrant;
 use App\Http\Resources\Api\Auth\PlayerResource;
@@ -39,7 +40,6 @@ class RegisterController extends Controller
         ], message: 'otp.sent');
     }
 
-
     public function verifyOpt(VerifyOtpRequest $request)
     {
         (new OneTimePassword(
@@ -51,6 +51,7 @@ class RegisterController extends Controller
         );
 
         $this->accessToken->delete($request->phone_number, 'mb_register_verify_otp');
+
         return $this->responseSucceed(
             data: [
                 'token' => $this->accessToken->generate($request->phone_number, 'mb_register')
@@ -67,7 +68,7 @@ class RegisterController extends Controller
                 UserPrefix::Player->value,
                 $request->phone_number
             );
-             User::create([
+            User::create([
                 'name' => $request->name,
                 'phone_number' => $request->phone_number,
                 'password' => bcrypt($request->password),
@@ -77,7 +78,7 @@ class RegisterController extends Controller
                 'user_agent' => $request->user_agent,
                 'noti_token' => $request->noti_token,
                 'ip_address' => $request->ip_address,
-                'secret_key'=> Str::random(32) ,
+                'secret_key' => Str::random(32),
                 'registered_at' => now(),
                 'last_logged_in_at' => now(),
             ]);
@@ -87,10 +88,12 @@ class RegisterController extends Controller
             DB::commit();
 
             $response = (new PasswordGrant(user: $user))->execute(request: $request);
+
             if ($response->failed()) {
                 DB::rollBack();
                 return $this->responseSomethingWentWrong(message: $response->json()['message']);
             }
+
             $this->accessToken->delete($request->phone_number, 'mb_register');
             DB::commit();
             $tokens = $response->json();
@@ -103,7 +106,7 @@ class RegisterController extends Controller
                 return $this->responseSucceed(data: [
                     'user' => new PlayerResource($user),
                     'token' => $response->json()
-                ], cookie: config('app.env') === "production" ? $cookie : null, message: 'Successfully Logged In');
+                ], cookie: config('app.env') === "production" ? $cookie : null, message: 'Successfully Registered');
             }
             return $this->responseSucceed(data: [
                 'user' => new PlayerResource($user),
