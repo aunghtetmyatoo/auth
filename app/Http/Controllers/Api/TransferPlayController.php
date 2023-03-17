@@ -50,14 +50,12 @@ class TransferPlayController extends Controller
             }
         });
 
-        return response()->json([
-            (new DataKey())->encrypt(
-                [
-                    "coin" => $game_type_user->coin,
-                    "amount" => $user->amount,
-                ],
-            )
-        ]);
+        return response()->json((new DataKey())->encrypt(
+            json_encode([
+                "coin" => $game_type_user->coin,
+                "amount" => $user->amount,
+            ]),
+        ));
     }
 
     public function CoinToAmount(TransferFromPlayRequest $request)
@@ -84,13 +82,11 @@ class TransferPlayController extends Controller
             ]);
         });
 
-        return response()->json([
-            (new DataKey())->encrypt(
-                [
-                    "coin" => $game_type_user->coin,
-                    "amount" => $user->amount,
-                ],
-            )
-        ]);
+        return response()->json((new DataKey())->encrypt(
+            json_encode([
+                "coin" => $game_type_user->coin,
+                "amount" => $user->amount,
+            ]),
+        ));
     }
 }
