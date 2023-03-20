@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Remote;
 
+use App\Constants\Status;
 use Illuminate\Http\Request;
 use App\Enums\TransactionType;
 use App\Models\BotTransaction;
+use App\Traits\Auth\ApiResponse;
 use App\Models\PlayerTransaction;
 use Illuminate\Support\Facades\DB;
 use App\Actions\GenerateReferenceId;
 use App\Http\Controllers\Controller;
 use App\Actions\Transaction\LogTransaction;
 use App\Models\TransactionType as TransactionTypeModel;
-use App\Traits\Auth\ApiResponse;
 
 class RemoteTransactionController extends Controller
 {
@@ -29,7 +30,7 @@ class RemoteTransactionController extends Controller
                 'game_match_id' => $request->game_match_id,
             ]);
 
-            $this->history($request, $transaction);
+            $this->history($request, $transaction, Status::USER);
         });
 
         return $this->responseSucceed(
@@ -49,7 +50,7 @@ class RemoteTransactionController extends Controller
                 'game_match_id' => $request->game_match_id,
             ]);
 
-            $this->history($request, $transaction);
+            $this->history($request, $transaction, Status::BOT);
         });
 
         return $this->responseSucceed(
@@ -57,9 +58,9 @@ class RemoteTransactionController extends Controller
         );
     }
 
-    public function history($request, $transaction)
+    public function history($request, $transaction, $status)
     {
-        $transaction_type_id = TransactionTypeModel::where('name', TransactionType::Player)->pluck('id')->first();
+        $transaction_type_id = TransactionTypeModel::whereName($status == Status::USER ? TransactionType::Player : TransactionType::Bot)->pluck('id')->first();
 
         (new LogTransaction(
             $transaction->history(),
