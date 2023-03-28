@@ -23,83 +23,83 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'User-A',
-                'phone_number' => '09791113937',
+                'phone_number' => '+959791113937',
             ],
             [
                 'name' => 'User-B',
-                'phone_number' => '09684416973',
+                'phone_number' => '+959684416973',
             ],
             [
                 'name' => 'User-C',
-                'phone_number' => '09787656373',
+                'phone_number' => '+959787656373',
             ],
             [
                 'name' => 'User-D',
-                'phone_number' => '09442678675',
+                'phone_number' => '+959442678675',
             ],
             [
                 'name' => 'User-E',
-                'phone_number' => '09967856425',
+                'phone_number' => '+959967856425',
             ],
             [
                 'name' => 'User-F',
-                'phone_number' => '09453456783',
+                'phone_number' => '+959453456783',
             ],
             [
                 'name' => 'User-G',
-                'phone_number' => '09888267281',
+                'phone_number' => '+959888267281',
             ],
             [
                 'name' => 'User-H',
-                'phone_number' => '09717416152',
+                'phone_number' => '+959717416152',
             ],
             [
                 'name' => 'User-I',
-                'phone_number' => '09963382922',
+                'phone_number' => '+959963382922',
             ],
             [
                 'name' => 'User-J',
-                'phone_number' => '09257668976',
+                'phone_number' => '+959257668976',
             ],
             [
                 'name' => 'User-K',
-                'phone_number' => '09883537611',
+                'phone_number' => '+959883537611',
             ],
             [
                 'name' => 'Bot-A',
-                'phone_number' => '09777777771',
+                'phone_number' => '+959777777771',
             ],
             [
                 'name' => 'Bot-B',
-                'phone_number' => '09777777772',
+                'phone_number' => '+959777777772',
             ],
             [
                 'name' => 'Bot-C',
-                'phone_number' => '09777777773',
+                'phone_number' => '+959777777773',
             ],
             [
                 'name' => 'Bot-D',
-                'phone_number' => '09777777774',
+                'phone_number' => '+959777777774',
             ],
             [
                 'name' => 'Bot-E',
-                'phone_number' => '09777777775',
+                'phone_number' => '+959777777775',
             ],
             [
                 'name' => 'Bot-F',
-                'phone_number' => '09777777776',
+                'phone_number' => '+959777777776',
             ],
             [
                 'name' => 'Bot-G',
-                'phone_number' => '09777777777',
+                'phone_number' => '+959777777777',
             ],
             [
                 'name' => 'Bot-H',
-                'phone_number' => '09777777778',
+                'phone_number' => '+959777777778',
             ],
             [
                 'name' => 'Bot-I',
-                'phone_number' => '09777777779',
+                'phone_number' => '+959777777779',
             ],
         ];
 
