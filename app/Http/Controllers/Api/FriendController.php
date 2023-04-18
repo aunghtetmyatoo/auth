@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Friend;
 use App\Constants\Status;
 use App\Constants\ServerPath;
-use App\Actions\HandleEndpoint;
+use App\Actions\Endpoint;
 use App\Services\Crypto\DataKey;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +21,7 @@ class FriendController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct(private Endpoint $endpoint)
     {
     }
 
@@ -58,7 +58,7 @@ class FriendController extends Controller
             ],
         ]);
 
-        return $this->handleEndpoint->handle(server_path: ServerPath::ADD_FRIEND, request: [
+        return $this->endpoint->handle(config('api.url.socket'), ServerPath::ADD_FRIEND, [
             'friend_id' => auth()->user()->id,
             'friend_name' => auth()->user()->name,
             'user_id' => $request->friend_id,
@@ -79,7 +79,7 @@ class FriendController extends Controller
             ]);
         });
 
-        return $this->handleEndpoint->handle(server_path: ServerPath::CONFIRM_FRIEND, request: [
+        return $this->endpoint->handle(config('api.url.socket'), ServerPath::CONFIRM_FRIEND, [
             'friend_id' => auth()->user()->id,
             'friend_name' => auth()->user()->name,
             'user_id' => $request->friend_id,

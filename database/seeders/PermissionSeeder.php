@@ -21,6 +21,9 @@ class PermissionSeeder extends Seeder
             'GroupOne' => [
                 'dashboard',
                 'withdraw recharge dashbord',
+                'admin list',
+                'admin create',
+                'admin edit',
                 'user list',
                 'user edit',
                 'bot list',

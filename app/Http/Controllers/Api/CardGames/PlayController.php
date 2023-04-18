@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Api\CardGames;
 
 use Illuminate\Http\Request;
-use App\Actions\HandleEndpoint;
+use App\Actions\Endpoint;
 use App\Constants\ServerPath;
 use App\Http\Controllers\Controller;
 
 class PlayController extends Controller
 {
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct(private Endpoint $endpoint)
     {
     }
 
     public function playDirect(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::PLAY_DIRECT, request: [
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::PLAY_DIRECT, [
             'user_id' => auth()->user()->id,
             'game_type_id' => $request->game_type_id,
         ]);
@@ -23,7 +23,7 @@ class PlayController extends Controller
 
     public function playWithBots(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::PLAY_WITH_BOT, request: [
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::PLAY_WITH_BOT, [
             'user_id' => auth()->user()->id,
             'game_type_id' => $request->game_type_id,
             'room_name' => $request->room_name,

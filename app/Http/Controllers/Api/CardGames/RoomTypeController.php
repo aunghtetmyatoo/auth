@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Api\CardGames;
 
 use App\Http\Controllers\Controller;
-use App\Actions\HandleEndpoint;
+use App\Actions\Endpoint;
 use App\Constants\ServerPath;
 
 class RoomTypeController extends Controller
 {
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct(private Endpoint $endpoint)
     {
     }
 
     public function index()
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::ROOM_TYPE_LIST, request: []);
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::ROOM_TYPE_LIST);
     }
 }

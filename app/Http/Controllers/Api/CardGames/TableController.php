@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Api\CardGames;
 
 use Illuminate\Http\Request;
-use App\Actions\HandleEndpoint;
+use App\Actions\Endpoint;
 use App\Constants\ServerPath;
 use App\Http\Controllers\Controller;
 
 class TableController extends Controller
 {
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct(private Endpoint $endpoint)
     {
     }
 
     public function listPublicTable(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::TABLES_LIST, request: [
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::TABLES_LIST, [
             'user_id' => auth()->user()->id,
             'per_paginate' => $request->per_paginate,
         ]);
@@ -23,7 +23,7 @@ class TableController extends Controller
 
     public function create(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::CREATE_TABLE, request: [
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::CREATE_TABLE, [
             'user_id' => auth()->user()->id,
             'name' => $request->name,
             'game_type_id' => $request->game_type_id,
@@ -35,7 +35,7 @@ class TableController extends Controller
 
     public function join(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::JOIN_TABLE, request: [
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::JOIN_TABLE, [
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
@@ -45,7 +45,7 @@ class TableController extends Controller
 
     public function joinBySideBettor(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::JOIN_TABLE_SIDE_BETTOR, request: [
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::JOIN_TABLE_SIDE_BETTOR, [
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
@@ -56,7 +56,7 @@ class TableController extends Controller
 
     public function leave(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::LEAVE_TABLE, request: [
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::LEAVE_TABLE, [
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
         ]);
@@ -64,7 +64,7 @@ class TableController extends Controller
 
     public function inviteFriend(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::INVITE_FRIEND, request: [
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::INVITE_FRIEND, [
             'from_id' => auth()->user()->id,
             'to_id' => $request->to_id,
             'room_id' => $request->room_id,
@@ -73,7 +73,7 @@ class TableController extends Controller
 
     public function kickOut(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::KICK_OUT, request: [
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::KICK_OUT, [
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
             'kick_user_id' => $request->kick_user_id,

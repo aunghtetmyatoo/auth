@@ -29,6 +29,9 @@ class RoleSeeder extends Seeder
         $super_admin_permissions = [
             'dashboard',
             'withdraw recharge dashbord',
+            'admin list',
+            'admin create',
+            'admin edit',
             'bot list',
             'bot create',
             'bot edit',

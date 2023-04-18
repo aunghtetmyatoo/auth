@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\CardGames;
 
 use Illuminate\Http\Request;
-use App\Actions\HandleEndpoint;
+use App\Actions\Endpoint;
 use App\Constants\ServerPath;
 use App\Traits\Auth\ApiResponse;
 use App\Http\Controllers\Controller;
@@ -12,13 +12,13 @@ class TicketMoneyController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct(private Endpoint $endpoint)
     {
     }
 
     public function index(Request $request)
     {
-        return $this->handleEndpoint->handle(server_path: ServerPath::TICKET_MONEY, request: [
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::TICKET_MONEY, [
             'from_user_id' => auth()->user()->id,
             'amount' => $request->amount,
             'to_user_id' => $request->to_user_id,

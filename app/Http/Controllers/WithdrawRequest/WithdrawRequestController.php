@@ -11,7 +11,7 @@ use App\Actions\StoreFile;
 use Illuminate\Support\Str;
 use App\Constants\ServerPath;
 use App\Models\GeneralLedger;
-use App\Actions\HandleEndpoint;
+use App\Actions\Endpoint;
 use App\Models\RechargeChannel;
 use App\Models\TransactionType;
 use App\Models\WithdrawChannel;
@@ -52,7 +52,7 @@ class WithdrawRequestController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct(private Endpoint $endpoint)
     {
     }
 
@@ -421,7 +421,7 @@ class WithdrawRequestController extends Controller
             ))->execute();
 
             // For RealTime GameDashboard
-            $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
+            $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_RECHARGE_REQUEST, [
                 'rechargeRequest' =>  new WithdrawRequestResource(WithdrawRequest::findOrFail($withdraw_request->id))
             ]);
             $account_name = $user->name;
@@ -440,7 +440,7 @@ class WithdrawRequestController extends Controller
             ]);
 
             // For RealTime GameDashboard
-            $this->handleEndpoint->handle(server_path: ServerPath::GET_WITHDRAW_REQUEST, request: [
+            $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_WITHDRAW_REQUEST, [
                 'withdrawRequest' => ["id" => $withdraw_request->id, "new" => true],
             ]);
 
