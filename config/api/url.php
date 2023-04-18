@@ -1,13 +1,7 @@
 <?php
 
 return [
-    'game_socket' => [
-        'server' => 'https://game-socket.com',
-        'local' => 'http://localhost:3000',
-    ],
-
-    'card_game_socket' => [
-        'server' => 'https://card.game-socket.com',
-        'local' => 'http://card-games.test',
-    ],
+    'auth' => env('AUTH_DOMAIN', 'https://auth.game-socket.com'),
+    'card' => env('CARD_DOMAIN', 'https://card.game-socket.com'),
+    'socket' => env('SOCKET_DOMAIN', 'https://game-socket.com:8081'),
 ];

@@ -9,7 +9,7 @@ use App\Actions\StoreFile;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Constants\ServerPath;
-use App\Actions\HandleEndpoint;
+use App\Actions\Endpoint;
 use App\Models\RechargeChannel;
 use App\Models\RechargeRequest;
 use App\Constants\ChannelPrefix;
@@ -38,7 +38,7 @@ class RechargeRequestController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct(private Endpoint $endpoint)
     {
     }
 
@@ -178,7 +178,7 @@ class RechargeRequestController extends Controller
         ]);
 
         // For RealTime GameDashboard
-        $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
+        $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_RECHARGE_REQUEST, [
             'rechargeRequest' => ["id" => $recharge_request->id, "new" => true]
         ]);
 
@@ -218,7 +218,7 @@ class RechargeRequestController extends Controller
 
 
         // For RealTime GameDashboard
-        $this->handleEndpoint->handle(server_path: ServerPath::GET_RECHARGE_REQUEST, request: [
+        $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_RECHARGE_REQUEST, [
             'rechargeRequest' => ["id" => $request_cancelled->id, "new" => false, "status" =>  'CANCELLED']
         ]);
 

@@ -10,7 +10,7 @@ use App\Models\History;
 use App\Constants\Status;
 use Illuminate\Http\Request;
 use App\Constants\ServerPath;
-use App\Actions\HandleEndpoint;
+use App\Actions\Endpoint;
 use App\Models\TransactionType;
 use App\Exceptions\GeneralError;
 use App\Traits\Auth\ApiResponse;
@@ -23,7 +23,7 @@ class GiftController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct(private Endpoint $endpoint)
     {
     }
 
@@ -34,9 +34,10 @@ class GiftController extends Controller
         DB::beginTransaction();
         try {
             $user = User::lockForUpdate()->where('id', auth()->user()->id)->first();
-            $response = $this->handleEndpoint->handle(
-                server_path: ServerPath::BUY_GIFT,
-                request: [
+            $response = $this->endpoint->handle(
+                config('api.url.card'),
+                ServerPath::BUY_GIFT,
+                [
                     'user_id' => auth()->user()->id,
                     'user_model' => get_class(auth()->user()),
                     'transaction_type_id' => $transaction_type_id,
@@ -74,9 +75,10 @@ class GiftController extends Controller
             DB::beginTransaction();
             try {
                 $user = User::lockForUpdate()->where('id', auth()->user()->id)->first();
-                $response = $this->handleEndpoint->handle(
-                    server_path: ServerPath::BUY_GIFT,
-                    request: [
+                $response = $this->endpoint->handle(
+                    config('api.url.card'),
+                    ServerPath::BUY_GIFT,
+                    [
                         'user_id' => auth()->user()->id,
                         'user_model' => get_class(auth()->user()),
                         'friend_id' => $request->friend_id,

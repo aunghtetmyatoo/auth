@@ -4,31 +4,32 @@ namespace App\Constants;
 
 class ServerPath
 {
-    // const CARD_GAME = 'https://card.game-socket.com/api/v1/card-game/';
-    // const GAMBLING_AUTH = 'https://auth.game-socket.com/api/v1/';
-    const CARD_GAME = 'http://card-games.test/api/v1/card-game/';
-    const GAMBLING_AUTH = 'http://gamblingauth.test/api/v1/remote/';
-    const GAME_SOCKET = 'https://game-socket.com:8081/api/v1/';
+    const AUTH_PREFIX = '/api/v1/';
+    const CARD_PREFIX = '/api/v1/card-game/';
+    const SOCKET_PREFIX = '/api/v1/';
 
-    // For Game Socket
-    // For Game Socket, Friend API
-    const FRIEND =  self::GAME_SOCKET . 'friends/';
+
+    /** Start Game Socket */
+    // Friend
+    const FRIEND =  self::SOCKET_PREFIX . 'friends/';
     const ADD_FRIEND = self::FRIEND . 'add';
     const CONFIRM_FRIEND = self::FRIEND . 'confirm';
 
-    // For Game Socket , Admin Dashboard API
-    const ADMIN_DASHBOARD =  self::GAME_SOCKET . 'admin-dashboard/';
+    // Recharge, Withdraw
+    const ADMIN_DASHBOARD =  self::SOCKET_PREFIX . 'admin-dashboard/';
     const GET_RECHARGE_REQUEST = self::ADMIN_DASHBOARD . 'get-recharge-request';
     const GET_WITHDRAW_REQUEST = self::ADMIN_DASHBOARD . 'get-withdraw-request';
 
-    // For Card Game, Message API
-    const MESSAGES = self::GAME_SOCKET . 'messages/';
+    // Chat
+    const MESSAGES = self::SOCKET_PREFIX . 'messages/';
     const PUBLIC_MESSAGE = self::MESSAGES . 'public';
     const PRIVATE_MESSAGE = self::MESSAGES . 'private';
+    /** End Game Socket */
 
-    // For Card Game
-    // For Card Game, Match API
-    const MATCHES = self::CARD_GAME . 'matches/';
+
+    /** Start Card Game */
+    // Match
+    const MATCHES = self::CARD_PREFIX . 'matches/';
     const READY = self::MATCHES . 'ready';
     const START_MATCH = self::MATCHES . 'start';
     const BET = self::MATCHES . 'bet';
@@ -39,8 +40,8 @@ class ServerPath
     const QUIT_MATCH = self::MATCHES . 'quit-match';
     const CANCEL_QUIT_MATCH = self::MATCHES . 'cancel-quit-match';
 
-    // For Card Game, Table API
-    const TABLES = self::CARD_GAME . 'tables/';
+    // Table
+    const TABLES = self::CARD_PREFIX . 'tables/';
     const TABLES_LIST =  self::TABLES . 'list';
     const CREATE_TABLE = self::TABLES . 'create';
     const JOIN_TABLE =  self::TABLES . 'join';
@@ -49,19 +50,20 @@ class ServerPath
     const INVITE_FRIEND =  self::TABLES . 'invite';
     const KICK_OUT = self::TABLES . 'kick-out';
 
-    // For Card Game, Ticket Money API
-    const TICKET_MONEY = self::CARD_GAME . 'ticket-money';
+    // Ticket Money
+    const TICKET_MONEY = self::CARD_PREFIX . 'ticket-money';
 
-    // For Card Game, PLAY API
-    const PLAY = self::CARD_GAME . 'plays/';
+    // Play
+    const PLAY = self::CARD_PREFIX . 'plays/';
     const PLAY_DIRECT = self::PLAY . 'direct';
     const PLAY_WITH_BOT = self::PLAY . 'play-with-bots';
 
-    // For Card Game, Gift API
-    const GIFT =  self::CARD_GAME . 'gift/';
+    // Gift
+    const GIFT =  self::CARD_PREFIX . 'gift/';
     const BUY_GIFT = self::GIFT . 'buy-gift';
 
-    // For Card Game, Gift API
-    const ROOM_TYPE =  self::CARD_GAME . 'room-type/';
+    // Room Type
+    const ROOM_TYPE =  self::CARD_PREFIX . 'room-type/';
     const ROOM_TYPE_LIST = self::ROOM_TYPE . 'list';
+    /** End Card Game */
 }
