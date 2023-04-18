@@ -40,6 +40,7 @@ return new class extends Migration
             $table->dateTime('first_logged_in_at')->nullable();
             $table->dateTime('password_changed_at')->nullable();
             $table->dateTime('registered_at');
+            $table->string('noti_token', MigrationLength::NOTI_TOKEN)->nullable();
 
             $table->string('language', MigrationLength::LANGUAGE)->default('en');
             $table->string('ip_address', MigrationLength::IP_ADDRESS)->nullable();

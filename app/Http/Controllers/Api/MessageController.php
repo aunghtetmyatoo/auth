@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use App\Constants\ServerPath;
-use App\Actions\HandleEndpoint;
+use App\Actions\Endpoint;
 use App\Exceptions\UserNotExistException;
 use App\Traits\Auth\ApiResponse;
 use App\Http\Controllers\Controller;
@@ -16,7 +16,7 @@ class MessageController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private HandleEndpoint $handleEndpoint)
+    public function __construct(private Endpoint $endpoint)
     {
     }
 
@@ -28,7 +28,7 @@ class MessageController extends Controller
             throw new UserNotExistException();
         }
 
-        return $this->handleEndpoint->handle(server_path: ServerPath::PUBLIC_MESSAGE, request: [
+        return $this->endpoint->handle(config('api.url.socket'), ServerPath::PUBLIC_MESSAGE, [
             'from_user' => new UserResource($user),
             'message' => $request->message,
             'room_id' => $request->room_id,
@@ -45,7 +45,7 @@ class MessageController extends Controller
             throw new UserNotExistException();
         }
 
-        return $this->handleEndpoint->handle(server_path: ServerPath::PRIVATE_MESSAGE, request: [
+        return $this->endpoint->handle(config('api.url.socket'), ServerPath::PRIVATE_MESSAGE, [
             'from_user' => new UserResource($from_user),
             'message' => $request->message,
             'to_user_id' => $request->to_user_id,

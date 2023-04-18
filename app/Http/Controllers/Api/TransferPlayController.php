@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\GameType;
 use App\Constants\Status;
 use App\Models\GameTypeUser;
-use App\Actions\HandleEndpoint;
 use App\Services\Crypto\DataKey;
 use App\Traits\Auth\ApiResponse;
 use App\Actions\ConvertCoinAmount;
@@ -20,7 +19,7 @@ class TransferPlayController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private HandleEndpoint $handleEndpoint, private ConvertCoinAmount $convertCoinAmount)
+    public function __construct(private ConvertCoinAmount $convertCoinAmount)
     {
     }
 
