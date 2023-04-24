@@ -25,6 +25,13 @@ class TransactionTypeSeeder extends Seeder
             TransactionType::Withdraw,
             TransactionType::Recharge,
 
+            TransactionType::ITToITHead,
+            TransactionType::ITHeadToSuperAdmin,
+            TransactionType::SuperAdminToFinanceManager,
+            TransactionType::FinanceManagerToSuperAdmin,
+            TransactionType::FinanceManagerToFinance,
+            TransactionType::Admin,
+
         ];
 
         foreach ($transaction_types as $transaction_type) {

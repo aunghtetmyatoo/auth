@@ -75,18 +75,30 @@ class PermissionSeeder extends Seeder
                 'withdraw channel create',
                 'withdraw channel edit',
                 'withdraw channel delete',
-                ]
+            ],
+            'Cash Management' => [
+                'refill to it head analysis',
+                'refill to super admin analysis',
+                'refill to finance manager analysis',
+                'refill to finance analysis',
+                'return to super admin analysis',
+                'refill to operation manager analysis',
+            ],
         ];
 
-            foreach ($groupPermissions as $group_name => $permissions)
-            {
-                $group = PermissionGroup::where('name', $group_name)->first();
+        foreach ($groupPermissions as $group_name => $permissions)
+        {
+            $group = PermissionGroup::where('name', $group_name)->first();
 
-                foreach ($permissions as $permission) {
+            foreach ($permissions as $permission) {
+                $existed = Permission::where('name', $permission)->first();
+
+                if (!$existed) {
                     $permission = $group->permissions()->create([
                         'name' => $permission,
                     ]);
                 }
             }
+        }
     }
 }

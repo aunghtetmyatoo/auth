@@ -16,17 +16,23 @@ class RoleSeeder extends Seeder
     public function run()
     {
         $roles = [
+            'IT',
+            'IT Head',
             'Super Admin',
-            'Admin',
-            'Officer',
+            'Finance Manager',
+            'Finance',
             'Operation Manager',
         ];
 
         foreach ($roles as $role) {
-            Role::firstOrCreate(['name' => $role,'guard_name' => 'admin']);
+            $existed = Role::where('name', $role)->first();
+
+            if (!$existed) {
+                Role::firstOrCreate(['name' => $role, 'guard_name' => 'admin']);
+            }
         }
 
-        $super_admin_permissions = [
+        $permissions = [
             'dashboard',
             'withdraw recharge dashbord',
             'admin list',
@@ -81,57 +87,53 @@ class RoleSeeder extends Seeder
             'permission group delete'
         ];
 
-        $role = Role::where('name', 'Super Admin')->where('guard_name','admin')->first();
-
-        $role->syncPermissions($super_admin_permissions);
-
-        $admin_permissions = [
-            'dashboard',
-            'withdraw recharge dashbord',
-            'bot list',
-            'bot create',
-            'bot edit',
-            'recharge request list',
-            'recharge request confirm',
-            'recharge request reject',
-            'recharge request complete',
-            'withdraw request list',
-            'withdraw request confirm',
-            'withdraw request refund',
-            'withdraw request complete',
-            'recharge channel list',
-            'recharge channel create',
-            'recharge channel edit',
-            'withdraw channel list',
-            'withdraw channel create',
-            'withdraw channel edit',
-            'exchange rate list',
-            'exchange rate create',
-            'exchange rate edit',
-            'game type list',
-            'game type create',
-            'game type edit',
+        $it_permissions = [
+            'refill to it head analysis',
+        ];
+        $it_head_permissions = [
+            'refill to super admin analysis',
+        ];
+        $super_admin_permissions = [
+            'refill to finance manager analysis',
+        ];
+        $finance_manager_permissions = [
+            'refill to finance analysis',
+            'return to super admin analysis',
+        ];
+        $finance_permissions = [
+            'refill to operation manager analysis',
         ];
 
-        $role = Role::where('name', 'Admin')->where('guard_name','admin')->first();
+        foreach ($permissions as $permission)
+        {
+            array_push($it_permissions, $permission);
+            array_push($it_head_permissions, $permission);
+            array_push($super_admin_permissions, $permission);
+            array_push($finance_manager_permissions, $permission);
+            array_push($finance_permissions, $permission);
+        }
 
-        $role->syncPermissions($admin_permissions);
+        $roles = Role::where('guard_name', 'admin')->get();
 
-        $officer_permissions = [
-            'dashboard',
-            'withdraw recharge dashbord',
-            'bot list',
-            'recharge request list',
-            'withdraw request list',
-            'recharge channel list',
-            'withdraw channel list',
-            'exchange rate list',
-            'game type list',
-        ];
-
-        $role = Role::where('name', 'Officer')->where('guard_name','admin')->first();
-
-        $role->syncPermissions($officer_permissions);
-
+        foreach ($roles as $role)
+        {
+            switch ($role->name) {
+                case 'IT':
+                    $role->syncPermissions($it_permissions);
+                    break;
+                case 'IT Head':
+                    $role->syncPermissions($it_head_permissions);
+                    break;
+                case 'Super Admin':
+                    $role->syncPermissions($super_admin_permissions);
+                    break;
+                case 'Finance Manager':
+                    $role->syncPermissions($finance_manager_permissions);
+                    break;
+                case 'Finance':
+                    $role->syncPermissions($finance_permissions);
+                    break;
+            }
+        }
     }
 }

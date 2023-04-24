@@ -20,13 +20,19 @@ class PermissionGroupSeeder extends Seeder
             'GroupOne',
             'GroupTwo',
             'GroupThree',
+            'Cash Management',
         ];
 
         foreach ($groups as $group) {
-            PermissionGroup::create([
-                'name' => $group
-            ]);
+            $existed = PermissionGroup::where('name', $group)->first();
+
+            if (!$existed) {
+                PermissionGroup::create([
+                    'name' => $group,
+                ]);
+            }
         }
+
         PermissionGroup::whereNotIn('name', $groups)->delete();
     }
 }

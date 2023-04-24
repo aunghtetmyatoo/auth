@@ -112,9 +112,8 @@ trait ApiResponse
 
     private function response(array $data, int $code)
     {
-
         return response()->json(
-            (new DataKey())->encrypt($data),
+            (new DataKey())->encrypt(json_encode($data)),
             $code,
         );
     }
