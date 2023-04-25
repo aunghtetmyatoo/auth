@@ -24,6 +24,8 @@ class PermissionSeeder extends Seeder
                 'admin list',
                 'admin create',
                 'admin edit',
+                'admin qr generate',
+                'admin qr',
                 'user list',
                 'user edit',
                 'bot list',
