@@ -38,6 +38,8 @@ class RoleSeeder extends Seeder
             'admin list',
             'admin create',
             'admin edit',
+            'admin qr generate',
+            'admin qr',
             'bot list',
             'bot create',
             'bot edit',
