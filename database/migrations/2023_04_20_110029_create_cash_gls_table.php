@@ -15,10 +15,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('cash_gls', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id('id');
             $table->string('name', MigrationLength::NAME);
             $table->double('amount',34)->default(0.00);
             $table->boolean('status')->default(1);
+            $table->timestamps();
         });
     }
 
