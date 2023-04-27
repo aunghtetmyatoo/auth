@@ -17,5 +17,6 @@ enum TransactionType: string
     case SuperAdminToFinanceManager = 'Super Admin to Finance Manager Transaction';
     case FinanceManagerToSuperAdmin = 'Finance Manager to Super Admin Transaction';
     case FinanceManagerToFinance = 'Finance Manager to Finance Transaction';
+    case FinanceToOperationManager = 'Finance to Operation Manager';
     case Admin = 'Admin Transaction';
 }
