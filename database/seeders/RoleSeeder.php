@@ -104,6 +104,7 @@ class RoleSeeder extends Seeder
         ];
         $finance_permissions = [
             'refill to operation manager analysis',
+            'return to finance manager analysis'
         ];
 
         foreach ($permissions as $permission)
