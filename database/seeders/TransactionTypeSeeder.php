@@ -32,6 +32,7 @@ class TransactionTypeSeeder extends Seeder
             TransactionType::FinanceManagerToFinance,
             TransactionType::FinanceToOperationManager,
             TransactionType::Admin,
+            TransactionType::FinanceToFinanceManager
 
         ];
 
