@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('monitor_logs', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->unique();
             $table->unsignedBigInteger('transaction_type_id');
             $table->foreign('transaction_type_id')->references('id')->on('transaction_types');
             $table->uuid('monitor_loggable_id');
