@@ -91,6 +91,13 @@ class RoleSeeder extends Seeder
 
         $it_permissions = [
             'refill to it head analysis',
+
+            'refill to super admin analysis',
+            'refill to finance manager analysis',
+            'refill to finance analysis',
+            'refill to operation manager analysis',
+            'return to super admin analysis',
+            'return to finance manager analysis'
         ];
         $it_head_permissions = [
             'refill to super admin analysis',
