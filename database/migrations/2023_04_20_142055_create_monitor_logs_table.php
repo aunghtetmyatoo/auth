@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Constants\ErrorLogStatus;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -19,8 +20,10 @@ return new class extends Migration
             $table->foreign('transaction_type_id')->references('id')->on('transaction_types');
             $table->uuid('monitor_loggable_id');
             $table->string('monitor_loggable_type');
-
             $table->string('reference_id');
+            $table->double('difference_amount')->nullable();
+            $table->string('error_text')->nullable();
+            $table->enum("error_status", [ErrorLogStatus::PENDING, ErrorLogStatus::SLOVED])->default(ErrorLogStatus::PENDING);
             $table->boolean('read')->default(0);
             $table->dateTime('transaction_at');
             $table->timestamps();

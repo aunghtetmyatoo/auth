@@ -89,6 +89,9 @@ class AdminSeeder extends Seeder
                 case 'Finance':
                     $admin->assignRole('Finance');
                     break;
+                case 'Operation Manager':
+                        $admin->assignRole('Operation Manager');
+                        break;
             }
         }
     }
