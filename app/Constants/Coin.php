@@ -4,5 +4,5 @@ namespace App\Constants;
 
 class Coin
 {
-    const ONECOIN = 100;
+    const ONECOIN = 10;
 }
