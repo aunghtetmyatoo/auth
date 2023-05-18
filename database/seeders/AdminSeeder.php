@@ -23,7 +23,7 @@ class AdminSeeder extends Seeder
                 'name' => 'Admin-1',
                 'phone_number' => '+959873673861',
                 'role'=>'IT',
-                'amount'=> 900000
+                'amount'=> 0
             ],
             [
                 'name' => 'Admin-2',
@@ -89,6 +89,9 @@ class AdminSeeder extends Seeder
                 case 'Finance':
                     $admin->assignRole('Finance');
                     break;
+                case 'Operation Manager':
+                        $admin->assignRole('Operation Manager');
+                        break;
             }
         }
     }

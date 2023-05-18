@@ -91,6 +91,14 @@ class RoleSeeder extends Seeder
 
         $it_permissions = [
             'refill to it head analysis',
+
+            'refill to super admin analysis',
+            'refill to finance manager analysis',
+            'refill to finance analysis',
+            'refill to operation manager analysis',
+            'refill to player analysis',
+            'return to super admin analysis',
+            'return to finance manager analysis'
         ];
         $it_head_permissions = [
             'refill to super admin analysis',
@@ -106,6 +114,10 @@ class RoleSeeder extends Seeder
             'refill to operation manager analysis',
             'return to finance manager analysis'
         ];
+        $operation_manager_permissions = [
+            'refill to player analysis',
+            'return to finance analysis'
+        ];
 
         foreach ($permissions as $permission)
         {
@@ -114,6 +126,7 @@ class RoleSeeder extends Seeder
             array_push($super_admin_permissions, $permission);
             array_push($finance_manager_permissions, $permission);
             array_push($finance_permissions, $permission);
+            array_push($operation_manager_permissions, $permission);
         }
 
         $roles = Role::where('guard_name', 'admin')->get();
@@ -135,6 +148,9 @@ class RoleSeeder extends Seeder
                     break;
                 case 'Finance':
                     $role->syncPermissions($finance_permissions);
+                    break;
+                case 'Operation Manager':
+                    $role->syncPermissions($operation_manager_permissions);
                     break;
             }
         }

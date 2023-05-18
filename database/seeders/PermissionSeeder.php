@@ -84,9 +84,10 @@ class PermissionSeeder extends Seeder
                 'refill to finance manager analysis',
                 'refill to finance analysis',
                 'refill to operation manager analysis',
+                'refill to player analysis',
                 'return to super admin analysis',
-                'return to finance manager analysis'
-
+                'return to finance manager analysis',
+                'return to finance analysis'
             ],
         ];
 

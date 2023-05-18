@@ -20,4 +20,6 @@ enum TransactionType: string
     case Admin = 'Admin Transaction';
     case FinanceToFinanceManager = 'Finance to Finance Manager Transaction';
     case FinanceManagerToSuperAdmin = 'Finance Manager to Super Admin Transaction';
+    case OperationManagerToPlayer = 'Operation Manager To Player';
+    case OperationManagerToFinance = 'Operation Manager To Finance';
 }
