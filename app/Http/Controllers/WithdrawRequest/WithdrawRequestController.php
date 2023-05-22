@@ -420,10 +420,10 @@ class WithdrawRequestController extends Controller
                 ]
             ))->execute();
 
-            // For RealTime GameDashboard
-            $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_RECHARGE_REQUEST, [
-                'rechargeRequest' =>  new WithdrawRequestResource(WithdrawRequest::findOrFail($withdraw_request->id))
-            ]);
+            // // For RealTime GameDashboard
+            // $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_RECHARGE_REQUEST, [
+            //     'rechargeRequest' =>  new WithdrawRequestResource(WithdrawRequest::findOrFail($withdraw_request->id))
+            // ]);
             $account_name = $user->name;
             $account_phone_number = $user->phone_number;
             $date = now()->format('Y-m-d H:i:s');
@@ -441,7 +441,7 @@ class WithdrawRequestController extends Controller
 
             // For RealTime GameDashboard
             $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_WITHDRAW_REQUEST, [
-                'withdrawRequest' => ["id" => $withdraw_request->id, "new" => true],
+                'withdrawRequest' => ["id" => $withdraw_request->id, "new" => true, "count" =>  WithdrawRequest::where('status', Status::PENDING)->count()],
             ]);
 
             DB::commit();
