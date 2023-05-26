@@ -89,6 +89,7 @@ class RechargeRequestController extends Controller
             'qr_code' => Storage::url('Image/Recharge/qr_photo.jpg')
         ], 200);
     }
+
     public function enquiryKbz(EnquiryKbzRequest $request)
     {
         $channel = $this->validation('KBZ Pay');
@@ -114,12 +115,11 @@ class RechargeRequestController extends Controller
         return $this->createRequest($request, $channel, ChannelPrefix::KBZ_PAY);
     }
 
-
-
     public function cancelledUsdt(Request $request)
     {
         return $this->cancelledRequest('USDT');
     }
+
     public function cancelledKbz(Request $request)
     {
         return $this->cancelledRequest('KBZ Pay');
@@ -139,8 +139,6 @@ class RechargeRequestController extends Controller
 
     private function createRequest(Request $request, RechargeChannel $channel, string $prefix)
     {
-
-
         try {
             $store_file = new StoreFile('Image/Recharge' . $request->user_id);
             $transaction_screenshot_path = $store_file->execute(file: $request->file('screenshot'), file_prefix: Status::RECHARGE);
