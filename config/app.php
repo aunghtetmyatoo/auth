@@ -131,6 +131,8 @@ return [
 
     'otp' => env('APP_OTP', true),
 
+    'crypto' => env('APP_CRYPTO', true),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver
