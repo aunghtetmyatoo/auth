@@ -8,6 +8,7 @@ use App\Constants\Status;
 use App\Enums\UserPrefix;
 use Illuminate\Support\Str;
 use App\Actions\UserReference;
+use App\Models\PlayerSetting;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -125,6 +126,15 @@ class UserSeeder extends Seeder
 
             $user->game_types()->attach($game_type_id, [
                 'coin' => 900000,
+            ]);
+
+            PlayerSetting::create([
+                'user_id' => $user->id,
+                'game_type_id' => $game_type_id,
+                'sound_status' => 1,
+                'vibration_status' => 1,
+                'challenge_status' => 1,
+                'friend_status' => 1,
             ]);
         }
     }

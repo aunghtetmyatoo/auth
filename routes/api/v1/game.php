@@ -16,7 +16,7 @@ use App\Http\Controllers\Api\CardGames\TicketMoneyController;
 use App\Http\Controllers\Api\Payment\CashOutRequestController;
 
 Route::prefix('/settings')->controller(PlayerSettingController::class)->group(function () {
-    Route::post('/', 'index');
+    Route::post('/show', 'show');
     Route::post('/update', 'update');
 });
 
@@ -36,7 +36,7 @@ Route::prefix('/friends')->controller(FriendController::class)->group(function (
 
 Route::prefix('/transfers')->controller(TransferPlayController::class)->middleware('check_coin_amount')->group(function () {
     Route::post('amount-to-coin', 'amountToCoin');
-    Route::post('coin-to-amount', 'CoinToAmount');
+    Route::post('coin-to-amount', 'coinToAmount');
 });
 
 Route::prefix('/ticket-money')->controller(TicketMoneyController::class)->group(function () {

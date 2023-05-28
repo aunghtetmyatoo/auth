@@ -11,5 +11,5 @@ class PlayerSetting extends Model
 
     protected $table = 'player_settings';
 
-    protected $fillable = ['sound_status', 'vibration_status', 'challenge_status', 'friend_status'];
+    protected $fillable = ['user_id', 'game_type_id', 'sound_status', 'vibration_status', 'challenge_status', 'friend_status'];
 }

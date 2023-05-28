@@ -3,20 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\GameType;
-use App\Services\Crypto\DataKey;
+use App\Traits\Auth\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\GameType\GameTypeResource;
 
 class GameTypeController extends Controller
 {
-    public function __construct()
-    {
-    }
+    use ApiResponse;
 
     public function index()
     {
-        $response =  GameTypeResource::collection(GameType::all());
-
-        return response()->json((new DataKey())->encrypt(json_encode($response)));
+        return $this->responseCollection(GameTypeResource::collection(GameType::all()));
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\GameTypeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -28,7 +27,3 @@ Route::prefix('account')->middleware(["auth:player", "spam"])->group(function ()
 });
 
 Route::post('/refresh-token', [RefreshTokenController::class, '__invoke'])->middleware("refresh_token");
-
-Route::prefix('/game-type')->controller(GameTypeController::class)->group(function () {
-    Route::post('/list', 'list');
-});

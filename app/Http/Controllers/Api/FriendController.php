@@ -6,7 +6,6 @@ use App\Models\Friend;
 use App\Constants\Status;
 use App\Constants\ServerPath;
 use App\Actions\Endpoint;
-use App\Services\Crypto\DataKey;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -29,18 +28,14 @@ class FriendController extends Controller
     {
         $friend_list = Friend::whereUserId(auth()->user()->id)->whereConfirmStatus(Status::CONFIRMED_FRIEND);
 
-        $response = $this->responseCollection(new FriendCollection($friend_list->paginate(5)));
-
-        return response()->json((new DataKey())->encrypt(json_encode($response->getData())));
+        return $this->responseCollection(new FriendCollection($friend_list->paginate(5)));
     }
 
     public function requestList()
     {
         $request_list = Friend::whereUserId(auth()->user()->id)->whereConfirmStatus(Status::RECEIVED_FRIEND);
 
-        $response = $this->responseCollection(new RequestFriendCollection($request_list->paginate(5)));
-
-        return response()->json((new DataKey())->encrypt(json_encode($response->getData())));
+        return $this->responseCollection(new RequestFriendCollection($request_list->paginate(5)));
     }
 
     public function addFriend(FriendAddRequest $request)
@@ -50,19 +45,27 @@ class FriendController extends Controller
                 'user_id' => auth()->user()->id,
                 'friend_id' => $request->friend_id,
                 'confirm_status' => Status::ADDED_FRIEND,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'user_id' => $request->friend_id,
                 'friend_id' => auth()->user()->id,
                 'confirm_status' => Status::RECEIVED_FRIEND,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
 
-        return $this->endpoint->handle(config('api.url.socket'), ServerPath::ADD_FRIEND, [
+        $this->endpoint->handle(config('api.url.socket'), ServerPath::ADD_FRIEND, [
             'friend_id' => auth()->user()->id,
             'friend_name' => auth()->user()->name,
             'user_id' => $request->friend_id,
         ]);
+
+        return $this->responseSucceed(
+            message: "Successfully added friend!.",
+        );
     }
 
     public function confirmFriend(FriendConfirmRequest $request)
@@ -79,11 +82,15 @@ class FriendController extends Controller
             ]);
         });
 
-        return $this->endpoint->handle(config('api.url.socket'), ServerPath::CONFIRM_FRIEND, [
+        $this->endpoint->handle(config('api.url.socket'), ServerPath::CONFIRM_FRIEND, [
             'friend_id' => auth()->user()->id,
             'friend_name' => auth()->user()->name,
             'user_id' => $request->friend_id,
         ]);
+
+        return $this->responseSucceed(
+            message: "Successfully confirmed friend!.",
+        );
     }
 
     public function cancelFriend(FriendCancelRequest $request)
@@ -95,11 +102,9 @@ class FriendController extends Controller
             $friend->delete();
         });
 
-        $response = $this->responseSucceed(
+        return $this->responseSucceed(
             message: "Successfully canceled!.",
         );
-
-        return response()->json((new DataKey())->encrypt(json_encode($response->getData())));
     }
 
     public function unfriend(UnfriendRequest $request)
@@ -111,25 +116,23 @@ class FriendController extends Controller
             $friend->delete();
         });
 
-        $response = $this->responseSucceed(
+        return $this->responseSucceed(
             message: "Successfully unfriend!.",
         );
-
-        return response()->json((new DataKey())->encrypt(json_encode($response->getData())));
     }
 
     public function getFriendRelationship(string $friend_id, string $condition)
     {
         if ($condition === 'friend') {
-            $user =  Friend::whereUserId(auth()->user()->id)->whereFriendId($friend_id)->whereConfirmStatus(Status::CONFIRMED_FRIEND)->first();
+            $user =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $friend_id)->where('confirm_status', Status::CONFIRMED_FRIEND)->first();
 
-            $friend =  Friend::whereUserId($friend_id)->whereFriendId(auth()->user()->id)->whereConfirmStatus(Status::CONFIRMED_FRIEND)->first();
+            $friend =  Friend::where('user_id', $friend_id)->where('friend_id', auth()->user()->id)->where('confirm_status', Status::CONFIRMED_FRIEND)->first();
         }
 
         if ($condition === 'not_yet_friend') {
-            $user =  Friend::whereUserId(auth()->user()->id)->whereFriendId($friend_id)->whereConfirmStatus(Status::RECEIVED_FRIEND)->first();
+            $user =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $friend_id)->where('confirm_status', Status::RECEIVED_FRIEND)->first();
 
-            $friend =  Friend::whereUserId($friend_id)->whereFriendId(auth()->user()->id)->whereConfirmStatus(Status::ADDED_FRIEND)->first();
+            $friend =  Friend::where('user_id', $friend_id)->where('friend_id', auth()->user()->id)->where('confirm_status', Status::ADDED_FRIEND)->first();
         }
 
         return [$user, $friend];

@@ -7,6 +7,7 @@ use App\Enums\Language;
 use App\Enums\OtpAction;
 use App\Enums\UserPrefix;
 use Illuminate\Support\Str;
+use App\Models\PlayerSetting;
 use App\Actions\UserReference;
 use App\Traits\Auth\ApiResponse;
 use App\Services\Auth\AccessToken;
@@ -84,6 +85,15 @@ class RegisterController extends Controller
             ]);
 
             $user = User::where('phone_number', $request->phone_number)->first();
+
+            PlayerSetting::create([
+                'user_id' => $user->id,
+                'game_type_id' => 1,
+                'sound_status' => 1,
+                'vibration_status' => 1,
+                'challenge_status' => 1,
+                'friend_status' => 1,
+            ]);
 
             DB::commit();
 

@@ -82,24 +82,24 @@ class RechargeRequestController extends Controller
         $channel = $this->validation('USDT');
         $usdt_amount = ceil((float)($request->amount) * ($channel->exchange_currency->sell_rate));
 
-        return $this->response([
+        return $this->responseSucceed([
             'recharge_amount' => number_format($request->amount),
             'code' => $usdt_amount . 'USDT.TRC20',
             'usdt_amount' => $usdt_amount,
             'qr_code' => Storage::url('Image/Recharge/qr_photo.jpg')
-        ], 200);
+        ]);
     }
     public function enquiryKbz(EnquiryKbzRequest $request)
     {
         $channel = $this->validation('KBZ Pay');
         $kbz_amount = (float)($request->amount) * ($channel->exchange_currency->sell_rate);
 
-        return $this->response([
+        return $this->responseSucceed([
             'recharge_amount' => number_format($request->amount),
             'code' => number_format($kbz_amount) . $channel->exchange_currency->sign,
             'qr_code' => Storage::url('Image/Recharge/qr_photo.jpg')
 
-        ], 200);
+        ]);
     }
 
     public  function usdt(RechargeCreateRequest $request)
@@ -199,12 +199,12 @@ class RechargeRequestController extends Controller
         ]);
 
 
-        return $this->response([
+        return $this->responseSucceed([
             // 'amount'=>$request->amount,
             'time' => $recharge_request->created_at->format('H:i:s'),
             'payee' => $recharge_request->user->name,
             'recharge_amount' => $recharge_request->requested_amount,
-        ], 200);
+        ]);
     }
 
     public function cancelledRequest(string $channel)

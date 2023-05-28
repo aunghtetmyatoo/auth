@@ -93,13 +93,13 @@ class WithdrawRequestController extends Controller
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
 
-        return $this->response([
+        return $this->responseSucceed([
             'withdraw_amount' => "{$request->amount} MMK",
             'handling_fee' => "{$channel->handling_fee} MMK",
             'balance' => auth()->user()->amount . "MMK",
             // 'exchange_rate' => "¥ 1 = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => "{$request->amount} MMK",
-        ], 200);
+        ]);
     }
 
     public function enquiryWechat(WeChatRequest $request)
@@ -110,13 +110,13 @@ class WithdrawRequestController extends Controller
         if ($validation['result'] == 0) {
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
-        return $this->response([
+        return $this->responseSucceed([
             'withdraw_amount' => "{$request->amount} MMK",
             'handling_fee' => "{$channel->handling_fee} MMK",
             'balance' => auth()->user()->amount . "MMK",
             'exchange_rate' => "1 MMK = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => $channel->exchange_currency->sign . " " . $request->amount * $channel->exchange_currency->buy_rate,
-        ], 200);
+        ]);
     }
 
     public function enquiryAliPay(AliPayRequest $request)
@@ -127,13 +127,13 @@ class WithdrawRequestController extends Controller
         if ($validation['result'] == 0) {
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
-        return $this->response([
+        return $this->responseSucceed([
             'withdraw_amount' => "{$request->amount} MMK",
             'handling_fee' => "{$channel->handling_fee} MMK",
             'balance' => auth()->user()->amount . "MMK",
             'exchange_rate' => "1 MMK = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => $channel->exchange_currency->sign . " " . $request->amount * $channel->exchange_currency->buy_rate,
-        ], 200);
+        ]);
     }
 
     public function enquiryThaiBaht(ThaiBahtRequest $request)
@@ -144,13 +144,13 @@ class WithdrawRequestController extends Controller
         if ($validation['result'] == 0) {
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
-        return $this->response([
+        return $this->responseSucceed([
             'withdraw_amount' => "{$request->amount} MMK",
             'handling_fee' => "{$channel->handling_fee} MMK",
             'balance' => auth()->user()->amount . "MMK",
             'exchange_rate' => "1 MMK = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => $channel->exchange_currency->sign . " " . $request->amount * $channel->exchange_currency->buy_rate,
-        ], 200);
+        ]);
     }
     public function enquiryBankCard(BankCardRequest $request)
     {
@@ -161,13 +161,13 @@ class WithdrawRequestController extends Controller
         if ($validation['result'] == 0) {
             return ResponseHelpers::customResponse(422, $validation['message']);
         }
-        return $this->response([
+        return $this->responseSucceed([
             'withdraw_amount' => "{$request->amount} MMK",
             'handling_fee' => "{$channel->handling_fee} MMK",
             'balance' => auth()->user()->amount . "MMK",
             'exchange_rate' => "1 MMK = {$channel->exchange_currency->sign} {$channel->exchange_currency->buy_rate}",
             'actual_arrival' => $channel->exchange_currency->sign . " " . $request->amount * $channel->exchange_currency->buy_rate,
-        ], 200);
+        ]);
     }
 
     public function kbzPay(KbzCreateRequest $request)
@@ -445,7 +445,7 @@ class WithdrawRequestController extends Controller
             ]);
 
             DB::commit();
-            return $this->response([
+            return $this->responseSucceed([
                 // 'payee'=>$request->payee,
                 // 'amount'=>$request->amount,
                 // 'account_number'=>$request->account_number,
@@ -456,7 +456,7 @@ class WithdrawRequestController extends Controller
                 'payee' => $withdraw_request->payee,
                 'withdraw_amount' => $withdraw_request->amount . "MMK ",
                 'handling_fee' => $withdraw_request->handling_fee,
-            ], 200);
+            ]);
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e);

@@ -6,12 +6,10 @@ use App\Models\User;
 use App\Models\GameType;
 use App\Constants\Status;
 use App\Models\GameTypeUser;
-use App\Services\Crypto\DataKey;
 use App\Traits\Auth\ApiResponse;
 use App\Actions\ConvertCoinAmount;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Exceptions\UserNotExistException;
 use App\Http\Requests\Api\Transfer\TransferToPlayRequest;
 use App\Http\Requests\Api\Transfer\TransferFromPlayRequest;
 
@@ -31,7 +29,7 @@ class TransferPlayController extends Controller
 
         $user = User::lockForUpdate()->find(auth()->user()->id);
 
-        $game_type_user = GameTypeUser::lockForUpdate()->whereUserId(auth()->user()->id)->whereGameTypeId($game_type_id)->first();
+        $game_type_user = GameTypeUser::lockForUpdate()->where('user_id', auth()->user()->id)->where('game_type_id', $game_type_id)->first();
 
         DB::transaction(function () use ($user, $game_type_user, $amount, $converted_coin, $game_type_id) {
             $user->update([
@@ -49,15 +47,13 @@ class TransferPlayController extends Controller
             }
         });
 
-        return response()->json((new DataKey())->encrypt(
-            json_encode([
-                "coin" => $game_type_user->coin,
-                "amount" => $user->amount,
-            ]),
-        ));
+        return $this->responseSucceed([
+            "coin" => $game_type_user->coin,
+            "amount" => $user->amount,
+        ]);
     }
 
-    public function CoinToAmount(TransferFromPlayRequest $request)
+    public function coinToAmount(TransferFromPlayRequest $request)
     {
         ['game_type_id' => $game_type_id, 'coin' => $coin] = $request->all();
 
@@ -65,11 +61,7 @@ class TransferPlayController extends Controller
 
         $user = User::lockForUpdate()->find(auth()->user()->id);
 
-        if (!$user) {
-            throw new UserNotExistException();
-        }
-
-        $game_type_user = GameTypeUser::lockForUpdate()->whereUserId(auth()->user()->id)->whereGameTypeId($game_type_id)->first();
+        $game_type_user = GameTypeUser::lockForUpdate()->where('user_id', auth()->user()->id)->where('game_type_id', $game_type_id)->first();
 
         DB::transaction(function () use ($user, $game_type_user, $coin, $converted_amount) {
             $game_type_user->update([
@@ -81,11 +73,9 @@ class TransferPlayController extends Controller
             ]);
         });
 
-        return response()->json((new DataKey())->encrypt(
-            json_encode([
-                "coin" => $game_type_user->coin,
-                "amount" => $user->amount,
-            ]),
-        ));
+        return $this->responseSucceed([
+            "coin" => $game_type_user->coin,
+            "amount" => $user->amount,
+        ]);
     }
 }

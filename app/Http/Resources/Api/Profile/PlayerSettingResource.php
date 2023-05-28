@@ -15,6 +15,8 @@ class PlayerSettingResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'user_id' => $this->user_id,
+            'game_type_id' => $this->game_type_id,
             'sound_status' => $this->sound_status,
             'vibration_status' => $this->vibration_status,
             'challenge_status' => $this->challenge_status,

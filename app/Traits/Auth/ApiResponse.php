@@ -4,43 +4,53 @@ namespace App\Traits\Auth;
 
 use App\Services\Crypto\DataKey;
 use Illuminate\Http\JsonResponse;
-use App\Services\Crypto\RequestKey;
 use Symfony\Component\HttpFoundation\Response;
 
 trait ApiResponse
 {
-    public function responseValidationErrors(array $errors = [], string $message = null)
+    public function encrypt(object $data)
     {
-        return response()->json([
+        return $data;
+        if (config('app.crypto')) {
+            return (new DataKey())->encrypt(json_encode($data));
+        }
+
+        return $data;
+    }
+
+    public function responseValidationErrors(array $errors = [], string $message = null): string | JsonResponse
+    {
+        return $this->encrypt(response()->json([
             'data'    => [
                 ...$errors,
                 'message' => $message ? $message : 'Validation error.',
             ],
             'code'    => Response::HTTP_UNPROCESSABLE_ENTITY,
-        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 
-    public function responseUnprocessableEntity(string $message = '', bool $translate = true): JsonResponse
+    public function responseUnprocessableEntity(string $message = '', bool $translate = true): string | JsonResponse
     {
         if ($message && $translate) {
             $message = trans($message);
         }
-        return response()->json([
+
+        return $this->encrypt(response()->json([
             'data'    => [
                 ...$this->translate(message: $message, code: Response::HTTP_UNPROCESSABLE_ENTITY),
             ],
             'code'    => Response::HTTP_UNPROCESSABLE_ENTITY,
-        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 
-    public function responseUnauthenticated(string $message = '', array $replace = [],  $status_code = Response::HTTP_UNAUTHORIZED): JsonResponse
+    public function responseUnauthenticated(string $message = '', array $replace = [],  $status_code = Response::HTTP_UNAUTHORIZED): string | JsonResponse
     {
-        return response()->json([
+        return $this->encrypt(response()->json([
             'data'    => [
                 ...$this->translate(message: $message, replace: $replace, code: $status_code),
             ],
             'code'    => $status_code,
-        ], $status_code);
+        ], $status_code));
     }
 
     private function getDefaultResponses()
@@ -55,7 +65,8 @@ trait ApiResponse
             'message' => $message ? trans($message, $replace) : trans($this->getDefaultResponses()[$code])
         ];
     }
-    public function responseSucceed(array $data = [], $status_code = Response::HTTP_OK, string $message = '', $cookie = null): JsonResponse
+
+    public function responseSucceed(array $data = [], $status_code = Response::HTTP_OK, string $message = '', $cookie = null): string | JsonResponse
     {
         $response = response()->json([
             'data'    => [
@@ -69,55 +80,56 @@ trait ApiResponse
             $response->withCookie($cookie);
         }
 
-        return $response;
+        return $this->encrypt($response);
     }
 
-    public function responseSomethingWentWrong(string $message = ''): JsonResponse
+    public function responseSomethingWentWrong(string $message = ''): string | JsonResponse
     {
-        $response = response()->json([
+        return $this->encrypt(response()->json([
             'data'    => [
                 ...$this->translate(message: $message, code: Response::HTTP_INTERNAL_SERVER_ERROR),
             ],
             'code'    => Response::HTTP_INTERNAL_SERVER_ERROR,
-        ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        return $response;
+        ], Response::HTTP_INTERNAL_SERVER_ERROR));
     }
 
-    public function responseWithCustomErrorCode(string $message = '', $status_code = Response::HTTP_ACCEPTED): JsonResponse
+    public function responseWithCustomErrorCode(string $message = '', $status_code = Response::HTTP_ACCEPTED): string | JsonResponse
     {
-        $response = response()->json([
+        return $this->encrypt(response()->json([
             'data'    => [
                 ...$this->translate(message: $message, code: $status_code),
             ],
             'code'    => $status_code,
-        ], $status_code);
-        return $response;
+        ], $status_code));
     }
 
-    public function responseCollection(mixed $data)
+    public function responseCollection(mixed $data, $status_code = Response::HTTP_OK): string | JsonResponse
     {
-        return response()->json($data, 200);
+        return $this->encrypt(response()->json([
+            'data'    => [
+                ...$data,
+            ],
+            'code'    => $status_code,
+        ], 200));
     }
 
-    public function responseBadRequest(string $message = '', $status_code = Response::HTTP_BAD_REQUEST): JsonResponse
+    public function responseResource(mixed $data, $status_code = Response::HTTP_OK): string | JsonResponse
     {
-        $response = response()->json([
+        return $this->encrypt(response()->json([
+            'data'    => [
+                $data,
+            ],
+            'code'    => $status_code,
+        ], 200));
+    }
+
+    public function responseBadRequest(string $message = '', $status_code = Response::HTTP_BAD_REQUEST): string | JsonResponse
+    {
+        return $this->encrypt(response()->json([
             'data'    => [
                 ...$this->translate(message: $message, code: $status_code),
             ],
             'code'    => $status_code,
-        ], $status_code);
-        return $response;
-    }
-
-    private function response(array $data, int $code)
-    {
-        return response()->json(
-            (new DataKey())->encrypt(json_encode($data)),
-            $code,
-        );
+        ], $status_code));
     }
 }
-
-
-

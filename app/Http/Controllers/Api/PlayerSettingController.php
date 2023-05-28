@@ -4,23 +4,20 @@ namespace App\Http\Controllers\Api;
 
 use App\Constants\Status;
 use App\Models\PlayerSetting;
-use App\Services\Crypto\DataKey;
 use App\Traits\Auth\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\Profile\PlayerSettingCollection;
 use App\Http\Requests\Api\PlayerSetting\PlayerSettingUpdateRequest;
+use App\Http\Resources\Api\Profile\PlayerSettingResource;
 
 class PlayerSettingController extends Controller
 {
     use ApiResponse;
 
-    public function index()
+    public function show()
     {
-        $setting =  PlayerSetting::whereUserId(auth()->user()->id);
+        $setting =  PlayerSetting::where('user_id', auth()->user()->id)->first();
 
-        $response = $this->responseCollection(new PlayerSettingCollection($setting));
-
-        return response()->json((new DataKey())->encrypt(json_encode($response->getData())));
+        return $this->responseResource(new PlayerSettingResource($setting));
     }
 
     public function update(PlayerSettingUpdateRequest $request)
@@ -51,8 +48,6 @@ class PlayerSettingController extends Controller
             ]);
         }
 
-        $response = $this->responseSucceed(message: "Update Setting Successfully");
-
-        return response()->json((new DataKey())->encrypt(json_encode($response->getData())));
+        return $this->responseSucceed(message: "Update Setting Successfully");
     }
 }
