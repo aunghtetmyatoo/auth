@@ -22,8 +22,8 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Admin-1',
                 'phone_number' => '+959873673861',
-                'role'=>'IT',
-                'amount'=> 0
+                'role' => 'IT',
+                'amount' => 0
             ],
             [
                 'name' => 'Admin-2',
@@ -60,38 +60,42 @@ class AdminSeeder extends Seeder
         app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         foreach ($admins as $admin) {
-            $reference_id = (new UserReference())->execute(UserPrefix::Admin->value, $admin['phone_number']);
+            $existed = Admin::wherePhoneNumber($admin['phone_number'])->first();
 
-            $admin = Admin::create([
-                'name' => $admin['name'],
-                'phone_number' => $admin['phone_number'],
-                'password' => bcrypt('12345'),
-                'reference_id' => $reference_id,
-                'registered_at' => now(),
-                'mfa_secret' => '12345',
-                'role'=>$admin['role'],
-                'amount'=>$admin['amount']
-            ]);
+            if ($existed) {
+                $reference_id = (new UserReference())->execute(UserPrefix::Admin->value, $admin['phone_number']);
 
-            switch ($admin['role']) {
-                case 'IT':
-                    $admin->assignRole('IT');
-                    break;
-                case 'IT Head':
-                    $admin->assignRole('IT Head');
-                    break;
-                case 'Super Admin':
-                    $admin->assignRole('Super Admin');
-                    break;
-                case 'Finance Manager':
-                    $admin->assignRole('Finance Manager');
-                    break;
-                case 'Finance':
-                    $admin->assignRole('Finance');
-                    break;
-                case 'Operation Manager':
+                $admin = Admin::create([
+                    'name' => $admin['name'],
+                    'phone_number' => $admin['phone_number'],
+                    'password' => bcrypt('12345'),
+                    'reference_id' => $reference_id,
+                    'registered_at' => now(),
+                    'mfa_secret' => '12345',
+                    'role' => $admin['role'],
+                    'amount' => $admin['amount']
+                ]);
+
+                switch ($admin['role']) {
+                    case 'IT':
+                        $admin->assignRole('IT');
+                        break;
+                    case 'IT Head':
+                        $admin->assignRole('IT Head');
+                        break;
+                    case 'Super Admin':
+                        $admin->assignRole('Super Admin');
+                        break;
+                    case 'Finance Manager':
+                        $admin->assignRole('Finance Manager');
+                        break;
+                    case 'Finance':
+                        $admin->assignRole('Finance');
+                        break;
+                    case 'Operation Manager':
                         $admin->assignRole('Operation Manager');
                         break;
+                }
             }
         }
     }

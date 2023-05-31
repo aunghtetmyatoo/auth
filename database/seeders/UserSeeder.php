@@ -105,37 +105,41 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            $reference_id = (new UserReference())->execute(str_contains($user['name'], 'User') ?UserPrefix::Player->value : UserPrefix::Bot->value, $user['phone_number']);
+            $existed = User::where('phone_number', $user['phone_number'])->first();
 
-            $user = User::create([
-                'name' => $user['name'],
-                'phone_number' => $user['phone_number'],
-                'password' => bcrypt('password'),
-                'reference_id' => $reference_id,
-                'device_id' => Str::uuid(),
-                'amount' => 900000,
-                'registered_at' => now(),
-                'payment_account_number' => $user['phone_number'],
-                'payment_account_name' => $user['name'],
-                'payment_type_id' => 1,
-                'secret_key'=> Str::random(32),
-                'role' => str_contains($user['name'], 'User') ? Status::USER : Status::BOT,
-            ]);
+            if (!$existed) {
+                $reference_id = (new UserReference())->execute(str_contains($user['name'], 'User') ? UserPrefix::Player->value : UserPrefix::Bot->value, $user['phone_number']);
 
-            $game_type_id = GameType::where('name', 'ShanKoeMee')->pluck('id')->first();
+                $user = User::create([
+                    'name' => $user['name'],
+                    'phone_number' => $user['phone_number'],
+                    'password' => bcrypt('password'),
+                    'reference_id' => $reference_id,
+                    'device_id' => Str::uuid(),
+                    'amount' => 900000,
+                    'registered_at' => now(),
+                    'payment_account_number' => $user['phone_number'],
+                    'payment_account_name' => $user['name'],
+                    'payment_type_id' => 1,
+                    'secret_key' => Str::random(32),
+                    'role' => str_contains($user['name'], 'User') ? Status::USER : Status::BOT,
+                ]);
 
-            $user->game_types()->attach($game_type_id, [
-                'coin' => 900000,
-            ]);
+                $game_type_id = GameType::where('name', 'ShanKoeMee')->pluck('id')->first();
 
-            PlayerSetting::create([
-                'user_id' => $user->id,
-                'game_type_id' => $game_type_id,
-                'sound_status' => 1,
-                'vibration_status' => 1,
-                'challenge_status' => 1,
-                'friend_status' => 1,
-            ]);
+                $user->game_types()->attach($game_type_id, [
+                    'coin' => 900000,
+                ]);
+
+                PlayerSetting::create([
+                    'user_id' => $user->id,
+                    'game_type_id' => $game_type_id,
+                    'sound_status' => 1,
+                    'vibration_status' => 1,
+                    'challenge_status' => 1,
+                    'friend_status' => 1,
+                ]);
+            }
         }
     }
 }

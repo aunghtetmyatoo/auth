@@ -30,7 +30,11 @@ class RechargeChannelSeeder extends Seeder
         ];
 
         foreach ($channels as $channel) {
-            RechargeChannel::firstOrCreate($channel);
+            $existed = RechargeChannel::whereName($channel['name'])->first();
+
+            if ($existed) {
+                RechargeChannel::create($channel);
+            }
         }
     }
 }

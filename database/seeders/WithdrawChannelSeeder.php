@@ -56,7 +56,11 @@ class WithdrawChannelSeeder extends Seeder
         ];
 
         foreach ($channels as $channel) {
-            WithdrawChannel::firstOrCreate($channel);
+            $existed = WithdrawChannel::whereName($channel['name'])->first();
+
+            if (!$existed) {
+                WithdrawChannel::create($channel);
+            }
         }
     }
 }
