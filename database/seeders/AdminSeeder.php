@@ -62,7 +62,7 @@ class AdminSeeder extends Seeder
         foreach ($admins as $admin) {
             $existed = Admin::wherePhoneNumber($admin['phone_number'])->first();
 
-            if ($existed) {
+            if (!$existed) {
                 $reference_id = (new UserReference())->execute(UserPrefix::Admin->value, $admin['phone_number']);
 
                 $admin = Admin::create([
