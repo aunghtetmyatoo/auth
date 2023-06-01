@@ -18,7 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('from_user_id')->nullable();
             $table->unsignedBigInteger('to_user_id')->nullable();
             $table->string('reference_id');
-            $table->double('amount')->default(0);
+            // $table->double('amount')->default(0);
+            $table->unsignedDecimal('amount', 12, 4)->default(0);
             $table->text('remark')->nullable();
             $table->timestamps();
         });

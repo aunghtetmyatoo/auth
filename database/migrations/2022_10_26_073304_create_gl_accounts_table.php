@@ -18,7 +18,8 @@ return new class extends Migration
             $table->id();
             $table->string("name", MigrationLength::NAME)->index();
             $table->string("reference_id", MigrationLength::REFERENCE_ID)->unique()->index();
-            $table->double("amount")->default(0);
+            // $table->double("amount")->default(0);
+            $table->unsignedDecimal('amount', 15, 4)->default(0);
             $table->timestamps();
         });
     }

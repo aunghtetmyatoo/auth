@@ -23,14 +23,15 @@ return new class extends Migration
             $table->uuid("recharge_request_id")->index();
             $table->foreign("recharge_request_id")->references("id")->on("recharge_requests");
             $table->string("reference_id")->index();
-            $table->double('amount')->nullable();
+            // $table->double('amount')->nullable();
+            $table->unsignedDecimal('amount', 12, 4)->nullable();
             $table->enum("from_amount_status", [Status::DEBIT, Status::CREDIT])->default(Status::CREDIT);
             $table->enum("to_amount_status", [Status::DEBIT, Status::CREDIT])->default(Status::DEBIT);
             $table->text('remark')->nullable();
             $table->timestamps();
         });
     }
- 
+
     /**
      * Reverse the migrations.
      *

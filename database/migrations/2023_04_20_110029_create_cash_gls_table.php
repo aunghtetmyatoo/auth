@@ -17,7 +17,8 @@ return new class extends Migration
         Schema::create('cash_gls', function (Blueprint $table) {
             $table->id('id');
             $table->string('name', MigrationLength::NAME);
-            $table->double('amount',34)->default(0.00);
+            // $table->double('amount',34)->default(0.00);
+            $table->unsignedDecimal('amount', 15, 4)->dfault(0);
             $table->boolean('status')->default(1);
             $table->timestamps();
         });

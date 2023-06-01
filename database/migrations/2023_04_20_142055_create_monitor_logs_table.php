@@ -21,7 +21,8 @@ return new class extends Migration
             $table->uuid('monitor_loggable_id');
             $table->string('monitor_loggable_type');
             $table->string('reference_id');
-            $table->double('difference_amount')->nullable();
+            // $table->double('difference_amount')->nullable();
+            $table->unsignedDecimal('difference_amount', 12, 4)->nullable();
             $table->string('error_text')->nullable();
             $table->enum("error_status", [ErrorLogStatus::PENDING, ErrorLogStatus::SLOVED])->default(ErrorLogStatus::PENDING);
             $table->boolean('read')->default(0);

@@ -20,7 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('to_user_id')->index();
             $table->foreign("to_user_id")->references("id")->on("admins");
             $table->string('reference_id');
-            $table->double('amount')->default(0);
+            // $table->double('amount')->default(0);
+            $table->unsignedDecimal('amount', 12, 4)->default(0);
             $table->text('remark')->nullable();
             $table->timestamps();
         });

@@ -23,7 +23,8 @@ return new class extends Migration
             $table->uuid("withdraw_request_id")->index();
             $table->foreign("withdraw_request_id")->references("id")->on("withdraw_requests");
             $table->string("reference_id")->index();
-            $table->double('amount')->nullable();
+            // $table->double('amount')->nullable();
+            $table->unsignedDecimal('amount', 12, 4)->nullable();
             $table->double('handling_fees')->nullable();
             $table->enum("from_amount_status", [Status::DEBIT, Status::CREDIT])->default(Status::CREDIT);
             $table->enum("to_amount_status", [Status::DEBIT, Status::CREDIT])->default(Status::DEBIT);

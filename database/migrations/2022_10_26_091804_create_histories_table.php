@@ -21,9 +21,12 @@ return new class extends Migration
             $table->uuidMorphs('historiable');
             $table->uuidMorphs('transactionable');
             $table->string('reference_id');
-            $table->string('transaction_amount');
-            $table->string('amount_before_transaction');
-            $table->string('amount_after_transaction');
+            // $table->string('transaction_amount');
+            // $table->string('amount_before_transaction');
+            // $table->string('amount_after_transaction');
+            $table->unsignedDecimal('transaction_amount', 12, 4);
+            $table->unsignedDecimal('amount_before_transaction', 12, 4);
+            $table->unsignedDecimal('amount_after_transaction', 12, 4);
             $table->boolean("is_from")->nullable();
             $table->timestamps(6);
         });

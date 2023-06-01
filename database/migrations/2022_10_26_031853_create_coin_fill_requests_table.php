@@ -25,7 +25,8 @@ return new class extends Migration
             $table->foreign("admin_id")->references("id")->on("admins");
             $table->unsignedBigInteger("payment_type_id")->nullable()->index();
             $table->foreign("payment_type_id")->references("id")->on("payment_types");
-            $table->double("amount")->default(0.00);
+            // $table->double("amount")->default(0.00);
+            $table->unsignedDecimal('amount', 12, 4)->default(0);
             $table->dateTime("transaction_time")->nullable();
             $table->timestamps();
         });

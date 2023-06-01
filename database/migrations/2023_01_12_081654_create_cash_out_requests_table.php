@@ -20,7 +20,8 @@ return new class extends Migration
             $table->foreign("transaction_type_id")->references("id")->on("transaction_types");
             $table->string('account_name');
             $table->string('account_number');
-            $table->string('amount');
+            // $table->string('amount');
+            $table->unsignedDecimal('amount', 12, 4);
             $table->uuid("user_id")->index();
             $table->foreign("user_id")->references("id")->on("users");
             $table->enum("status", [Status::REQUESTED, Status::COMPLETED, Status::REJECTED])->default(Status::REQUESTED);

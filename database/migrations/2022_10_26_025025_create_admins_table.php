@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('password');
             $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique();
             $table->string('role')->nullable();
-            $table->double('amount')->default(0.00);
+            // $table->double('amount')->default(0.00);
+            $table->unsignedDecimal('amount', 15, 4)->default(0);
             // security things
             $table->string('device_id', MigrationLength::DEVICE_ID)->nullable();
             $table->string('user_agent')->nullable();

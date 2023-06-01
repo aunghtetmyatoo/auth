@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('account_name')->nullable();
             $table->string('phone_number');
-            $table->double('amount');
+            // $table->double('amount');
+            $table->unsignedDecimal('amount', 12, 4);
             $table->string('transaction_photo')->nullable();
             $table->string('agent_text');
             $table->string('agent_photo');

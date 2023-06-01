@@ -18,7 +18,8 @@ return new class extends Migration
             $table->uuid('id')->unique();
             $table->uuid("user_id")->nullable()->index();
             $table->unsignedBigInteger("admin_id")->nullable()->index();
-            $table->double("transaction_amount")->default(0.00);
+            // $table->double("transaction_amount")->default(0.00);
+            $table->unsignedDecimal('transaction_amount', 12, 4)->default(0);
             $table->unsignedBigInteger("transaction_coins")->default(0);
             $table->unsignedBigInteger("coin_before_transaction")->default(0);
             $table->unsignedBigInteger("coin_after_transaction")->default(0);

@@ -17,8 +17,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('sign')->nullable();
-            $table->double('buy_rate')->default(0.0000);
-            $table->double('sell_rate')->default(0.0000);
+            // $table->double('buy_rate')->default(0.0000);
+            // $table->double('sell_rate')->default(0.0000);
+            $table->unsignedDecimal('buy_rate', 12, 4)->default(0);
+            $table->unsignedDecimal('sell_rate', 12, 4)->default(0);
             $table->softDeletes();
             $table->timestamps();
         });
