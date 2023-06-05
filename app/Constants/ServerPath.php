@@ -19,11 +19,6 @@ class ServerPath
     const ADMIN_DASHBOARD =  self::SOCKET_PREFIX . 'admin-dashboard/';
     const GET_RECHARGE_REQUEST = self::ADMIN_DASHBOARD . 'get-recharge-request';
     const GET_WITHDRAW_REQUEST = self::ADMIN_DASHBOARD . 'get-withdraw-request';
-
-    // Chat
-    const MESSAGES = self::SOCKET_PREFIX . 'messages/';
-    const PUBLIC_MESSAGE = self::MESSAGES . 'public';
-    const PRIVATE_MESSAGE = self::MESSAGES . 'private';
     /** End Game Socket */
 
 
@@ -65,5 +60,10 @@ class ServerPath
     // Room Type
     const ROOM_TYPE =  self::CARD_PREFIX . 'room-type/';
     const ROOM_TYPE_LIST = self::ROOM_TYPE . 'list';
+
+    // Message
+    const MESSAGE =  self::CARD_PREFIX . 'messages/';
+    const PUBLIC = self::MESSAGE . 'public';
+    const PRIVATE = self::MESSAGE . 'private';
     /** End Card Game */
 }

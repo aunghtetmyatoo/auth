@@ -3,13 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\GiftController;
 use App\Http\Controllers\Api\FriendController;
-use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\GameTypeController;
 use App\Http\Controllers\Api\TransferPlayController;
 use App\Http\Controllers\Api\PlayerSettingController;
 use App\Http\Controllers\Api\CardGames\PlayController;
 use App\Http\Controllers\Api\CardGames\MatchController;
 use App\Http\Controllers\Api\CardGames\TableController;
+use App\Http\Controllers\Api\CardGames\MessageController;
 use App\Http\Controllers\Api\CardGames\RoomTypeController;
 use App\Http\Controllers\Api\Payment\TransactionController;
 use App\Http\Controllers\Api\CardGames\TicketMoneyController;
