@@ -34,7 +34,8 @@ class TransactionTypeSeeder extends Seeder
             TransactionType::Admin,
             TransactionType::FinanceToFinanceManager,
             TransactionType::OperationManagerToPlayer,
-            TransactionType::OperationManagerToFinance
+            TransactionType::OperationManagerToFinance,
+            TransactionType::DeactivatedUserByOperationManager
         ];
 
         foreach ($transaction_types as $transaction_type) {
