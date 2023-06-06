@@ -47,6 +47,7 @@ use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestResource;
 use App\Http\Resources\Api\RechargeChannel\RechargeChannelCollection;
 use App\Http\Resources\Api\WithdrawChannel\WithdrawChannelCollection;
 use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestCollection;
+use Carbon\Carbon;
 
 class WithdrawRequestController extends Controller
 {
@@ -302,7 +303,7 @@ class WithdrawRequestController extends Controller
 
     private function validation($request, $channel)
     {
-        $today_withdraw_request_amount = WithdrawRequest::where('user_id', auth()->user()->id)->where('withdraw_channel_id', $channel->id)->whereIn('status', [Status::CONFIRMED, Status::REQUESTED, Status::COMPLETED])->sum('amount');
+        $today_withdraw_request_amount = WithdrawRequest::whereDate('created_at', Carbon::today())->where('user_id', auth()->user()->id)->where('withdraw_channel_id', $channel->id)->whereIn('status', [Status::CONFIRMED, Status::REQUESTED, Status::COMPLETED])->sum('amount');
         $available_request_amount = $channel->max_daily - $today_withdraw_request_amount;
 
         if ($available_request_amount < $request->amount) {
@@ -369,9 +370,11 @@ class WithdrawRequestController extends Controller
             $transaction_type = TransactionType::whereName(EnumsTransactionType::Withdraw)->first();
 
             $operation_manager = Admin::lockForUpdate()->where('role', 'Operation Manager')->first();
-
             $om_amount_before = $operation_manager->amount;
             $om_amount_after = $om_amount_before + $request->amount + $withdraw_request->handling_fee;
+            $operation_manager->update([
+                'amount' => $om_amount_after,
+            ]);
 
             $transaction = WithdrawTransaction::create([
                 'user_id' => $user->id,
@@ -402,7 +405,7 @@ class WithdrawRequestController extends Controller
                     'transaction_amount' => $request->amount,
                     'amount_before_transaction' => $om_amount_before,
                     'amount_after_transaction' => $om_amount_after,
-                    'is_from' => 0,
+                    'is_from' => 1,
                 ],
                 $transaction->history(),
                 [
@@ -416,7 +419,7 @@ class WithdrawRequestController extends Controller
                     'transaction_amount' => $request->amount,
                     'amount_before_transaction' => $user_amount_before,
                     'amount_after_transaction' => $user_amount_after,
-                    'is_from' => 1,
+                    'is_from' => 0,
                 ]
             ))->execute();
 

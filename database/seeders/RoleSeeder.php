@@ -116,7 +116,8 @@ class RoleSeeder extends Seeder
         ];
         $operation_manager_permissions = [
             'refill to player analysis',
-            'return to finance analysis'
+            'return to finance analysis',
+            'user delete',
         ];
 
         foreach ($permissions as $permission)

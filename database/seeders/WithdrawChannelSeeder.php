@@ -20,37 +20,37 @@ class WithdrawChannelSeeder extends Seeder
             [
                 'name' => 'We Chat',
                 'exchange_currency_id' => ExchangeCurrency::whereName('CNY')->pluck('id')->first(),
-                'handling_fee' => 0.7,
+                'handling_fee' => 100,
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'Alipay',
                 'exchange_currency_id' => ExchangeCurrency::whereName('CNY')->pluck('id')->first(),
-                'handling_fee' => 0.7,
+                'handling_fee' => 100,
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'Bank Card',
                 'exchange_currency_id' => ExchangeCurrency::whereName('CNY')->pluck('id')->first(),
-                'handling_fee' => 0.7,
+                'handling_fee' => 100,
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'KBZ Pay',
                 'exchange_currency_id' => ExchangeCurrency::whereName('MMK')->pluck('id')->first(),
-                'handling_fee' => 0.7,
+                'handling_fee' => 100,
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'Thai Baht',
                 'exchange_currency_id' => ExchangeCurrency::whereName('THB')->pluck('id')->first(),
-                'handling_fee' => 0.7,
+                'handling_fee' => 100,
                 'telegram_channel_id' => '-1001733825869'
             ],
             [
                 'name' => 'US Dollar',
                 'exchange_currency_id' => ExchangeCurrency::whereName('USD')->pluck('id')->first(),
-                'handling_fee' => 0.7,
+                'handling_fee' => 100,
                 'telegram_channel_id' => '-1001733825869'
             ],
         ];
