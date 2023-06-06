@@ -32,7 +32,7 @@ class RechargeChannelSeeder extends Seeder
         foreach ($channels as $channel) {
             $existed = RechargeChannel::whereName($channel['name'])->first();
 
-            if ($existed) {
+            if (!$existed) {
                 RechargeChannel::create($channel);
             }
         }
