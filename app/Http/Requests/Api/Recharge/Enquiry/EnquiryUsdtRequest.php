@@ -25,7 +25,6 @@ class EnquiryUsdtRequest extends FormRequest
     {
         return [
             'amount' => ['required', 'numeric']
-
         ];
     }
 }

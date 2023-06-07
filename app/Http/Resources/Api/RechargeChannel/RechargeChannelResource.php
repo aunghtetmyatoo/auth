@@ -15,8 +15,14 @@ class RechargeChannelResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'=>$this->id,
-            'channel_name'=>$this->name,
+            'name' => $this->name,
+            'min_per_transaction' => $this->min_per_transaction,
+            'max_per_transaction' => $this->max_per_transaction,
+            'max_daily' => $this->max_daily,
+            'handling_fee' => $this->handling_fee,
+            'telegram_channel_id' => $this->telegram_channel_id,
+            'status' => $this->status,
+            'exchange_currency' => $this->exchange_currency,
         ];
     }
 }

@@ -3,36 +3,29 @@
 namespace App\Http\Controllers\RechargeRequest;
 
 use Exception;
-use App\Models\User;
+use App\Actions\Endpoint;
 use App\Constants\Status;
 use App\Actions\StoreFile;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Constants\ServerPath;
-use App\Actions\Endpoint;
 use App\Models\RechargeChannel;
 use App\Models\RechargeRequest;
 use App\Constants\ChannelPrefix;
-use App\Services\Crypto\DataKey;
 use App\Traits\Auth\ApiResponse;
 use App\Constants\TelegramConstant;
-use App\Actions\GenerateReferenceId;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use App\CustomFunctions\ResponseHelpers;
-use App\Actions\RechargeGenerateReferenceId;
 use App\Actions\RechargeWithdrawReferenceId;
-use App\Http\Requests\Api\Enquiry\UsdtRequest;
 use App\Exceptions\ServiceUnavailableException;
-use App\Exceptions\CancelRechargeRequestException;
 use App\Exceptions\RechargeRequestNotExistException;
-use App\Http\Resources\Api\Recharge\RechargeResource;
 use App\Http\Resources\Api\Recharge\RechargeCollection;
 use App\Http\Requests\Api\Recharge\Enquiry\EnquiryKbzRequest;
 use App\Http\Requests\Api\Recharge\Enquiry\EnquiryUsdtRequest;
 use App\Http\Requests\Api\RechargeRequest\RechargeCreateRequest;
 use App\Http\Resources\Api\RechargeChannel\RechargeChannelCollection;
-use Illuminate\Support\Facades\Storage;
 
 class RechargeRequestController extends Controller
 {
@@ -66,15 +59,13 @@ class RechargeRequestController extends Controller
         });
 
         return new RechargeCollection($rechargeRequest->orderBy('created_at', 'DESC')->paginate($request->perPage ? $request->perPage : 10));
-        // return new RechargeCollection($rechargeRequest->paginate($request->perPage ? $request->perPage : 5));
     }
 
     public function channels()
     {
         $channels = RechargeChannel::all();
-        return $this->responseSucceed([
-            'channels' => new RechargeChannelCollection($channels),
-        ]);
+
+        return $this->responseCollection(new RechargeChannelCollection($channels));
     }
 
     public function enquiryUsdt(EnquiryUsdtRequest $request)
@@ -99,7 +90,6 @@ class RechargeRequestController extends Controller
             'recharge_amount' => number_format($request->amount),
             'code' => number_format($kbz_amount) . $channel->exchange_currency->sign,
             'qr_code' => Storage::url('Image/Recharge/qr_photo.jpg')
-
         ]);
     }
 
@@ -126,14 +116,16 @@ class RechargeRequestController extends Controller
     }
     private function validation(string $channel_name)
     {
-        $channel = RechargeChannel::whereName($channel_name)->first();
+        $channel = RechargeChannel::where('name', $channel_name)->first();
 
         if (!$channel->status) {
             throw new RechargeRequestNotExistException();
         }
+
         if (RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->whereIn('status', [Status::REQUESTED, Status::CONFIRMED])->where('expired_at', '>=', now())->exists()) {
             throw new ServiceUnavailableException();
         }
+
         return $channel;
     }
 
@@ -143,17 +135,6 @@ class RechargeRequestController extends Controller
             $store_file = new StoreFile('Image/Recharge' . $request->user_id);
             $transaction_screenshot_path = $store_file->execute(file: $request->file('screenshot'), file_prefix: Status::RECHARGE);
 
-            // for encryption and decryption
-            // $validateResponse = (new DataKey())->validate(
-            //     $request,
-            //     ['amount']
-            // );
-            // if ($validateResponse['result'] == 0) {
-            //     return ResponseHelpers::customResponse(422, $validateResponse['message']);
-            // }
-            // end encryption and decryption
-
-
             $recharge_request = RechargeRequest::create([
                 "user_id" => auth()->user()->id,
                 "screenshot" => $transaction_screenshot_path,
@@ -161,23 +142,20 @@ class RechargeRequestController extends Controller
                 'reference_id' => Str::uuid(),
                 "recharge_channel_id" => $channel->id,
                 "expired_at" => now()->addMinutes(30),
-
             ]);
         } catch (Exception $e) {
             return ResponseHelpers::customResponse(422, __('channels/recharge.failed.default'));
         }
 
-
         $recharge_request->refresh();
 
         $recharge_request->update([
             'reference_id' => (new RechargeWithdrawReferenceId())->execute($prefix, $recharge_request->sequence, 12)
-
         ]);
 
         // For RealTime GameDashboard
         $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_RECHARGE_REQUEST, [
-            'rechargeRequest' => ["id" => $recharge_request->id, "new" => true, "count" => RechargeRequest::where('status', Status::REQUESTED)->count() ]
+            'rechargeRequest' => ["id" => $recharge_request->id, "new" => true, "count" => RechargeRequest::where('status', Status::REQUESTED)->count()]
         ]);
 
         $auth_user = auth()->user();
@@ -196,9 +174,7 @@ class RechargeRequestController extends Controller
                 'Date -' . $date
         ]);
 
-
         return $this->responseSucceed([
-            // 'amount'=>$request->amount,
             'time' => $recharge_request->created_at->format('H:i:s'),
             'payee' => $recharge_request->user->name,
             'recharge_amount' => $recharge_request->requested_amount,
@@ -207,13 +183,17 @@ class RechargeRequestController extends Controller
 
     public function cancelledRequest(string $channel)
     {
-
         $channel = RechargeChannel::where('name', $channel)->first();
-        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>=', now())->where('status',Status::REQUESTED,)->first();
+
+        $request_cancelled = RechargeRequest::where('user_id', auth()->user()->id)->where('recharge_channel_id', $channel->id)->where('expired_at', '>=', now())->where('status', Status::REQUESTED,)->first();
+
+        if (!$request_cancelled) {
+            throw new RechargeRequestNotExistException();
+        }
+
         $request_cancelled->update([
             'status' => 'CANCELLED'
         ]);
-
 
         // For RealTime GameDashboard
         $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_RECHARGE_REQUEST, [

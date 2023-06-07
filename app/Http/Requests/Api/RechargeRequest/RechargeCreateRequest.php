@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Api\RechargeRequest;
 
-use App\Constants\Status;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RechargeCreateRequest extends FormRequest
@@ -25,10 +24,8 @@ class RechargeCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'screenshot' => ['required','image', 'mimes:png,jpg,jpeg'],
+            'screenshot' => ['required', 'image', 'mimes:png,jpg,jpeg'],
             'amount' =>  ['required', 'integer'],
-            
-
         ];
     }
 }
