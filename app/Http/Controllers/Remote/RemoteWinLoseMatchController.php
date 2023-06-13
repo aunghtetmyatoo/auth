@@ -35,6 +35,7 @@ class RemoteWinLoseMatchController extends Controller
             'win_coin' => $win_lose_status === Status::WIN ? ($win_coin + $win_lose_coin) : $win_coin,
             'loss_coin' => $win_lose_status === Status::LOSE ? ($loss_coin + $win_lose_coin) : $loss_coin,
             'win_streak' => $win_lose_status === Status::WIN ? ++$win_streak : 0,
+            'win_rate' => $win_match / $total_match,
         ]);
 
         return $this->responseSucceed(

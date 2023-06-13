@@ -119,4 +119,8 @@ class User extends Authenticatable
         return $this->hasMany(RechargeTransaction::class);
     }
 
+    public function win_lose_matches()
+    {
+        return $this->hasMany(WinLoseMatch::class);
+    }
 }
