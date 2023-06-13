@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class WinLoseMatch extends Model
 {
@@ -22,6 +23,12 @@ class WinLoseMatch extends Model
         'loss_coin',
         'win_streak',
         'privacy',
+        'handle_win_rate',
+        'win_rate',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

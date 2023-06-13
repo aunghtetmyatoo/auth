@@ -16,7 +16,6 @@ Route::prefix('/recharge-request')->middleware('auth:player')->controller(Rechar
     Route::post('/kbz', 'kbzPay');
     Route::post('/cancelled/usdt', 'cancelledUsdt');
     Route::post('/cancelled/kbz', 'cancelledKbz');
-    Route::post('/create-recharge', 'createRecharge');
 });
 
 Route::prefix('/withdraw-request')->controller(WithdrawRequestController::class)->group(function () {

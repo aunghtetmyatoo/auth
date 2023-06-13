@@ -15,5 +15,6 @@ class RoomTypeController extends Controller
     public function index()
     {
         return $this->endpoint->handle(config('api.url.card'), ServerPath::ROOM_TYPE_LIST);
+
     }
 }
