@@ -19,32 +19,32 @@ class GeneralLedgerSeeder extends Seeder
             [
                 'name' => 'capital account',
                 'reference_id' => 'CAPITAL_ACC',
-                'amount' => 900000,
+                'amount' => 0,
             ],
             [
                 'name' => 'house edge',
                 'reference_id' => 'HOUSE_EDGE',
-                'amount' => 900000,
+                'amount' => 0,
             ],
             [
                 'name' => 'cash in',
                 'reference_id' => 'CASH_IN',
-                'amount' => 900000,
+                'amount' => 0,
             ],
             [
                 'name' => 'cash out',
                 'reference_id' => 'CASH_OUT',
-                'amount' => 900000,
+                'amount' => 0,
             ],
             [
                 'name' => 'withdraw payable',
                 'reference_id' => 'WDL_PAYABLE',
-                'amount' => 900000,
+                'amount' => 0,
             ],
             [
                 'name' => 'withdraw income',
                 'reference_id' => 'WDL_INCOME',
-                'amount' => 900000,
+                'amount' => 0,
             ],
 
         ];
