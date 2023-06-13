@@ -47,6 +47,7 @@ use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestResource;
 use App\Http\Resources\Api\RechargeChannel\RechargeChannelCollection;
 use App\Http\Resources\Api\WithdrawChannel\WithdrawChannelCollection;
 use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestCollection;
+use App\Models\GlAccount;
 use Carbon\Carbon;
 
 class WithdrawRequestController extends Controller
@@ -153,6 +154,7 @@ class WithdrawRequestController extends Controller
             'actual_arrival' => $channel->exchange_currency->sign . " " . $request->amount * $channel->exchange_currency->buy_rate,
         ], 200);
     }
+
     public function enquiryBankCard(BankCardRequest $request)
     {
 
@@ -332,23 +334,11 @@ class WithdrawRequestController extends Controller
             }
 
             $user_amount_before = $user->amount;
-            $user_amount_after = $user_amount_before - ($request->amount + $channel->handling_fee);
+            $user_amount_after = (float) bcsub($user_amount_before, $request->amount, 4);
 
             $user->update([
                 'amount' => $user_amount_after,
             ]);
-
-            // for encryption and decryption
-            // $validateResponse = (new DataKey())->validate(
-            //     $request,
-            //     $request->bank_name ?
-            //     ['payee','bank_name','account_number','passcode','amount']:
-            //     ['payee','account_number','passcode','amount']
-            // );
-            // if ($validateResponse['result'] == 0) {
-            //     return ResponseHelpers::customResponse(422, $validateResponse['message']);
-            // }
-            // end encryption and decryption
 
             $withdraw_request = WithdrawRequest::create([
                 'user_id' => $user->id,
@@ -369,12 +359,15 @@ class WithdrawRequestController extends Controller
 
             $transaction_type = TransactionType::whereName(EnumsTransactionType::Withdraw)->first();
 
-            $operation_manager = Admin::lockForUpdate()->where('role', 'Operation Manager')->first();
-            $om_amount_before = $operation_manager->amount;
-            $om_amount_after = $om_amount_before + $request->amount + $withdraw_request->handling_fee;
-            $operation_manager->update([
-                'amount' => $om_amount_after,
+
+            $wdl_payable_locked = GlAccount::lockForUpdate()->whereReferenceId('WDL_PAYABLE')->first();
+            $wdl_payable_locked_amount_before = $wdl_payable_locked->amount;
+            $wdl_payable_locked_amount_after = (float) bcadd($wdl_payable_locked_amount_before,$request->amount, 4);
+
+            $wdl_payable_locked->update([
+                'amount' => $wdl_payable_locked_amount_after,
             ]);
+
 
             $transaction = WithdrawTransaction::create([
                 'user_id' => $user->id,
@@ -395,17 +388,18 @@ class WithdrawRequestController extends Controller
             (new LogTransaction(
                 $transaction->history(),
                 [
-                    // For Operation Manager
-                    'historiable_id' => $operation_manager->id,
-                    'historiable_type' => get_class($operation_manager),
+                    // For WDL_PAYABLE
+                    'historiable_id' => $wdl_payable_locked->id,
+                    'historiable_type' => get_class($wdl_payable_locked),
                     'transactionable_id' => $transaction->id,
                     'transactionable_type' => get_class($transaction),
                     'transaction_type_id' => $transaction_type->id,
                     'reference_id' => $withdraw_request->reference_id,
                     'transaction_amount' => $request->amount,
-                    'amount_before_transaction' => $om_amount_before,
-                    'amount_after_transaction' => $om_amount_after,
+                    'amount_before_transaction' => $wdl_payable_locked_amount_before,
+                    'amount_after_transaction' => $wdl_payable_locked_amount_after,
                     'is_from' => 1,
+                    'created_at' => Carbon::now(),
                 ],
                 $transaction->history(),
                 [
@@ -420,8 +414,63 @@ class WithdrawRequestController extends Controller
                     'amount_before_transaction' => $user_amount_before,
                     'amount_after_transaction' => $user_amount_after,
                     'is_from' => 0,
+                    'created_at' => Carbon::now(),
                 ]
             ))->execute();
+
+
+            if($withdraw_request->handling_fee > 0 )
+            {
+                $wdl_income_locked = GlAccount::lockForUpdate()->whereReferenceId('WDL_INCOME')->first();
+                $wdl_income_locked_amount_before = $wdl_income_locked->amount;
+                $wdl_income_locked_amount_after = (float) bcadd($wdl_income_locked_amount_before,$withdraw_request->handling_fee, 4);
+
+                $wdl_income_locked->update([
+                    'amount' => $wdl_income_locked_amount_after,
+                ]);
+
+                $user->refresh();
+                $user_amount_before = $user->amount;
+                $user_amount_after = $user_amount_before -  $channel->handling_fee;
+
+                $user->update([
+                    'amount' => $user_amount_after,
+                ]);
+
+                (new LogTransaction(
+                    $transaction->history(),
+                    [
+                        // For WDL_INCOME
+                        'historiable_id' => $wdl_income_locked->id,
+                        'historiable_type' => get_class($wdl_income_locked),
+                        'transactionable_id' => $transaction->id,
+                        'transactionable_type' => get_class($transaction),
+                        'transaction_type_id' => $transaction_type->id,
+                        'reference_id' => $withdraw_request->reference_id,
+                        'transaction_amount' => $withdraw_request->handling_fee,
+                        'amount_before_transaction' => $wdl_income_locked_amount_before,
+                        'amount_after_transaction' => $wdl_income_locked_amount_after,
+                        'is_from' => 1,
+                        'created_at' => Carbon::now(),
+                    ],
+                    $transaction->history(),
+                    [
+                        // For User
+                        'historiable_id' => $transaction->user_id,
+                        'historiable_type' => get_class(User::find($transaction->user_id)),
+                        'transactionable_id' => $transaction->id,
+                        'transactionable_type' => get_class($transaction),
+                        'transaction_type_id' => $transaction_type->id,
+                        'reference_id' => $withdraw_request->reference_id,
+                        'transaction_amount' => $withdraw_request->handling_fee,
+                        'amount_before_transaction' => $user_amount_before,
+                        'amount_after_transaction' => $user_amount_after,
+                        'is_from' => 0,
+                        'created_at' => Carbon::now(),
+                    ]
+                ))->execute();
+            }
+
 
             $account_name = $user->name;
             $account_phone_number = $user->phone_number;

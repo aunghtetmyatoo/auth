@@ -20,5 +20,6 @@ class LogTransaction
     {
         $this->from_loggable->create($this->from_log_details);
         $this->to_loggable->create($this->to_log_details);
+
     }
 }

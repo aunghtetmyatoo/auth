@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Uuid;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,5 +35,11 @@ class History extends Model
     {
         return $this->morphTo();
     }
+
+    public function setCreatedAtAttribute($value)
+    {
+        $this->attributes['created_at'] = Carbon::parse($value)->format('Y-m-d H:i:s.u');
+    }
+
 
 }
