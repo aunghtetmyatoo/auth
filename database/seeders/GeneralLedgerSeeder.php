@@ -19,12 +19,12 @@ class GeneralLedgerSeeder extends Seeder
             [
                 'name' => 'capital account',
                 'reference_id' => 'CAPITAL_ACC',
-                'amount' => 0,
+                'amount' => 90000,
             ],
             [
                 'name' => 'house edge',
                 'reference_id' => 'HOUSE_EDGE',
-                'amount' => 0,
+                'amount' => 900,
             ],
             [
                 'name' => 'cash in',
