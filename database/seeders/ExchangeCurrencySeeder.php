@@ -19,8 +19,8 @@ class ExchangeCurrencySeeder extends Seeder
             [
                 'name' => 'MMK',
                 'sign' => 'MMK',
-                'buy_rate' => 400,
-                'sell_rate' => 390,
+                'buy_rate' => 1,
+                'sell_rate' => 1,
             ],
             [
                 'name' => 'CNY',
