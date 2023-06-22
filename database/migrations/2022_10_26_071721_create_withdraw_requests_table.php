@@ -46,7 +46,7 @@ return new class extends Migration
             $table->unsignedDecimal('transferred_amount', 12, 4)->nullable();
             $table->unsignedDecimal('refund_amount', 12, 4)->nullable();
 
-            $table->string('screenshot')->nullable();
+            $table->string('screenshot')->default('[]');
             $table->text('description')->nullable();
             $table->dateTime('read_at')->nullable();
             $table->dateTime('confirmed_at')->nullable();
