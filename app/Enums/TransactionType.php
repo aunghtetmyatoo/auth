@@ -8,10 +8,12 @@ enum TransactionType: string
     case Cash = 'Cash Transaction';
     case Bot = 'Bot Transaction';
     case Player = 'Player Transaction';
-    case Withdraw='Withdraw Request Transaction';
-    case Recharge='Recharge Request Transaction';
+    case Withdraw = 'Withdraw Request Transaction';
+    case Recharge = 'Recharge Request Transaction';
+    case AmountToCoin = 'Amount To Coin Transaction';
+    case CoinToAmount = 'Coin To Amount Transaction';
 
-    // Cash Transaction
+        // Cash Transaction
     case ITToITHead = 'IT to IT Head Transaction';
     case ITHeadToSuperAdmin = 'IT Head to Super Admin Transaction';
     case SuperAdminToFinanceManager = 'Super Admin to Finance Manager Transaction';

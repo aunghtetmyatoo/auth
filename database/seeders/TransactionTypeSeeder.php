@@ -24,6 +24,8 @@ class TransactionTypeSeeder extends Seeder
             TransactionType::Player,
             TransactionType::Withdraw,
             TransactionType::Recharge,
+            TransactionType::AmountToCoin,
+            TransactionType::CoinToAmount,
 
             TransactionType::ITToITHead,
             TransactionType::ITHeadToSuperAdmin,
