@@ -17,6 +17,7 @@ class Status
     const CONFIRMED = "CONFIRMED";
     const CANCELLED = "CANCELLED";
     const REFUNDED = "REFUNDED";
+    const REFUNDING = "REFUNDING";
     const DEBIT = "DR";
     const CREDIT = "CR";
 

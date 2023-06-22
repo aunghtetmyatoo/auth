@@ -73,6 +73,8 @@ class PermissionSeeder extends Seeder
                 'withdraw request list',
                 'withdraw request confirm',
                 'withdraw request refund',
+                'withdraw request refunding',
+                'withdraw request rerequest',
                 'withdraw request complete',
                 'withdraw channel list',
                 'withdraw channel create',

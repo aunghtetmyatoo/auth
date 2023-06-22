@@ -21,6 +21,7 @@ enum TransactionType: string
     case FinanceToFinanceManager = 'Finance to Finance Manager Transaction';
     case FinanceManagerToSuperAdmin = 'Finance Manager to Super Admin Transaction';
     case OperationManagerToPlayer = 'Operation Manager To Player';
+    case OperationManagerToBot = 'Operation Manager To Bot';
     case OperationManagerToFinance = 'Operation Manager To Finance';
     case DeactivatedUserByOperationManager = 'Deactivated User By Operation Manager';
 }

@@ -34,6 +34,7 @@ class TransactionTypeSeeder extends Seeder
             TransactionType::Admin,
             TransactionType::FinanceToFinanceManager,
             TransactionType::OperationManagerToPlayer,
+            TransactionType::OperationManagerToBot,
             TransactionType::OperationManagerToFinance,
             TransactionType::DeactivatedUserByOperationManager
         ];
