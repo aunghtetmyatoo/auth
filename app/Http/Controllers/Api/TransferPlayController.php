@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Models\GameType;
 use App\Constants\Status;
 use App\Models\GameTypeUser;
+use App\Models\AmountCoinLog;
+use App\Models\TransactionType;
+use App\Enums\TransactionType as TransactionTypeEnum;
 use App\Traits\Auth\ApiResponse;
 use App\Actions\ConvertCoinAmount;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +48,15 @@ class TransferPlayController extends Controller
                     'coin' => $game_type_user->coin + $converted_coin,
                 ]);
             }
+
+            $transaction_type_id = TransactionType::where('name', TransactionTypeEnum::AmountToCoin)->pluck('id')->first();
+
+            AmountCoinLog::create([
+                'user_id' => $user->id,
+                'transaction_type_id' => $transaction_type_id,
+                'amount' => $amount,
+                'coin' => $converted_coin,
+            ]);
         });
 
         return $this->responseSucceed([
@@ -70,6 +82,15 @@ class TransferPlayController extends Controller
 
             $user->update([
                 'amount' => $user->amount + $converted_amount,
+            ]);
+
+            $transaction_type_id = TransactionType::where('name', TransactionTypeEnum::CoinToAmount)->pluck('id')->first();
+
+            AmountCoinLog::create([
+                'user_id' => $user->id,
+                'transaction_type_id' => $transaction_type_id,
+                'amount' => $converted_amount,
+                'coin' => $coin,
             ]);
         });
 
