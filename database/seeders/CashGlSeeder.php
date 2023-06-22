@@ -19,7 +19,7 @@ class CashGlSeeder extends Seeder
         $cashGles = [
             [
                 'name' => CashGlConstant::Application_Cash,
-                'amount' => 22500000,
+                'amount' => 21600000,
                 'status' => true,
             ],
             [

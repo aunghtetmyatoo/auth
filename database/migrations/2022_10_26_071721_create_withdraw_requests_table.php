@@ -43,7 +43,7 @@ return new class extends Migration
             $table->double('transferred_amount')->nullable();
             $table->double('refund_amount')->nullable();
 
-            $table->string('screenshot')->nullable();
+            $table->string('screenshot')->default('[]');
             $table->text('description')->nullable();
             $table->dateTime('read_at')->nullable();
             $table->dateTime('confirmed_at')->nullable();

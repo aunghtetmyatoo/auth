@@ -22,6 +22,9 @@ class RoleSeeder extends Seeder
             'Finance Manager',
             'Finance',
             'Operation Manager',
+            'Exchange Head',
+            'Exchange Operation',
+            'Exchange Admin'
         ];
 
         foreach ($roles as $role) {
@@ -45,16 +48,7 @@ class RoleSeeder extends Seeder
             'bot edit',
             'bot delete',
             'recharge request list',
-            'recharge request confirm',
-            'recharge request reject',
-            'recharge request complete',
-            'recharge request rerequest',
             'withdraw request list',
-            'withdraw request confirm',
-            'withdraw request refund',
-            'withdraw request refunding',
-            'withdraw request complete',
-            'withdraw request rerequest',
             'recharge channel list',
             'recharge channel create',
             'recharge channel edit',
@@ -64,17 +58,8 @@ class RoleSeeder extends Seeder
             'withdraw channel edit',
             'withdraw channel delete',
             'exchange rate list',
-            'exchange rate create',
-            'exchange rate edit',
-            'exchange rate delete',
             'game type list',
-            'game type create',
-            'game type edit',
-            'game type delete',
             'game category list',
-            'game category create',
-            'game category edit',
-            'game category delete',
             'user list',
             'user edit',
             'role list',
@@ -93,7 +78,6 @@ class RoleSeeder extends Seeder
 
         $it_permissions = [
             'refill to it head analysis',
-
             'refill to super admin analysis',
             'refill to finance manager analysis',
             'refill to finance analysis',
@@ -121,6 +105,30 @@ class RoleSeeder extends Seeder
             'return to finance analysis',
             'user delete',
         ];
+        $exchange_head_permissions = [
+            'game category create',
+            'game category edit',
+            'game category delete',
+            'game type create',
+            'game type edit',
+            'game type delete',
+            'exchange rate create',
+            'exchange rate edit',
+            'exchange rate delete',
+        ];
+        $exchange_operation_permissions = [
+            'recharge request confirm',
+            'recharge request reject',
+            'withdraw request confirm',
+            'withdraw request refunding',
+        ];
+        $exchange_admin_permissions = [
+            'recharge request complete',
+            'recharge request rerequest',
+            'withdraw request refund',
+            'withdraw request complete',
+            'withdraw request rerequest',
+        ];
 
         foreach ($permissions as $permission)
         {
@@ -130,6 +138,9 @@ class RoleSeeder extends Seeder
             array_push($finance_manager_permissions, $permission);
             array_push($finance_permissions, $permission);
             array_push($operation_manager_permissions, $permission);
+            array_push($exchange_head_permissions, $permission);
+            array_push($exchange_operation_permissions, $permission);
+            array_push($exchange_admin_permissions, $permission);
         }
 
         $roles = Role::where('guard_name', 'admin')->get();
@@ -154,6 +165,15 @@ class RoleSeeder extends Seeder
                     break;
                 case 'Operation Manager':
                     $role->syncPermissions($operation_manager_permissions);
+                    break;
+                case 'Exchange Head':
+                    $role->syncPermissions($exchange_head_permissions);
+                    break;
+                case 'Exchange Operation':
+                    $role->syncPermissions($exchange_operation_permissions);
+                    break;
+                case 'Exchange Admin':
+                    $role->syncPermissions($exchange_admin_permissions);
                     break;
             }
         }

@@ -29,7 +29,7 @@ class AdminSeeder extends Seeder
                 'name' => 'Admin-2',
                 'phone_number' => '+959837627622',
                 'role' => 'IT Head',
-                'amount' => 900000
+                'amount' => 0
             ],
             [
                 'name' => 'Admin-3',
@@ -54,6 +54,24 @@ class AdminSeeder extends Seeder
                 'phone_number' => '+959453898724',
                 'role' => 'Operation Manager',
                 'amount' => 900000
+            ],
+            [
+                'name' => 'Admin-7',
+                'phone_number' => '+959453345234',
+                'role' => 'Exchange Head',
+                'amount' => 0
+            ],
+            [
+                'name' => 'Admin-8',
+                'phone_number' => '+959453323563',
+                'role' => 'Exchange Operation',
+                'amount' => 0
+            ],
+            [
+                'name' => 'Admin-9',
+                'phone_number' => '+959453356754',
+                'role' => 'Exchange Admin',
+                'amount' => 0
             ],
         ];
 
@@ -90,8 +108,17 @@ class AdminSeeder extends Seeder
                     $admin->assignRole('Finance');
                     break;
                 case 'Operation Manager':
-                        $admin->assignRole('Operation Manager');
-                        break;
+                    $admin->assignRole('Operation Manager');
+                    break;
+                case 'Exchange Head':
+                    $admin->assignRole('Exchange Head');
+                    break;
+                case 'Exchange Operation':
+                    $admin->assignRole('Exchange Operation');
+                    break;
+                case 'Exchange Admin':
+                    $admin->assignRole('Exchange Admin');
+                    break;
             }
         }
     }
