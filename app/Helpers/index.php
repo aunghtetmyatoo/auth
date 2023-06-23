@@ -21,7 +21,7 @@ if (!function_exists('get_enum_values')) {
 }
 
 /**
- * 
+ *
  * get delicated string from enum
  */
 if (!function_exists('get_enum_string')) {
@@ -32,7 +32,7 @@ if (!function_exists('get_enum_string')) {
 }
 
 /**
- * 
+ *
  * get random digits
  */
 if (!function_exists('get_random_digit')) {
@@ -51,7 +51,7 @@ if (!function_exists('get_random_digit')) {
 }
 
 /**
- * 
+ *
  * get delicated string from salt
  */
 if (!function_exists('get_random_str')) {
@@ -131,5 +131,12 @@ if (!function_exists('checkUserStatus')) {
             "status" => true,
             "message" => null
         ];
+    }
+}
+
+if (!function_exists('random_number_name')) {
+    function random_number_name(): int
+    {
+        return mt_rand(10000000, 99999999);
     }
 }

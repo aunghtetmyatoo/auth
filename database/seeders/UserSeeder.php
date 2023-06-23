@@ -111,7 +111,7 @@ class UserSeeder extends Seeder
                 $reference_id = (new UserReference())->execute(str_contains($user['name'], 'User') ? UserPrefix::Player->value : UserPrefix::Bot->value, $user['phone_number']);
 
                 $user = User::create([
-                    'name' => $user['name'],
+                    'name' => random_number_name(),
                     'phone_number' => $user['phone_number'],
                     'password' => bcrypt('password'),
                     'reference_id' => $reference_id,
