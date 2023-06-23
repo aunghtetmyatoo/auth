@@ -70,7 +70,7 @@ class RegisterController extends Controller
                 $request->phone_number
             );
             User::create([
-                'name' => $request->name,
+                'name' => random_number_name(),
                 'phone_number' => $request->phone_number,
                 'password' => bcrypt($request->password),
                 'device_id' => $request->device_id,
@@ -82,6 +82,9 @@ class RegisterController extends Controller
                 'secret_key' => Str::random(32),
                 'registered_at' => now(),
                 'last_logged_in_at' => now(),
+                'payment_account_number' => $request->phone_number,
+                'payment_account_name' => $request->name,
+                'payment_type_id' => 1,
             ]);
 
             $user = User::where('phone_number', $request->phone_number)->first();

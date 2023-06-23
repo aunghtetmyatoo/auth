@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('game_type_user', function (Blueprint $table) {
-            $table->uuid('id')->unique();
+            // $table->uuid('id')->unique();
             $table->uuid("user_id")->nullable()->index();
             $table->foreign("user_id")->references("id")->on("users");
             $table->unsignedBigInteger("game_type_id")->nullable()->index();
