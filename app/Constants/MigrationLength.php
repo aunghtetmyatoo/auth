@@ -11,6 +11,7 @@ class MigrationLength
     const PASSWORD = 8;
     const DEVICE_ID = 64;
     const REFERENCE_ID = 50;
+    const REFERENCE_CODE = 30;
     const IP_ADDRESS = 12;
     const LANGUAGE = 4;
     const NOTI_TOKEN = 255;
