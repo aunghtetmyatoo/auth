@@ -17,7 +17,6 @@ class MatchController extends Controller
     {
         return $this->endpoint->handle(config('api.url.card'), ServerPath::READY, [
             'room_id' => $request->room_id,
-            'game_type_id' => $request->game_type_id,
             'user_id' => auth()->user()->id,
         ]);
     }

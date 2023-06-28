@@ -17,7 +17,6 @@ class TableController extends Controller
     {
         return $this->endpoint->handle(config('api.url.card'), ServerPath::TABLES_LIST, [
             'user_id' => auth()->user()->id,
-            'per_paginate' => $request->per_paginate,
         ]);
     }
 
@@ -39,7 +38,7 @@ class TableController extends Controller
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
             'game_type_id' => $request->game_type_id,
-            'reference_id' => $request->reference_id,
+            'secret' => $request->secret,
         ]);
     }
 
