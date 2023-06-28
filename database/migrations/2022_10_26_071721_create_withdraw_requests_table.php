@@ -38,9 +38,6 @@ return new class extends Migration
             $table->string('bank_name')->nullable();
             $table->string('account_number')->nullable();
 
-            // $table->double('amount')->nullable();
-            // $table->double('handling_fee')->nullable();
-            // $table->double('transferred_amount')->nullable();
             $table->unsignedDecimal('amount', 12, 4)->nullable();
             $table->unsignedDecimal('handling_fee', 12, 4)->nullable();
             $table->unsignedDecimal('transferred_amount', 12, 4)->nullable();

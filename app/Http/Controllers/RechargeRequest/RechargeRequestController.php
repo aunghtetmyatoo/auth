@@ -114,6 +114,7 @@ class RechargeRequestController extends Controller
     {
         return $this->cancelledRequest('KBZ Pay');
     }
+
     private function validation(string $channel_name)
     {
         $channel = RechargeChannel::where('name', $channel_name)->first();
@@ -141,6 +142,7 @@ class RechargeRequestController extends Controller
                 "requested_amount" => $request->amount,
                 'reference_id' => Str::uuid(),
                 "recharge_channel_id" => $channel->id,
+                "rate" => $channel->exchange_currency->sell_rate,
                 "expired_at" => now()->addMinutes(30),
             ]);
         } catch (Exception $e) {

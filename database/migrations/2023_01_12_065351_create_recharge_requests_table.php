@@ -21,16 +21,17 @@ return new class extends Migration
             $table->unsignedBigInteger("recharge_channel_id")->nullable()->index();
             $table->foreign("recharge_channel_id")->references("id")->on("recharge_channels");
             $table->string('reference_id', MigrationLength::REFERENCE_ID)->unique()->index();
+
             $table->uuid("user_id")->index();
             $table->foreign("user_id")->references("id")->on("users");
-            // $table->double('requested_amount')->nullable();
-            // $table->double('confirmed_amount')->nullable();
-            $table->unsignedDecimal('requested_amount', 12, 4)->nullable();
-            $table->unsignedDecimal('confirmed_amount', 12, 4)->nullable();
+            $table->unsignedBigInteger("confirmed_by")->nullable();
+            $table->foreign("confirmed_by")->references("id")->on("admins");
             $table->unsignedBigInteger("completed_by")->nullable();
             $table->foreign("completed_by")->references("id")->on("admins");
+
             $table->double('rate')->nullable();
-            // $table->double('received_amount')->nullable();
+            $table->unsignedDecimal('requested_amount', 12, 4)->nullable();
+            $table->unsignedDecimal('confirmed_amount', 12, 4)->nullable();
             $table->unsignedDecimal('received_amount', 12, 4)->nullable();
             $table->string('received_from')->nullable();
             $table->string('screenshot')->nullable();
