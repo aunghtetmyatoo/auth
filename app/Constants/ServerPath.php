@@ -12,8 +12,7 @@ class ServerPath
     /** Start Game Socket */
     // Friend
     const FRIEND =  self::SOCKET_PREFIX . 'friends/';
-    const ADD_FRIEND = self::FRIEND . 'add';
-    const CONFIRM_FRIEND = self::FRIEND . 'confirm';
+    const FRIEND_PROCESS = self::FRIEND . 'friend-process';
 
     // Recharge, Withdraw
     const ADMIN_DASHBOARD =  self::SOCKET_PREFIX . 'admin-dashboard/';
