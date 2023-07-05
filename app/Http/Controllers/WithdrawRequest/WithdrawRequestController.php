@@ -10,7 +10,6 @@ use App\Constants\Status;
 use App\Actions\StoreFile;
 use Illuminate\Support\Str;
 use App\Constants\ServerPath;
-use App\Models\GeneralLedger;
 use App\Actions\Endpoint;
 use App\Models\RechargeChannel;
 use App\Models\TransactionType;
@@ -47,7 +46,7 @@ use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestResource;
 use App\Http\Resources\Api\RechargeChannel\RechargeChannelCollection;
 use App\Http\Resources\Api\WithdrawChannel\WithdrawChannelCollection;
 use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestCollection;
-use App\Models\GlAccount;
+use App\Models\CashAccount;
 use Carbon\Carbon;
 
 class WithdrawRequestController extends Controller
@@ -323,18 +322,19 @@ class WithdrawRequestController extends Controller
 
     private function createRequest(WithdrawChannel $channel, $request, string $prefix)
     {
+
         DB::beginTransaction();
         try {
 
-            $auth_user = auth()->user();
-            $user = User::lockForUpdate()->find($auth_user->id);
+            $user = User::lockForUpdate()->find(auth()->user()->id);
+            $withdraw_calculate_amount = $request->amount + $channel->handling_fee;
 
-            if ($user->amount < ($request->amount + $channel->handling_fee)) {
+            if ($user->amount < $withdraw_calculate_amount ) {
                 throw new Exception(__('withdraw.balance_not_enough'));
             }
 
             $user_amount_before = $user->amount;
-            $user_amount_after = (float) bcsub($user_amount_before, $request->amount, 4);
+            $user_amount_after = (float) bcsub($user_amount_before,$withdraw_calculate_amount, 4);
 
             $user->update([
                 'amount' => $user_amount_after,
@@ -358,16 +358,13 @@ class WithdrawRequestController extends Controller
             ]);
 
             $transaction_type = TransactionType::whereName(EnumsTransactionType::Withdraw)->first();
+            $user_total_account = CashAccount::lockForUpdate()->whereReferenceId('USER')->first();
+            $user_total_amount_before = $user_total_account->amount;
+            $user_total_amount_after = (float) bcsub($user_total_amount_before,$withdraw_calculate_amount, 4);
 
-
-            $wdl_payable_locked = GlAccount::lockForUpdate()->whereReferenceId('WDL_PAYABLE')->first();
-            $wdl_payable_locked_amount_before = $wdl_payable_locked->amount;
-            $wdl_payable_locked_amount_after = (float) bcadd($wdl_payable_locked_amount_before,$request->amount, 4);
-
-            $wdl_payable_locked->update([
-                'amount' => $wdl_payable_locked_amount_after,
+            $user_total_account->update([
+                'amount' => $user_total_amount_after,
             ]);
-
 
             $transaction = WithdrawTransaction::create([
                 'user_id' => $user->id,
@@ -380,7 +377,6 @@ class WithdrawRequestController extends Controller
             ]);
 
             $transaction->refresh();
-
             $transaction->update([
                 'reference_id' => (new ReferenceId())->execute('RC', $transaction->id),
             ]);
@@ -388,17 +384,17 @@ class WithdrawRequestController extends Controller
             (new LogTransaction(
                 $transaction->history(),
                 [
-                    // For WDL_PAYABLE
-                    'historiable_id' => $wdl_payable_locked->id,
-                    'historiable_type' => get_class($wdl_payable_locked),
+                    // For User Total Account
+                    'historiable_id' => $user_total_account->id,
+                    'historiable_type' => get_class( $user_total_account),
                     'transactionable_id' => $transaction->id,
                     'transactionable_type' => get_class($transaction),
                     'transaction_type_id' => $transaction_type->id,
                     'reference_id' => $withdraw_request->reference_id,
-                    'transaction_amount' => $request->amount,
-                    'amount_before_transaction' => $wdl_payable_locked_amount_before,
-                    'amount_after_transaction' => $wdl_payable_locked_amount_after,
-                    'is_from' => 1,
+                    'transaction_amount' => $withdraw_calculate_amount,
+                    'amount_before_transaction' => $user_total_amount_before,
+                    'amount_after_transaction' => $user_total_amount_after,
+                    'is_from' => 0,
                     'created_at' => Carbon::now(),
                 ],
                 $transaction->history(),
@@ -410,67 +406,13 @@ class WithdrawRequestController extends Controller
                     'transactionable_type' => get_class($transaction),
                     'transaction_type_id' => $transaction_type->id,
                     'reference_id' => $withdraw_request->reference_id,
-                    'transaction_amount' => $request->amount,
+                    'transaction_amount' =>  $withdraw_calculate_amount,
                     'amount_before_transaction' => $user_amount_before,
                     'amount_after_transaction' => $user_amount_after,
                     'is_from' => 0,
                     'created_at' => Carbon::now(),
                 ]
             ))->execute();
-
-
-            if($withdraw_request->handling_fee > 0 )
-            {
-                $wdl_income_locked = GlAccount::lockForUpdate()->whereReferenceId('WDL_INCOME')->first();
-                $wdl_income_locked_amount_before = $wdl_income_locked->amount;
-                $wdl_income_locked_amount_after = (float) bcadd($wdl_income_locked_amount_before,$withdraw_request->handling_fee, 4);
-
-                $wdl_income_locked->update([
-                    'amount' => $wdl_income_locked_amount_after,
-                ]);
-
-                $user->refresh();
-                $user_amount_before = $user->amount;
-                $user_amount_after = $user_amount_before -  $channel->handling_fee;
-
-                $user->update([
-                    'amount' => $user_amount_after,
-                ]);
-
-                (new LogTransaction(
-                    $transaction->history(),
-                    [
-                        // For WDL_INCOME
-                        'historiable_id' => $wdl_income_locked->id,
-                        'historiable_type' => get_class($wdl_income_locked),
-                        'transactionable_id' => $transaction->id,
-                        'transactionable_type' => get_class($transaction),
-                        'transaction_type_id' => $transaction_type->id,
-                        'reference_id' => $withdraw_request->reference_id,
-                        'transaction_amount' => $withdraw_request->handling_fee,
-                        'amount_before_transaction' => $wdl_income_locked_amount_before,
-                        'amount_after_transaction' => $wdl_income_locked_amount_after,
-                        'is_from' => 1,
-                        'created_at' => Carbon::now(),
-                    ],
-                    $transaction->history(),
-                    [
-                        // For User
-                        'historiable_id' => $transaction->user_id,
-                        'historiable_type' => get_class(User::find($transaction->user_id)),
-                        'transactionable_id' => $transaction->id,
-                        'transactionable_type' => get_class($transaction),
-                        'transaction_type_id' => $transaction_type->id,
-                        'reference_id' => $withdraw_request->reference_id,
-                        'transaction_amount' => $withdraw_request->handling_fee,
-                        'amount_before_transaction' => $user_amount_before,
-                        'amount_after_transaction' => $user_amount_after,
-                        'is_from' => 0,
-                        'created_at' => Carbon::now(),
-                    ]
-                ))->execute();
-            }
-
 
             $account_name = $user->name;
             $account_phone_number = $user->phone_number;
@@ -494,12 +436,6 @@ class WithdrawRequestController extends Controller
 
             DB::commit();
             return $this->responseSucceed([
-                // 'payee'=>$request->payee,
-                // 'amount'=>$request->amount,
-                // 'account_number'=>$request->account_number,
-                // 'bank_name' => $request->bank_name,
-                // 'passcode'=>$request->passcode
-
                 'time' => $withdraw_request->created_at->format('H:i:s'),
                 'payee' => $withdraw_request->payee,
                 'withdraw_amount' => $withdraw_request->amount . "MMK ",

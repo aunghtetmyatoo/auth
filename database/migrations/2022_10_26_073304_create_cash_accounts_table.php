@@ -14,12 +14,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('gl_accounts', function (Blueprint $table) {
-            $table->id();
-            $table->string("name", MigrationLength::NAME)->index();
+        Schema::create('cash_accounts', function (Blueprint $table) {
+            $table->uuid('id')->unique();
+            $table->string("reference_code", MigrationLength::REFERENCE_CODE)->unique()->nullable()->index();
             $table->string("reference_id", MigrationLength::REFERENCE_ID)->unique()->index();
-            // $table->double("amount")->default(0);
+            $table->string("account_name", MigrationLength::NAME)->index();
             $table->unsignedDecimal('amount', 15, 4)->default(0);
+            $table->boolean('status')->default(1);
+            $table->string("parent_id")->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('gl_accounts');
+        Schema::dropIfExists('cash_accounts');
     }
 };
