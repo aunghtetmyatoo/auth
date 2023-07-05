@@ -24,7 +24,6 @@ class ServerPath
     /** Start Card Game */
     // Match
     const MATCHES = self::CARD_PREFIX . 'matches/';
-    const READY = self::MATCHES . 'ready';
     const START_MATCH = self::MATCHES . 'start';
     const BET = self::MATCHES . 'bet';
     const ONE_MORE_CARD = self::MATCHES . 'one-more-card';
@@ -37,6 +36,7 @@ class ServerPath
     // Table
     const TABLES = self::CARD_PREFIX . 'tables/';
     const TABLES_LIST =  self::TABLES . 'list';
+    const READY_TABLE = self::TABLES . 'ready';
     const CREATE_TABLE = self::TABLES . 'create';
     const JOIN_TABLE =  self::TABLES . 'join';
     const JOIN_TABLE_SIDE_BETTOR =  self::TABLES . 'join/side-bettor';

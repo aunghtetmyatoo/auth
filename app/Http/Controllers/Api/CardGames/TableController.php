@@ -20,6 +20,14 @@ class TableController extends Controller
         ]);
     }
 
+    public function ready(Request $request)
+    {
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::READY_TABLE, [
+            'room_id' => $request->room_id,
+            'user_id' => auth()->user()->id,
+        ]);
+    }
+
     public function create(Request $request)
     {
         return $this->endpoint->handle(config('api.url.card'), ServerPath::CREATE_TABLE, [

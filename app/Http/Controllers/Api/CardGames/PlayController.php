@@ -26,8 +26,9 @@ class PlayController extends Controller
         return $this->endpoint->handle(config('api.url.card'), ServerPath::PLAY_WITH_BOT, [
             'user_id' => auth()->user()->id,
             'game_type_id' => $request->game_type_id,
-            'room_name' => $request->room_name,
-            'banker_amount' => $request->banker_amount,
+            'room_type_id' => $request->room_type_id,
+            // 'room_name' => $request->room_name,
+            // 'banker_amount' => $request->banker_amount,
         ]);
     }
 }

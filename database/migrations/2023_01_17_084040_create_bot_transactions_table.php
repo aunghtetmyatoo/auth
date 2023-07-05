@@ -19,7 +19,7 @@ return new class extends Migration
             $table->uuid('player_id')->index();
             $table->foreign('player_id')->references('id')->on('users');
             $table->uuid('banker_id')->index();
-            $table->foreign('banker_id')->references('id')->on('users');
+            // $table->foreign('banker_id')->references('id')->on('users');
             $table->string('coin');
             $table->unsignedBigInteger('game_type_id')->index();
             $table->foreign('game_type_id')->references('id')->on('game_types');
