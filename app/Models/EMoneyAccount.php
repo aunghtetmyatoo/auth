@@ -14,4 +14,15 @@ class EMoneyAccount extends Model
     protected $table = 'e_money_accounts';
 
     protected $fillable = ['amount','account_name','reference_id'];
+
+    public function histories()
+    {
+        return $this->morphMany(History::class, 'historiable');
+    }
+
+    public function monitor_logs()
+    {
+        return $this->morphMany(MonitorLog::class, 'monitor_loggable');
+    }
+
 }

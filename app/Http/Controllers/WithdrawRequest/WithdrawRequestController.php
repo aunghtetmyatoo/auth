@@ -30,6 +30,8 @@ use App\CustomFunctions\ResponseHelpers;
 use App\Actions\Transaction\LogTransaction;
 use App\Actions\RechargeGenerateReferenceId;
 use App\Actions\RechargeWithdrawReferenceId;
+use App\Actions\Transaction\MonitorTransaction;
+use App\Constants\ErrorLogStatus;
 use App\Exceptions\WithdrawAmountNotEnoughExcepion;
 use App\Enums\TransactionType as EnumsTransactionType;
 use App\Http\Requests\Api\WithdrawRequest\KbzCreateRequest;
@@ -47,6 +49,7 @@ use App\Http\Resources\Api\RechargeChannel\RechargeChannelCollection;
 use App\Http\Resources\Api\WithdrawChannel\WithdrawChannelCollection;
 use App\Http\Resources\Api\WithdrawRequest\WithdrawRequestCollection;
 use App\Models\CashAccount;
+use App\Models\MonitorLog;
 use Carbon\Carbon;
 
 class WithdrawRequestController extends Controller
@@ -322,26 +325,45 @@ class WithdrawRequestController extends Controller
 
     private function createRequest(WithdrawChannel $channel, $request, string $prefix)
     {
+        [$invalid_log, $failed_account, $message, $difference_amount, $no_enough_amount, $new_withdraw_request_id]  = DB::transaction(function () use ($request, $channel, $prefix) {
 
-        DB::beginTransaction();
-        try {
+            $user_locked = User::lockForUpdate()->find(auth()->user()->id);
+            $user_total_accountr_locked = CashAccount::lockForUpdate()->whereReferenceId('USER')->first();
 
-            $user = User::lockForUpdate()->find(auth()->user()->id);
-            $withdraw_calculate_amount = $request->amount + $channel->handling_fee;
+            [$invalid_log, $failed_account, $log_description, $difference_amount] = (new MonitorTransaction(accounts: [$user_locked, $user_total_accountr_locked]))->execute();
 
-            if ($user->amount < $withdraw_calculate_amount ) {
-                throw new Exception(__('withdraw.balance_not_enough'));
+            if ($invalid_log) {
+                return [
+                    $invalid_log,
+                    $failed_account,
+                    $log_description,
+                    $difference_amount,
+                    $no_enough_amount = null,
+                    $new_withdraw_request_id = null,
+                ];
             }
 
-            $user_amount_before = $user->amount;
-            $user_amount_after = (float) bcsub($user_amount_before,$withdraw_calculate_amount, 4);
+            $withdraw_calculate_amount = $request->amount + $channel->handling_fee;
+            if ($user_locked->amount < $withdraw_calculate_amount) {
+                return [
+                    $invalid_log,
+                    $failed_account,
+                    $log_description,
+                    $difference_amount,
+                    $no_enough_amount = true,
+                    $new_withdraw_request_id = false,
+                ];
+            }
 
-            $user->update([
+            $user_amount_before = $user_locked->amount;
+            $user_amount_after = (float) bcsub($user_amount_before, $withdraw_calculate_amount, 4);
+
+            $user_locked->update([
                 'amount' => $user_amount_after,
             ]);
 
             $withdraw_request = WithdrawRequest::create([
-                'user_id' => $user->id,
+                'user_id' => $user_locked->id,
                 'withdraw_channel_id' => $channel->id,
                 'reference_id' => Str::uuid(),
                 'payee' => $request->payee,
@@ -358,16 +380,15 @@ class WithdrawRequestController extends Controller
             ]);
 
             $transaction_type = TransactionType::whereName(EnumsTransactionType::Withdraw)->first();
-            $user_total_account = CashAccount::lockForUpdate()->whereReferenceId('USER')->first();
-            $user_total_amount_before = $user_total_account->amount;
-            $user_total_amount_after = (float) bcsub($user_total_amount_before,$withdraw_calculate_amount, 4);
+            $user_total_amount_before = $user_total_accountr_locked->amount;
+            $user_total_amount_after = (float) bcsub($user_total_amount_before, $withdraw_calculate_amount, 4);
 
-            $user_total_account->update([
+            $user_total_accountr_locked->update([
                 'amount' => $user_total_amount_after,
             ]);
 
             $transaction = WithdrawTransaction::create([
-                'user_id' => $user->id,
+                'user_id' => $user_locked->id,
                 'withdraw_request_id' => $withdraw_request->id,
                 'transaction_type_id' => $transaction_type->id,
                 'amount' => $request->amount,
@@ -385,8 +406,8 @@ class WithdrawRequestController extends Controller
                 $transaction->history(),
                 [
                     // For User Total Account
-                    'historiable_id' => $user_total_account->id,
-                    'historiable_type' => get_class( $user_total_account),
+                    'historiable_id' => $user_total_accountr_locked->id,
+                    'historiable_type' => get_class($user_total_accountr_locked),
                     'transactionable_id' => $transaction->id,
                     'transactionable_type' => get_class($transaction),
                     'transaction_type_id' => $transaction_type->id,
@@ -414,8 +435,8 @@ class WithdrawRequestController extends Controller
                 ]
             ))->execute();
 
-            $account_name = $user->name;
-            $account_phone_number = $user->phone_number;
+            $account_name = $user_locked->name;
+            $account_phone_number = $user_locked->phone_number;
             $date = now()->format('Y-m-d H:i:s');
 
             // For Telegram Bot
@@ -431,20 +452,68 @@ class WithdrawRequestController extends Controller
 
             // For RealTime GameDashboard
             $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_WITHDRAW_REQUEST, [
-                'withdrawRequest' => ["id" => $withdraw_request->id, "new" => true, "count" =>  WithdrawRequest::where('status', Status::REQUESTED)->count()],
+                'withdrawRequest' => [
+                    "id" => $withdraw_request->id,
+                    "new" => true,
+                    "count" =>  WithdrawRequest::where('status', Status::REQUESTED)->count()
+                ],
             ]);
 
-            DB::commit();
-            return $this->responseSucceed([
-                'time' => $withdraw_request->created_at->format('H:i:s'),
-                'payee' => $withdraw_request->payee,
-                'withdraw_amount' => $withdraw_request->amount . "MMK ",
-                'handling_fee' => $withdraw_request->handling_fee,
-            ]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            Log::error($e);
-            return ResponseHelpers::customResponse(422, $e->getMessage());
+            return [
+                $invalid_log,
+                $failed_account,
+                $log_description,
+                $difference_amount,
+                $no_enough_amount = false,
+                $withdraw_request->id,
+            ];
+        }, 5);
+
+        if ($no_enough_amount) {
+            throw new Exception(__('withdraw.balance_not_enough'));
         }
+
+        if ($invalid_log) {
+            $has_log =  $failed_account->monitor_logs->where('reference_id', $invalid_log->reference_id)->first();
+
+            if (!$has_log) {
+                $monitor_log = $failed_account->monitor_logs()->create([
+                    'transaction_type_id' => $invalid_log->transaction_type_id,
+                    'reference_id' => $invalid_log->reference_id,
+                    'transaction_at' => $invalid_log->created_at,
+                    'error_text' => $message,
+                    'difference_amount' => $difference_amount
+                ]);
+
+                $count = MonitorLog::where('error_status', ErrorLogStatus::PENDING)->count();
+
+                $this->endpoint->handle(config('api.url.socket'), ServerPath::NOTI_FOR_MONITOR_LOG_REQUEST, [
+                    'notiForMonitorLogRequest' => [
+                        "id" => $monitor_log->id,
+                        "new" => true,
+                        "count" => $count
+                    ]
+                ]);
+
+                if (get_class($failed_account) == "App\Models\User") {
+                    if ($failed_account->frozen_at == null) {
+                        $failed_account->frozen_at = now();
+                        $failed_account->save();
+
+                        return ResponseHelpers::customResponse(422, "Founding invalid transaction and you are account is  tempory freezed.");
+                    }
+                }
+            }
+
+            return ResponseHelpers::customResponse(422, "Founding invalid transaction and tempory unavailable.");
+        }
+
+        $new_withdraw_request = WithdrawRequest::find($new_withdraw_request_id);
+        return $this->responseSucceed([
+            'time' => $new_withdraw_request->created_at->format('H:i:s'),
+            'payee' => $new_withdraw_request->payee,
+            'withdraw_amount' => $new_withdraw_request->amount . "MMK ",
+            'handling_fee' => $new_withdraw_request->handling_fee,
+        ]);
     }
 }

@@ -17,6 +17,7 @@ class ServerPath
 
     // Recharge, Withdraw
     const ADMIN_DASHBOARD =  self::SOCKET_PREFIX . 'admin-dashboard/';
+    const NOTI_FOR_MONITOR_LOG_REQUEST = self::ADMIN_DASHBOARD . 'noti-for-monitor-log-request';
     const GET_RECHARGE_REQUEST = self::ADMIN_DASHBOARD . 'get-recharge-request';
     const GET_WITHDRAW_REQUEST = self::ADMIN_DASHBOARD . 'get-withdraw-request';
     /** End Game Socket */

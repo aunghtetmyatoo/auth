@@ -123,4 +123,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(WinLoseMatch::class);
     }
+
+    public function monitor_logs()
+    {
+        return $this->morphMany(MonitorLog::class, 'monitor_loggable');
+    }
 }
