@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Api\GameType;
+namespace App\Http\Resources\Api\GameCategory;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GameTypeResource extends JsonResource
+class GameCategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,6 +17,7 @@ class GameTypeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'game_types' => $this->gameTypes,
         ];
     }
 }

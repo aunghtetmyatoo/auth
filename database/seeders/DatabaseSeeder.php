@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(PassportClientSeeder::class);
-        $this->call(GameTypeCategorySeeder::class);
+        $this->call(GameCategorySeeder::class);
         $this->call(GameTypeSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(PaymentTypeSeeder::class);

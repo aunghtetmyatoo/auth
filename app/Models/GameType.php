@@ -13,12 +13,14 @@ class GameType extends Model
 
     protected $fillable = ["name"];
 
+    protected $hidden = ["created_at", "updated_at"];
+
     public function users()
     {
         return $this->belongsToMany(User::class)->withTimestamps();
     }
 
-    public function game_category()
+    public function gameCategory()
     {
         return $this->belongsTo(GameCategory::class);
     }

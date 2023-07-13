@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\GiftController;
 use App\Http\Controllers\Api\FriendController;
 use App\Http\Controllers\Api\GameTypeController;
+use App\Http\Controllers\Api\GameCategoryController;
 use App\Http\Controllers\Api\TransferPlayController;
 use App\Http\Controllers\Api\PlayerSettingController;
 use App\Http\Controllers\Api\CardGames\PlayController;
@@ -83,6 +84,10 @@ Route::prefix('/gift')->controller(GiftController::class)->group(function () {
 Route::prefix('/cash-out-request')->controller(CashOutRequestController::class)->group(function () {
     Route::post('/', 'index');
     Route::post('/create-cash-out', 'createCashOut');
+});
+
+Route::prefix('/game-categories')->controller(GameCategoryController::class)->group(function () {
+    Route::post('/', 'index');
 });
 
 Route::prefix('/game-types')->controller(GameTypeController::class)->group(function () {
