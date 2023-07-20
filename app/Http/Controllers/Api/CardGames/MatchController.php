@@ -13,6 +13,15 @@ class MatchController extends Controller
     {
     }
 
+    public function reconnect(Request $request)
+    {
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::RECONNECT, [
+            'state' => $request->state,
+            'room_id' => $request->room_id,
+            'game_match_id' => $request->game_match_id,
+        ]);
+    }
+
     public function matchStart(Request $request)
     {
         return $this->endpoint->handle(config('api.url.card'), ServerPath::START_MATCH, [

@@ -61,6 +61,7 @@ Route::prefix('/plays')->controller(PlayController::class)->group(function () {
 });
 
 Route::prefix('/matches')->controller(MatchController::class)->group(function () {
+    Route::post('/reconnect', 'reconnect');
     Route::post('/start', 'matchStart');
     Route::post('/bet', 'betAmount');
     Route::post('/one-more-card', 'oneMoreCard');

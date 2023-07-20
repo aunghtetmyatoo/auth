@@ -24,6 +24,7 @@ class ServerPath
     /** Start Card Game */
     // Match
     const MATCHES = self::CARD_PREFIX . 'matches/';
+    const RECONNECT = self::MATCHES . 'reconnect';
     const START_MATCH = self::MATCHES . 'start';
     const BET = self::MATCHES . 'bet';
     const ONE_MORE_CARD = self::MATCHES . 'one-more-card';
