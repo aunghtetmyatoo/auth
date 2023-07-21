@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources\Api\User;
 
-use App\Http\Resources\Api\WinLoseMatch\WinLoseMatchCollection;
-use App\Http\Resources\Api\WinLoseMatch\WinLoseMatchResource;
+use App\Constants\Status;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Api\WinLoseMatch\WinLoseMatchResource;
+use App\Http\Resources\Api\WinLoseMatch\WinLoseMatchCollection;
 
 class UserResource extends JsonResource
 {
@@ -24,7 +25,10 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'reference_id' => $this->reference_id,
             'phone_number' => $this->phone_number,
+            'is_online' => 1,
+            'is_playing' => ($this->play == Status::PLAYING) ? 1 : 0,
             'amount' => $this->amount,
             'payment_account_number' => $this->payment_account_number,
             'payment_account_name' => $this->payment_account_name,

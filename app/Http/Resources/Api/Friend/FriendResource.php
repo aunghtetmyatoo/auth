@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\Friend;
 
+use App\Constants\Status;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FriendResource extends JsonResource
@@ -15,10 +16,12 @@ class FriendResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'user_name' => $this->user->name,
-            'friend_name' => $this->friend->name,
-            'friend_id' => $this->friend->id,
+            'id' => $this->friend->id,
+            'name' => $this->friend->name,
+            'reference_id' => $this->friend->reference_id,
             'confirm_status' => $this->confirm_status,
+            'is_online' => 1,
+            'is_playing' => ($this->friend->play == Status::PLAYING) ? 1 : 0,
         ];
     }
 }
