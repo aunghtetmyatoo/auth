@@ -40,6 +40,7 @@ class Status
     const COMPLETED = "COMPLETED";
     const RECHARGE = "RECHARGE";
     const WITHDRAW = "WITHDRAW";
+    const ADMIN = "ADMIN";
     const USER = "USER";
     const BOT = "BOT";
     const PLAY_WITH_USER = "PLAY_WITH_USER";
@@ -47,4 +48,15 @@ class Status
 
     const CONVERT_COIN = "CONVERT COIN";
     const CONVERT_AMOUNT = "CONVERT AMOUNT";
+
+    const CAPITAL_ACC = "CAPITAL_ACC";
+    const RECHARGE_INCOME = "RECHARGE_INCOME";
+    const WITHDRAW_INCOME = "WITHDRAW_INCOME";
+    const HOUSE_EDGE = "HOUSE_EDGE";
+    const EXCHANGE_GAIN = "EXCHANGE_GAIN";
+    const EXCHANGE_LOSS = "EXCHANGE_LOSS";
+    const PAYABLE_COIN = "PAYABLE_COIN";
+    const BANK_ACC = "BANK_ACC";
+    const ADMIN_ACC = "ADMIN_ACC";
+    const USER_ACC = "USER_ACC";
 }

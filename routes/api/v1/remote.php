@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\Api\Payment\PaymentTypeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Remote\RemoteUserController;
+use App\Http\Controllers\Remote\RemoteAccountController;
 use App\Http\Controllers\Remote\RemoteHistoryController;
+use App\Http\Controllers\Api\Payment\PaymentTypeController;
 use App\Http\Controllers\Remote\RemoteTransactionController;
 use App\Http\Controllers\Remote\RemoteGameTypeUserController;
-use App\Http\Controllers\Remote\RemoteRechargeRequestController;
 use App\Http\Controllers\Remote\RemoteWinLoseMatchController;
+use App\Http\Controllers\Remote\RemoteRechargeRequestController;
 use App\Http\Controllers\Remote\RemoteWithdrawRequestController;
 
 Route::prefix('/users')->controller(RemoteUserController::class)->group(function () {
@@ -38,4 +39,9 @@ Route::prefix('/transactions')->controller(RemoteTransactionController::class)->
 
 Route::prefix('/payment-type')->controller(PaymentTypeController::class)->group(function () {
     Route::post('/select', 'Select');
+});
+
+Route::prefix('/accounts')->controller(RemoteAccountController::class)->group(function () {
+    Route::post('/add-amount', 'addAmount');
+    Route::post('/subtract-amount', 'subtractAmount');
 });

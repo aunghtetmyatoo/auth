@@ -57,13 +57,22 @@ class FriendController extends Controller
             ],
         ]);
 
-        $this->endpoint->handle(config('api.url.socket'), ServerPath::ADD_FRIEND, [
-            'friend_id' => auth()->user()->id,
-            'friend_name' => auth()->user()->name,
+        $this->endpoint->handle(config('api.url.socket'), ServerPath::FRIEND_PROCESS, [
             'user_id' => $request->friend_id,
+            'event_name' => 'received_friend',
+            'friend_info' => [
+                'id' => auth()->user()->id,
+                'name' => auth()->user()->name,
+                'phone_number' => auth()->user()->phone_number,
+            ],
+            'status' => Status::RECEIVED_FRIEND,
         ]);
 
         return $this->responseSucceed(
+            data: [
+                'friend_id' => $request->friend_id,
+                'status' => Status::ADDED_FRIEND,
+            ],
             message: "Successfully added friend!.",
         );
     }
@@ -82,13 +91,22 @@ class FriendController extends Controller
             ]);
         });
 
-        $this->endpoint->handle(config('api.url.socket'), ServerPath::CONFIRM_FRIEND, [
-            'friend_id' => auth()->user()->id,
-            'friend_name' => auth()->user()->name,
+        $this->endpoint->handle(config('api.url.socket'), ServerPath::FRIEND_PROCESS, [
             'user_id' => $request->friend_id,
+            'event_name' => 'confirmed_friend',
+            'friend_info' => [
+                'id' => auth()->user()->id,
+                'name' => auth()->user()->name,
+                'phone_number' => auth()->user()->phone_number,
+            ],
+            'status' => Status::CONFIRMED_FRIEND,
         ]);
 
         return $this->responseSucceed(
+            data: [
+                'friend_id' => $request->friend_id,
+                'status' => Status::CONFIRMED_FRIEND,
+            ],
             message: "Successfully confirmed friend!.",
         );
     }

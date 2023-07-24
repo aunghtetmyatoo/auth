@@ -45,6 +45,7 @@ Route::prefix('/ticket-money')->controller(TicketMoneyController::class)->group(
 
 Route::prefix('/tables')->controller(TableController::class)->group(function () {
     Route::post('/list', 'listPublicTable');
+    Route::post('/ready', 'ready');
     Route::post('/create', 'create');
     Route::post('/join', 'join');
     Route::post('/join/side-bettor', 'joinBySideBettor');
@@ -59,7 +60,6 @@ Route::prefix('/plays')->controller(PlayController::class)->group(function () {
 });
 
 Route::prefix('/matches')->controller(MatchController::class)->group(function () {
-    Route::post('/ready', 'readyForPlay');
     Route::post('/start', 'matchStart');
     Route::post('/bet', 'betAmount');
     Route::post('/one-more-card', 'oneMoreCard');

@@ -12,8 +12,7 @@ class ServerPath
     /** Start Game Socket */
     // Friend
     const FRIEND =  self::SOCKET_PREFIX . 'friends/';
-    const ADD_FRIEND = self::FRIEND . 'add';
-    const CONFIRM_FRIEND = self::FRIEND . 'confirm';
+    const FRIEND_PROCESS = self::FRIEND . 'friend-process';
 
     // Recharge, Withdraw
     const ADMIN_DASHBOARD =  self::SOCKET_PREFIX . 'admin-dashboard/';
@@ -26,7 +25,6 @@ class ServerPath
     /** Start Card Game */
     // Match
     const MATCHES = self::CARD_PREFIX . 'matches/';
-    const READY = self::MATCHES . 'ready';
     const START_MATCH = self::MATCHES . 'start';
     const BET = self::MATCHES . 'bet';
     const ONE_MORE_CARD = self::MATCHES . 'one-more-card';
@@ -35,10 +33,12 @@ class ServerPath
     const AMOUNT_CHANGE_REQUEST = self::MATCHES . 'amount-change-request';
     const QUIT_MATCH = self::MATCHES . 'quit-match';
     const CANCEL_QUIT_MATCH = self::MATCHES . 'cancel-quit-match';
+    const GAME_DASHBOATD = self::CARD_PREFIX . 'dashboard/';
 
     // Table
     const TABLES = self::CARD_PREFIX . 'tables/';
     const TABLES_LIST =  self::TABLES . 'list';
+    const READY_TABLE = self::TABLES . 'ready';
     const CREATE_TABLE = self::TABLES . 'create';
     const JOIN_TABLE =  self::TABLES . 'join';
     const JOIN_TABLE_SIDE_BETTOR =  self::TABLES . 'join/side-bettor';
@@ -67,4 +67,8 @@ class ServerPath
     const PUBLIC = self::MESSAGE . 'public';
     const PRIVATE = self::MESSAGE . 'private';
     /** End Card Game */
+
+    /**Game Dashboard */
+    const PLAY_GAME_TYPE_INFO = self::GAME_DASHBOATD . 'play-game-type-info';
+    /**End Game Dashboard */
 }
