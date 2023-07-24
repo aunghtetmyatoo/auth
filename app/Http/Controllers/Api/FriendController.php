@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Friend\UnfriendRequest;
 use App\Http\Requests\Api\Friend\FriendAddRequest;
-use App\Http\Resources\Api\Friend\FriendCollection;
 use App\Http\Requests\Api\Friend\FriendCancelRequest;
 use App\Http\Requests\Api\Friend\FriendConfirmRequest;
-use App\Http\Resources\Api\User\UserCollection;
+use App\Http\Resources\Api\FindFriend\FindFriendResource;
+use App\Http\Resources\Api\Friend\FriendResource;
 
 class FriendController extends Controller
 {
@@ -32,9 +32,9 @@ class FriendController extends Controller
             $request->has('search') &&
                 $query->where('name', 'like', '%' . $request->input('search') . '%')
                 ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
-        });
+        })->get();
 
-        return $this->collection(new UserCollection($friend_list->paginate(10)));
+        return $this->responseCollection(FindFriendResource::collection($friend_list));
     }
 
     public function friendList(Request $request)
@@ -45,9 +45,9 @@ class FriendController extends Controller
                     $queryy->where('name', 'like', '%' . $request->input('search') . '%')
                         ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
                 });
-        });
+        })->get();
 
-        return $this->collection(new FriendCollection($friend_list->paginate(10)));
+        return $this->responseCollection(FriendResource::collection($friend_list));
     }
 
     public function requestList(Request $request)
@@ -58,9 +58,9 @@ class FriendController extends Controller
                     $queryy->where('name', 'like', '%' . $request->input('search') . '%')
                         ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
                 });
-        });
+        })->get();
 
-        return $this->collection(new FriendCollection($request_list->paginate(10)));
+        return $this->responseCollection(FriendResource::collection($request_list));
     }
 
     public function addFriend(FriendAddRequest $request)
