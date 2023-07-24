@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Api\RequestFriend;
+namespace App\Http\Resources\Api\GameCategory;
 
-use App\Helpers\Pagination;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Helpers\Pagination;
 
-class RequestFriendCollection extends ResourceCollection
+class GameCategoryCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.

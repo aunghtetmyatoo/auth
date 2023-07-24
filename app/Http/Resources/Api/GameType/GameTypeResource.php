@@ -17,8 +17,6 @@ class GameTypeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'game_category_id' => $this->game_category_id,
-            'game_category_name' => $this->game_category->name,
         ];
     }
 }

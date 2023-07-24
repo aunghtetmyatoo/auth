@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Constants\GameCategoryConstant;
 use App\Models\GameCategory;
+use App\Constants\GameCategory as GameCategoryConstant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class GameTypeCategorySeeder extends Seeder
+class GameCategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,8 +17,8 @@ class GameTypeCategorySeeder extends Seeder
     public function run()
     {
         $game_categories = [
-            GameCategoryConstant::CardGame,
-            GameCategoryConstant::SlotGame,
+            GameCategoryConstant::CARD,
+            GameCategoryConstant::SLOT,
         ];
 
         foreach ($game_categories as $game_category) {

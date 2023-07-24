@@ -113,6 +113,11 @@ trait ApiResponse
         ], 200));
     }
 
+    public function collection(mixed $data): string | JsonResponse
+    {
+        return response()->json($data, 200);
+    }
+
     public function responseResource(mixed $data, $status_code = Response::HTTP_OK): string | JsonResponse
     {
         return $this->encrypt(response()->json([

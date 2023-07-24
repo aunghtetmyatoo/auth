@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\User;
 use App\Models\Friend;
-use App\Constants\Status;
-use App\Constants\ServerPath;
 use App\Actions\Endpoint;
+use App\Constants\Status;
+use Illuminate\Http\Request;
+use App\Constants\ServerPath;
 use App\Traits\Auth\ApiResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -14,7 +16,7 @@ use App\Http\Requests\Api\Friend\FriendAddRequest;
 use App\Http\Resources\Api\Friend\FriendCollection;
 use App\Http\Requests\Api\Friend\FriendCancelRequest;
 use App\Http\Requests\Api\Friend\FriendConfirmRequest;
-use App\Http\Resources\Api\RequestFriend\RequestFriendCollection;
+use App\Http\Resources\Api\User\UserCollection;
 
 class FriendController extends Controller
 {
@@ -24,18 +26,41 @@ class FriendController extends Controller
     {
     }
 
-    public function index()
+    public function findFriend(Request $request)
     {
-        $friend_list = Friend::whereUserId(auth()->user()->id)->whereConfirmStatus(Status::CONFIRMED_FRIEND);
+        $friend_list = User::whereNot('id', auth()->user()->id)->where(function ($query) use ($request) {
+            $request->has('search') &&
+                $query->where('name', 'like', '%' . $request->input('search') . '%')
+                ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
+        });
 
-        return $this->responseCollection(new FriendCollection($friend_list->paginate(5)));
+        return $this->collection(new UserCollection($friend_list->paginate(10)));
     }
 
-    public function requestList()
+    public function friendList(Request $request)
     {
-        $request_list = Friend::whereUserId(auth()->user()->id)->whereConfirmStatus(Status::RECEIVED_FRIEND);
+        $friend_list = Friend::where('user_id', auth()->user()->id)->where('confirm_status', Status::CONFIRMED_FRIEND)->where(function ($query) use ($request) {
+            $request->has('search')
+                && $query->whereHas('friend', function ($queryy) use ($request) {
+                    $queryy->where('name', 'like', '%' . $request->input('search') . '%')
+                        ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
+                });
+        });
 
-        return $this->responseCollection(new RequestFriendCollection($request_list->paginate(5)));
+        return $this->collection(new FriendCollection($friend_list->paginate(10)));
+    }
+
+    public function requestList(Request $request)
+    {
+        $request_list = Friend::where('user_id', auth()->user()->id)->where('confirm_status', Status::RECEIVED_FRIEND)->where(function ($query) use ($request) {
+            $request->has('search')
+                && $query->whereHas('friend', function ($queryy) use ($request) {
+                    $queryy->where('name', 'like', '%' . $request->input('search') . '%')
+                        ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
+                });
+        });
+
+        return $this->collection(new FriendCollection($request_list->paginate(10)));
     }
 
     public function addFriend(FriendAddRequest $request)

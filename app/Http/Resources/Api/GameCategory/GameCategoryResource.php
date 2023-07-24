@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Api\RequestFriend;
+namespace App\Http\Resources\Api\GameCategory;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RequestFriendResource extends JsonResource
+class GameCategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,9 @@ class RequestFriendResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'user_name' => $this->user->name,
-            'request_name' => $this->friend->name,
-            'request_id' => $this->friend->id,
-            'confirm_status' => $this->confirm_status,
+            'id' => $this->id,
+            'name' => $this->name,
+            'game_types' => $this->gameTypes,
         ];
     }
 }

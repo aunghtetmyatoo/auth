@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\GiftController;
 use App\Http\Controllers\Api\FriendController;
 use App\Http\Controllers\Api\GameTypeController;
+use App\Http\Controllers\Api\GameCategoryController;
 use App\Http\Controllers\Api\TransferPlayController;
 use App\Http\Controllers\Api\PlayerSettingController;
 use App\Http\Controllers\Api\CardGames\PlayController;
@@ -26,7 +27,8 @@ Route::prefix('/transactions')->controller(TransactionController::class)->group(
 });
 
 Route::prefix('/friends')->controller(FriendController::class)->group(function () {
-    Route::post('/', 'index');
+    Route::post('/find-friend', 'findFriend');
+    Route::post('/friend-list', 'friendList');
     Route::post('/request-list', 'requestList');
     Route::post('/add', 'addFriend')->middleware('check_relationship');
     Route::post('/confirm', 'confirmFriend');
@@ -60,6 +62,7 @@ Route::prefix('/plays')->controller(PlayController::class)->group(function () {
 });
 
 Route::prefix('/matches')->controller(MatchController::class)->group(function () {
+    Route::post('/reconnect', 'reconnect');
     Route::post('/start', 'matchStart');
     Route::post('/bet', 'betAmount');
     Route::post('/one-more-card', 'oneMoreCard');
@@ -83,6 +86,10 @@ Route::prefix('/gift')->controller(GiftController::class)->group(function () {
 Route::prefix('/cash-out-request')->controller(CashOutRequestController::class)->group(function () {
     Route::post('/', 'index');
     Route::post('/create-cash-out', 'createCashOut');
+});
+
+Route::prefix('/game-categories')->controller(GameCategoryController::class)->group(function () {
+    Route::post('/', 'index');
 });
 
 Route::prefix('/game-types')->controller(GameTypeController::class)->group(function () {
