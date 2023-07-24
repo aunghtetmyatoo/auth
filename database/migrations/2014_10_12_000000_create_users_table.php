@@ -51,6 +51,8 @@ return new class extends Migration
             $table->enum("play", [Status::PLAYING, Status::FREE])->default(Status::FREE);
             $table->string('role', 15)->default(Status::USER);
             $table->string('secret_key')->nullable();
+            $table->boolean('is_online')->default(0);
+            $table->dateTime('last_activity')->nullable();
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

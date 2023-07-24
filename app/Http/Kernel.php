@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'bank-account' => \App\Http\Middleware\PreventNullBankAccount::class,
         'check_relationship' => \App\Http\Middleware\CheckRelationship::class,
         'check_coin_amount' => \App\Http\Middleware\CheckCoinAmount::class,
+        'update_user_activity' => \App\Http\Middleware\UpdateUserActivity::class,
     ];
 }
