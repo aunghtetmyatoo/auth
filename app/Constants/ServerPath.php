@@ -32,6 +32,7 @@ class ServerPath
     const AMOUNT_CHANGE_REQUEST = self::MATCHES . 'amount-change-request';
     const QUIT_MATCH = self::MATCHES . 'quit-match';
     const CANCEL_QUIT_MATCH = self::MATCHES . 'cancel-quit-match';
+    const GAME_DASHBOATD = self::CARD_PREFIX . 'dashboard/';
 
     // Table
     const TABLES = self::CARD_PREFIX . 'tables/';
@@ -65,4 +66,8 @@ class ServerPath
     const PUBLIC = self::MESSAGE . 'public';
     const PRIVATE = self::MESSAGE . 'private';
     /** End Card Game */
+
+    /**Game Dashboard */
+    const PLAY_GAME_TYPE_INFO = self::GAME_DASHBOATD . 'play-game-type-info';
+    /**End Game Dashboard */
 }
