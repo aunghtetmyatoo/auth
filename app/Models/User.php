@@ -34,7 +34,9 @@ class User extends Authenticatable
         'payment_type_id',
         'play',
         'role',
-        'secret_key'
+        'secret_key',
+        'is_online',
+        'last_activity',
     ];
     protected $guarded = [
         'id',
@@ -84,6 +86,8 @@ class User extends Authenticatable
         'first_logged_in_at' => 'datetime',
         'password_changed_at' => 'datetime',
         'registered_at' => 'datetime',
+        'is_online' => 'boolean',
+        'last_activity' => 'datetime',
     ];
 
     public function game_types()
@@ -111,11 +115,13 @@ class User extends Authenticatable
         return $this->hasMany(RechargeRequest::class);
     }
 
-    public function withdraw_request(){
+    public function withdraw_request()
+    {
         return $this->hasOne(WithdrawRequest::class);
     }
 
-    public function recharge_transactions(){
+    public function recharge_transactions()
+    {
         return $this->hasMany(RechargeTransaction::class);
     }
 

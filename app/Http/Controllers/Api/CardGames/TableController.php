@@ -17,7 +17,6 @@ class TableController extends Controller
     {
         return $this->endpoint->handle(config('api.url.card'), ServerPath::TABLES_LIST, [
             'user_id' => auth()->user()->id,
-            'room_type_id' => $request->room_type_id,
         ]);
     }
 
