@@ -140,3 +140,15 @@ if (!function_exists('random_number_name')) {
         return mt_rand(10000000, 99999999);
     }
 }
+
+if (!function_exists('random_string')) {
+    function random_string(): string
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $random_string = '';
+        for ($i = 0; $i < 2; $i++) {
+            $random_string .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        return $random_string;
+    }
+}

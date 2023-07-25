@@ -4,10 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\GameType;
-use App\Constants\Status;
-use App\Enums\UserPrefix;
 use Illuminate\Support\Str;
-use App\Actions\UserReference;
 use App\Models\PlayerSetting;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -67,39 +64,39 @@ class UserSeeder extends Seeder
                 'phone_number' => '+959883537611',
             ],
             [
-                'name' => 'Bot-A',
+                'name' => 'User-L',
                 'phone_number' => '+959777777771',
             ],
             [
-                'name' => 'Bot-B',
+                'name' => 'User-M',
                 'phone_number' => '+959777777772',
             ],
             [
-                'name' => 'Bot-C',
+                'name' => 'User-N',
                 'phone_number' => '+959777777773',
             ],
             [
-                'name' => 'Bot-D',
+                'name' => 'User-O',
                 'phone_number' => '+959777777774',
             ],
             [
-                'name' => 'Bot-E',
+                'name' => 'User-P',
                 'phone_number' => '+959777777775',
             ],
             [
-                'name' => 'Bot-F',
+                'name' => 'User-Q',
                 'phone_number' => '+959777777776',
             ],
             [
-                'name' => 'Bot-G',
+                'name' => 'User-R',
                 'phone_number' => '+959777777777',
             ],
             [
-                'name' => 'Bot-H',
+                'name' => 'User-S',
                 'phone_number' => '+959777777778',
             ],
             [
-                'name' => 'Bot-I',
+                'name' => 'User-T',
                 'phone_number' => '+959777777779',
             ],
         ];
@@ -108,7 +105,7 @@ class UserSeeder extends Seeder
             $existed = User::where('phone_number', $user['phone_number'])->first();
 
             if (!$existed) {
-                $reference_id = (new UserReference())->execute(str_contains($user['name'], 'User') ? UserPrefix::Player->value : UserPrefix::Bot->value, $user['phone_number']);
+                $reference_id = random_string() . random_number_name();
 
                 $user = User::create([
                     'name' => random_number_name(),
@@ -122,7 +119,6 @@ class UserSeeder extends Seeder
                     'payment_account_name' => $user['name'],
                     'payment_type_id' => 1,
                     'secret_key' => Str::random(32),
-                    'role' => str_contains($user['name'], 'User') ? Status::USER : Status::BOT,
                 ]);
 
                 $game_type_id = GameType::where('name', 'ShanKoeMee')->pluck('id')->first();
