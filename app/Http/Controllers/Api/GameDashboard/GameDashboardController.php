@@ -13,6 +13,11 @@ class GameDashboardController extends Controller
     {
     }
 
+    public function index()
+    {
+        return $this->endpoint->handle(config('api.url.card'), ServerPath::GAME_DASHBOATD_INDEX, []);
+    }
+
     public function playGameTypeInfo(Request $request)
     {
         return $this->endpoint->handle(config('api.url.card'), ServerPath::PLAY_GAME_TYPE_INFO, [

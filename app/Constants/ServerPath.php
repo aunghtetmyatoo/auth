@@ -71,5 +71,6 @@ class ServerPath
 
     /**Game Dashboard */
     const PLAY_GAME_TYPE_INFO = self::GAME_DASHBOATD . 'play-game-type-info';
+    const GAME_DASHBOATD_INDEX = self::GAME_DASHBOATD . 'index';
     /**End Game Dashboard */
 }
