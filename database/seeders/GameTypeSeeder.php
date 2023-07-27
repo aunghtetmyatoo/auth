@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\GameType;
 use App\Models\GameCategory;
 use App\Constants\GameCategory as GameCategoryConstant;
-use App\Constants\Gametype as GametypeConstant;
+use App\Constants\GameType as GameTypeConstant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,10 +20,10 @@ class GameTypeSeeder extends Seeder
     public function run()
     {
         $games_types = [
-            GametypeConstant::SKM,
-            GametypeConstant::THP,
-            GametypeConstant::BG,
-            GametypeConstant::TTO,
+            GameTypeConstant::SKM,
+            GameTypeConstant::THP,
+            GameTypeConstant::BG,
+            GameTypeConstant::TTO,
         ];
 
         $game_category_id = GameCategory::where('name', GameCategoryConstant::CARD)->pluck('id')->first();

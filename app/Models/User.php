@@ -86,7 +86,7 @@ class User extends Authenticatable
         'first_logged_in_at' => 'datetime',
         'password_changed_at' => 'datetime',
         'registered_at' => 'datetime',
-        'is_online' => 'boolean',
+        // 'is_online' => 'boolean',
         'last_activity' => 'datetime',
     ];
 

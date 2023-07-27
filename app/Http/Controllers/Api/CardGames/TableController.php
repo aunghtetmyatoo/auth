@@ -17,6 +17,7 @@ class TableController extends Controller
     {
         return $this->endpoint->handle(config('api.url.card'), ServerPath::TABLES_LIST, [
             'user_id' => auth()->user()->id,
+            'room_type_id' => $request->room_type_id,
         ]);
     }
 
@@ -72,8 +73,8 @@ class TableController extends Controller
     public function inviteFriend(Request $request)
     {
         return $this->endpoint->handle(config('api.url.card'), ServerPath::INVITE_FRIEND, [
-            'from_id' => auth()->user()->id,
-            'to_id' => $request->to_id,
+            'user_id' => auth()->user()->id,
+            'invite_user_id' => $request->invite_user_id,
             'room_id' => $request->room_id,
         ]);
     }
