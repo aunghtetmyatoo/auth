@@ -17,10 +17,10 @@ class FriendResource extends JsonResource
     {
         return [
             'id' => $this->friend->id,
-            'name' => $this->friend->name,
+            'name' => $this->friend->payment_account_name,
             'reference_id' => $this->friend->reference_id,
             'confirm_status' => $this->confirm_status,
-            'is_online' => 1,
+            'is_online' => $this->friend->is_online,
             'is_playing' => ($this->friend->play == Status::PLAYING) ? 1 : 0,
         ];
     }
