@@ -16,6 +16,7 @@ class ServerPath
 
     // Recharge, Withdraw
     const ADMIN_DASHBOARD =  self::SOCKET_PREFIX . 'admin-dashboard/';
+    const NOTI_FOR_MONITOR_LOG_REQUEST = self::ADMIN_DASHBOARD . 'noti-for-monitor-log-request';
     const GET_RECHARGE_REQUEST = self::ADMIN_DASHBOARD . 'get-recharge-request';
     const GET_WITHDRAW_REQUEST = self::ADMIN_DASHBOARD . 'get-withdraw-request';
     /** End Game Socket */
@@ -70,5 +71,6 @@ class ServerPath
 
     /**Game Dashboard */
     const PLAY_GAME_TYPE_INFO = self::GAME_DASHBOATD . 'play-game-type-info';
+    const GAME_DASHBOATD_INDEX = self::GAME_DASHBOATD . 'index';
     /**End Game Dashboard */
 }

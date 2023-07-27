@@ -157,7 +157,10 @@ class RechargeRequestController extends Controller
 
         // For RealTime GameDashboard
         $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_RECHARGE_REQUEST, [
-            'rechargeRequest' => ["id" => $recharge_request->id, "new" => true, "count" => RechargeRequest::where('status', Status::REQUESTED)->count()]
+            'rechargeRequest' => [  "id" => $recharge_request->id,
+                                    "new" => true,
+                                    "count" => RechargeRequest::where('status', Status::REQUESTED)->count()
+                                ]
         ]);
 
         $auth_user = auth()->user();
@@ -199,7 +202,10 @@ class RechargeRequestController extends Controller
 
         // For RealTime GameDashboard
         $this->endpoint->handle(config('api.url.socket'), ServerPath::GET_RECHARGE_REQUEST, [
-            'rechargeRequest' => ["id" => $request_cancelled->id, "new" => false, "status" =>  'CANCELLED', "count" => RechargeRequest::where('status', Status::REQUESTED)->count()]
+            'rechargeRequest' => [  "id" => $request_cancelled->id,
+                                    "new" => false, "status" =>  'CANCELLED',
+                                    "count" => RechargeRequest::where('status', Status::REQUESTED)->count(),
+                                    "expire_time" => '-']
         ]);
 
         $auth_user = auth()->user();
