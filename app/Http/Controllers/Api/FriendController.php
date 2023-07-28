@@ -28,13 +28,20 @@ class FriendController extends Controller
 
     public function findFriend(Request $request)
     {
-        $friend_list = User::whereNot('id', auth()->user()->id)->where(function ($query) use ($request) {
+        $users = User::whereNot('id', auth()->user()->id)->where(function ($query) use ($request) {
             $request->has('search') &&
                 $query->where('name', 'like', '%' . $request->input('search') . '%')
                 ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
         })->get();
 
-        return $this->responseCollection(FindFriendResource::collection($friend_list));
+        $friend_status = Friend::where('user_id', auth()->user()->id);
+        foreach ($users as $user) {
+            $friend_status && $friend_status = $friend_status->where('friend_id', $user->id)->value('confirm_status');
+            $user->friend_status = ($friend_status == null) ? Status::NOT_FRIEND : $friend_status;
+            $find_friends[] = $user;
+        }
+
+        return $this->responseCollection(FindFriendResource::collection($find_friends));
     }
 
     public function friendList(Request $request)

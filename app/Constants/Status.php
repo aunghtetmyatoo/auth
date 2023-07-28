@@ -35,6 +35,7 @@ class Status
     const ADDED_FRIEND = "ADDED FRIEND";
     const RECEIVED_FRIEND = "RECEIVED FRIEND";
     const CONFIRMED_FRIEND = "CONFIRMED FRIEND";
+    const NOT_FRIEND = "NOT FRIEND";
     const DEPOSITE = "DEPOSITE";
     const AGENT = "AGENT";
     const COMPLETED = "COMPLETED";

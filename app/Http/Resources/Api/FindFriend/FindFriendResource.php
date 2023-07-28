@@ -19,6 +19,7 @@ class FindFriendResource extends JsonResource
             'id' => $this->id,
             'name' => $this->payment_account_name,
             'reference_id' => $this->reference_id,
+            'confirm_status' => $this->friend_status,
             'is_online' => $this->is_online,
             'is_playing' => ($this->play == Status::PLAYING) ? 1 : 0,
         ];
