@@ -34,10 +34,9 @@ class FriendController extends Controller
                 ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
         })->get();
 
-        $friend_status = Friend::where('user_id', auth()->user()->id);
         foreach ($users as $user) {
-            $friend_status && $friend_status = $friend_status->where('friend_id', $user->id)->value('confirm_status');
-            $user->friend_status = ($friend_status == null) ? Status::NOT_FRIEND : $friend_status;
+            $status =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $user->id)->value('confirm_status');
+            $user->friend_status = ($status == null) ? Status::NOT_FRIEND : $status;
             $find_friends[] = $user;
         }
 
