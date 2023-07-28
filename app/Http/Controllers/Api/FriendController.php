@@ -37,7 +37,9 @@ class FriendController extends Controller
         foreach ($users as $user) {
             $status =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $user->id)->value('confirm_status');
             $user->friend_status = ($status == null) ? Status::NOT_FRIEND : $status;
-            $find_friends[] = $user;
+            if (($user->friend_status == Status::ADDED_FRIEND) || ($user->friend_status == Status::NOT_FRIEND)) {
+                $find_friends[] = $user;
+            }
         }
 
         return $this->responseCollection(FindFriendResource::collection($find_friends));
