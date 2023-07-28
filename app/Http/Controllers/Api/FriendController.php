@@ -112,7 +112,7 @@ class FriendController extends Controller
 
     public function confirmFriend(FriendConfirmRequest $request)
     {
-        [$user, $friend] = $this->getFriendRelationship(friend_id: $request->friend_id, condition: 'not_yet_friend');
+        [$user, $friend] = $this->getFriendRelationship(friend_id: $request->friend_id, condition: Status::RECEIVED_FRIEND);
 
         DB::transaction(function () use ($user, $friend) {
             $user->update([
@@ -146,7 +146,7 @@ class FriendController extends Controller
 
     public function cancelFriend(FriendCancelRequest $request)
     {
-        [$user, $friend] = $this->getFriendRelationship(friend_id: $request->friend_id, condition: 'not_yet_friend');
+        [$user, $friend] = $this->getFriendRelationship(friend_id: $request->friend_id, condition: Status::ADDED_FRIEND);
 
         DB::transaction(function () use ($user, $friend) {
             $user->delete();
@@ -160,7 +160,7 @@ class FriendController extends Controller
 
     public function unfriend(UnfriendRequest $request)
     {
-        [$user, $friend] = $this->getFriendRelationship(friend_id: $request->friend_id, condition: 'friend');
+        [$user, $friend] = $this->getFriendRelationship(friend_id: $request->friend_id, condition: Status::CONFIRMED_FRIEND);
 
         DB::transaction(function () use ($user, $friend) {
             $user->delete();
@@ -174,16 +174,18 @@ class FriendController extends Controller
 
     public function getFriendRelationship(string $friend_id, string $condition)
     {
-        if ($condition === 'friend') {
-            $user =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $friend_id)->where('confirm_status', Status::CONFIRMED_FRIEND)->first();
+        if ($condition == Status::CONFIRMED_FRIEND) {
+            $user =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $friend_id)->where('confirm_status', $condition)->first();
 
             $friend =  Friend::where('user_id', $friend_id)->where('friend_id', auth()->user()->id)->where('confirm_status', Status::CONFIRMED_FRIEND)->first();
         }
 
-        if ($condition === 'not_yet_friend') {
-            $user =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $friend_id)->where('confirm_status', Status::RECEIVED_FRIEND)->first();
+        if ($condition == Status::RECEIVED_FRIEND || $condition == Status::ADDED_FRIEND) {
+            $user =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $friend_id)->where('confirm_status', $condition)->first();
 
-            $friend =  Friend::where('user_id', $friend_id)->where('friend_id', auth()->user()->id)->where('confirm_status', Status::ADDED_FRIEND)->first();
+            $friend_status = ($condition == Status::RECEIVED_FRIEND) ? Status::ADDED_FRIEND : Status::RECEIVED_FRIEND;
+
+            $friend =  Friend::where('user_id', $friend_id)->where('friend_id', auth()->user()->id)->where('confirm_status', $friend_status)->first();
         }
 
         return [$user, $friend];
