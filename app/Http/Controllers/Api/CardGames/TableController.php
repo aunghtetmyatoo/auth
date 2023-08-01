@@ -33,10 +33,11 @@ class TableController extends Controller
     {
         return $this->endpoint->handle(config('api.url.card'), ServerPath::CREATE_TABLE, [
             'user_id' => auth()->user()->id,
-            'name' => $request->name,
             'game_type_id' => $request->game_type_id,
             'banker_amount' => $request->banker_amount,
             'privacy'  => $request->privacy,
+            'password'  => $request->password,
+            'player_limit'  => $request->player_limit,
             'is_side_bettor' => $request->is_side_bettor,
         ]);
     }
@@ -46,8 +47,7 @@ class TableController extends Controller
         return $this->endpoint->handle(config('api.url.card'), ServerPath::JOIN_TABLE, [
             'user_id' => auth()->user()->id,
             'room_id' => $request->room_id,
-            'game_type_id' => $request->game_type_id,
-            'secret' => $request->secret,
+            'password' => $request->password,
         ]);
     }
 
