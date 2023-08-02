@@ -183,6 +183,14 @@ class FriendController extends Controller
         if ($condition == Status::RECEIVED_FRIEND || $condition == Status::ADDED_FRIEND) {
             $user =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $friend_id)->where('confirm_status', $condition)->first();
 
+            if (!$user) {
+                $user =  Friend::where('user_id', $friend_id)->where('friend_id', auth()->user()->id)->where('confirm_status', Status::ADDED_FRIEND)->first();
+
+                $friend =  Friend::where('user_id', auth()->user()->id)->where('friend_id', $friend_id)->where('confirm_status', Status::RECEIVED_FRIEND)->first();
+
+                return [$user, $friend];
+            }
+
             $friend_status = ($condition == Status::RECEIVED_FRIEND) ? Status::ADDED_FRIEND : Status::RECEIVED_FRIEND;
 
             $friend =  Friend::where('user_id', $friend_id)->where('friend_id', auth()->user()->id)->where('confirm_status', $friend_status)->first();
