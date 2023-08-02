@@ -18,6 +18,8 @@ class PlayController extends Controller
         return $this->endpoint->handle(config('api.url.card'), ServerPath::PLAY_DIRECT, [
             'user_id' => auth()->user()->id,
             'game_type_id' => $request->game_type_id,
+            'room_id' => $request->room_id,
+            'room_type_id' => $request->room_type_id,
         ]);
     }
 
