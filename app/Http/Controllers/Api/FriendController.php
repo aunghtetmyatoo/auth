@@ -30,7 +30,7 @@ class FriendController extends Controller
     {
         $users = User::whereNot('id', auth()->user()->id)->where(function ($query) use ($request) {
             $request->has('search') &&
-                $query->where('name', 'like', '%' . $request->input('search') . '%')
+                $query->where('payment_account_name', 'like', '%' . $request->input('search') . '%')
                 ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
         })->get();
 
@@ -50,7 +50,7 @@ class FriendController extends Controller
         $friend_list = Friend::where('user_id', auth()->user()->id)->where('confirm_status', Status::CONFIRMED_FRIEND)->where(function ($query) use ($request) {
             $request->has('search')
                 && $query->whereHas('friend', function ($queryy) use ($request) {
-                    $queryy->where('name', 'like', '%' . $request->input('search') . '%')
+                    $queryy->where('payment_account_name', 'like', '%' . $request->input('search') . '%')
                         ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
                 });
         })->get();
@@ -63,7 +63,7 @@ class FriendController extends Controller
         $request_list = Friend::where('user_id', auth()->user()->id)->where('confirm_status', Status::RECEIVED_FRIEND)->where(function ($query) use ($request) {
             $request->has('search')
                 && $query->whereHas('friend', function ($queryy) use ($request) {
-                    $queryy->where('name', 'like', '%' . $request->input('search') . '%')
+                    $queryy->where('payment_account_name', 'like', '%' . $request->input('search') . '%')
                         ->orWhere('reference_id', 'like', '%' . $request->input('search') . '%');
                 });
         })->get();
