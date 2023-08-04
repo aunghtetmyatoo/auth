@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\GameType;
+use App\Constants\GameType as GameTypeConstant;
 use Illuminate\Support\Str;
 use App\Models\PlayerSetting;
 use Illuminate\Database\Seeder;
@@ -101,6 +102,9 @@ class UserSeeder extends Seeder
             ],
         ];
 
+        $skm_id = GameType::where('name', GameTypeConstant::SKM)->pluck('id')->first();
+        $thp_id = GameType::where('name', GameTypeConstant::THP)->pluck('id')->first();
+
         foreach ($users as $user) {
             $existed = User::where('phone_number', $user['phone_number'])->first();
 
@@ -121,15 +125,17 @@ class UserSeeder extends Seeder
                     'secret_key' => Str::random(32),
                 ]);
 
-                $game_type_id = GameType::where('name', 'ShanKoeMee')->pluck('id')->first();
+                $user->game_types()->attach($skm_id, [
+                    'coin' => 900000,
+                ]);
 
-                $user->game_types()->attach($game_type_id, [
+                $user->game_types()->attach($thp_id, [
                     'coin' => 900000,
                 ]);
 
                 PlayerSetting::create([
                     'user_id' => $user->id,
-                    'game_type_id' => $game_type_id,
+                    'game_type_id' => $skm_id,
                     'sound_status' => 1,
                     'vibration_status' => 1,
                     'challenge_status' => 1,
