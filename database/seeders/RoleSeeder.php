@@ -62,6 +62,7 @@ class RoleSeeder extends Seeder
             'game category list',
             'user list',
             'user edit',
+            'user profile',
             'role list',
             'role create',
             'role edit',
@@ -104,6 +105,7 @@ class RoleSeeder extends Seeder
             'refill to player analysis',
             'return to finance analysis',
             'user delete',
+            'user freeze',
         ];
         $exchange_head_permissions = [
             'game category create',
