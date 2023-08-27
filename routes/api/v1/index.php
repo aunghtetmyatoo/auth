@@ -13,12 +13,12 @@ Route::prefix('register')->controller(RegisterController::class)->group(function
     Route::post('/', 'register')->middleware('token:mb_register');
 });
 
-Route::prefix('login')->controller(LoginController::class)->group(function () {
-    Route::post('/', 'playerLogin')->middleware('login');
+Route::controller(LoginController::class)->group(function () {
+    Route::post('/login', 'playerLogin')->middleware('login');
+    Route::post('/logout', 'logout')->middleware('auth:player');
 });
 
 Route::prefix('account')->middleware(["auth:player", "spam", "bank-account"])->group(function () {
-    Route::get('/logout', [LoginController::class, 'logout']);
     Route::post('/payment/deposit', [TransactionController::class, 'deposit']);
 });
 
